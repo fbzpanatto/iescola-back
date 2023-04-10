@@ -2,6 +2,7 @@
 import express from 'express'
 
 import { Router, Request, Response } from 'express';
+import { AppDataSource } from "./data-source";
 
 const app = express();
 
@@ -15,6 +16,11 @@ route.get('/', (req: Request, res: Response) => {
 
 app.use(route)
 
-
-app.listen(3333, () => 'server running on port 3333')
-
+AppDataSource.initialize()
+  .then(() => {
+    console.log('Connected to database')
+    app.listen(3333, () => {
+      console.log('Server is running on port 3333')
+    })
+  })
+  .catch((error) => console.log(error))
