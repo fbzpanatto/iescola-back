@@ -1,8 +1,12 @@
 
 import express from 'express'
 
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { AppDataSource } from "./data-source";
+
+import { ClassroomRouter } from "./routes/classroom-router";
+import { SchoolRouter } from "./routes/school-router";
+import { StudentRouter } from "./routes/student-router";
 
 const app = express();
 
@@ -10,9 +14,9 @@ const route = Router()
 
 app.use(express.json())
 
-route.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'hello world with Typescript my second time' })
-})
+route.use('/classroom', ClassroomRouter)
+route.use('/school', SchoolRouter)
+route.use('/student', StudentRouter)
 
 app.use(route)
 
