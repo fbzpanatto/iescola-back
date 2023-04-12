@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm"
 import { Classroom } from "./Classroom";
+import { StudentGradeTest } from "./StudentGradeTest";
 
 @Entity()
 export class Student {
@@ -22,4 +23,7 @@ export class Student {
 
   @ManyToOne(type => Classroom, c => c.students)
   classroom: Classroom
+
+  @OneToMany(type => StudentGradeTest, st => st.student)
+  studentGradeTests: StudentGradeTest[];
 }

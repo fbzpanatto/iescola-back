@@ -7,6 +7,7 @@ import { AppDataSource } from "./data-source";
 import { ClassroomRouter } from "./routes/classroom-router";
 import { SchoolRouter } from "./routes/school-router";
 import { StudentRouter } from "./routes/student-router";
+import { TestRouter } from "./routes/test-router";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json())
 route.use('/classroom', ClassroomRouter)
 route.use('/school', SchoolRouter)
 route.use('/student', StudentRouter)
+route.use('/test', TestRouter)
 
 app.use(route)
 
