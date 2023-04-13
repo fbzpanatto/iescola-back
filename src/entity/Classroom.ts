@@ -19,6 +19,6 @@ export class Classroom {
   @OneToMany(type => Student, s => s.classroom)
   students: Student[]
 
-  @ManyToOne(type => School, s => s.classrooms)
+  @ManyToOne(type => School, s => s.classrooms, { eager: true})
   school: School
 }
