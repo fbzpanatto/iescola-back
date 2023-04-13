@@ -4,7 +4,7 @@ import { classroomController } from "../controller/classroom-controller";
 export const ClassroomRouter = Router()
 
 ClassroomRouter.get('/', (req: Request, res: Response) => {
-  classroomController.getAll({ relations: ['school'] })
+  classroomController.getAll()
     // TODO: Add response status code
     .then(r => res.json({ method: 'GET', resource: '/classroom', payload: r }))
 })

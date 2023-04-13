@@ -8,6 +8,11 @@ class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>>
     super(Classroom);
   }
 
+  override async getAll() {
+
+    return await this.repository.find({ relations: ['school'] });
+  }
+
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const school = await schoolController.findOneBy(body.school.id);
