@@ -7,9 +7,7 @@ export class School {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({
-    unique: true}
-  )
+  @Column({unique: true} )
   inep: string
 
   @Column({
