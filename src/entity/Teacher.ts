@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm"
+import { Discipline } from "./Discipline";
 
 @Entity()
 export class Teacher {
@@ -10,6 +11,10 @@ export class Teacher {
     length: 60,
   })
   name: string
+
+  @ManyToMany(() => Discipline)
+  @JoinTable()
+  disciplines: Discipline[]
 
   @Column()
   active: boolean

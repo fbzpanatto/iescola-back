@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 import { IsInt, Length } from "class-validator";
 import { Classroom } from "./Classroom";
-import {Test} from "./Test";
+import { Test } from "./Test";
 
 @Entity()
 export class Year {
