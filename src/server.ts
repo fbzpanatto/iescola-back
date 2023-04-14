@@ -9,6 +9,7 @@ import { SchoolRouter } from "./routes/school-router";
 import { StudentRouter } from "./routes/student-router";
 import { SgtRouter } from "./routes/studentGradeTest-router";
 import { TestRouter } from "./routes/test-router";
+import { YearRouter } from "./routes/year-router";
 
 const app = express();
 
@@ -21,6 +22,7 @@ route.use('/school', SchoolRouter)
 route.use('/student', StudentRouter)
 route.use('/student-grade-test', SgtRouter)
 route.use('/test', TestRouter)
+route.use('/year', YearRouter)
 
 app.use(route)
 

@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts"
+    "dev": "nodemon --exec ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts",
+    "killtask": "taskkill /F /IM node.exe"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/es6-shim": "^0.31.42",
+    "class-validator": "^0.14.0",
     "express": "^4.18.2",
     "mysql2": "^3.2.0",
     "reflect-metadata": "^0.1.13",

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm"
+import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, Unique} from "typeorm"
 import { Classroom } from "./Classroom";
 import { StudentGradeTest } from "./StudentGradeTest";
 
@@ -14,7 +14,8 @@ export class Student {
   name: string
 
   @Column({
-    length: 20
+    length: 20,
+    unique: true
   })
   ra: string
 

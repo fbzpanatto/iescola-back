@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm"
 import { School } from "./School";
 import { Student } from "./Student";
+import { Year } from "./Year";
 
 @Entity()
 export class Classroom {
@@ -21,4 +22,7 @@ export class Classroom {
 
   @ManyToOne(type => School, s => s.classrooms, { eager: true})
   school: School
+
+  @ManyToOne(type => Year, y => y.classrooms, { eager: true})
+  year: Year
 }

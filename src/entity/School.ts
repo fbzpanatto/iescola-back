@@ -8,7 +8,13 @@ export class School {
   id: number
 
   @Column({
-    length: 100
+    unique: true}
+  )
+  inep: string
+
+  @Column({
+    length: 100,
+    unique: true
   })
   name: string
 

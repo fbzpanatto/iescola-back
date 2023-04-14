@@ -1,11 +1,7 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 
-import { Student } from "./entity/Student"
-import { Classroom } from "./entity/Classroom";
-import { School } from "./entity/School";
-import { Test } from "./entity/Test";
-import { StudentGradeTest } from "./entity/StudentGradeTest";
+import { listDirFilesSync } from "./entity";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -15,8 +11,14 @@ export const AppDataSource = new DataSource({
   password: "1234",
   database: "iescoladb",
   synchronize: true,
-  logging: true,
-  entities: [Classroom, School, Student, Test, StudentGradeTest],
+  logging: false,
+  entities: getEntities(),
   subscribers: [],
   migrations: [],
 })
+
+function getEntities() {
+  return listDirFilesSync().map((file: string) => {
+    return require(`./entity/${file}`)
+  })
+}
