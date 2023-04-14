@@ -2,7 +2,7 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 
 import { Bimester } from "./entity/Bimester";
-import { PersonType } from "./entity/PersonType";
+import { Category } from "./entity/Category";
 import { Classroom } from "./entity/Classroom";
 import { Discipline } from "./entity/Discipline";
 import { School } from "./entity/School";
@@ -22,7 +22,19 @@ export const AppDataSource = new DataSource({
   database: "iescoladb",
   synchronize: true,
   logging: true,
-  entities: [Bimester, Person, PersonType, Classroom, Discipline, School, Student, StudentGradeTest, Teacher, Test, Year],
+  entities: [
+    Bimester,
+    Person,
+    Category,
+    Classroom,
+    Discipline,
+    School,
+    Student,
+    StudentGradeTest,
+    Teacher,
+    Test,
+    Year
+  ],
   subscribers: [],
   migrations: [],
 })

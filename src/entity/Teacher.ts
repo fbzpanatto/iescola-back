@@ -1,11 +1,15 @@
-import {Entity, Column, ManyToMany, JoinTable, ChildEntity} from "typeorm"
+import { Entity, ManyToMany, JoinTable, ManyToOne } from "typeorm"
 import { Discipline } from "./Discipline";
 import { Person} from "./Person";
+import { Category } from "./Category";
 
-@ChildEntity()
+@Entity()
 export class Teacher extends Person {
 
   @ManyToMany(() => Discipline)
   @JoinTable()
   disciplines: Discipline[]
+
+  @ManyToOne(type => Category, category => category.teachers)
+  category: Category
 }

@@ -1,12 +1,13 @@
-import { Column, ManyToOne, OneToMany, ChildEntity } from "typeorm"
+import { Column, ManyToOne, OneToMany, Entity } from "typeorm"
 import { Classroom } from "./Classroom";
 import { StudentGradeTest } from "./StudentGradeTest";
 import { Person } from "./Person";
+import { Category } from "./Category";
 
-@ChildEntity()
+@Entity()
 export class Student extends Person {
 
-  @Column({ nullable: true })
+  @Column()
   ra: string
 
   @ManyToOne(type => Classroom, c => c.students)
@@ -14,4 +15,7 @@ export class Student extends Person {
 
   @OneToMany(type => StudentGradeTest, st => st.student)
   studentGradeTests: StudentGradeTest[];
+
+  @ManyToOne(type => Category, category => category.students)
+  category: Category
 }
