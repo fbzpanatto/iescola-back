@@ -8,3 +8,6 @@ export const listDirFilesSync = () => {
     .filter((k: any) => k !== basename)
     .map((arquivo: string) => { return arquivo.split('.')[0] })
 }
+
+//TODO: create an discipline entity
+//TODO: create an teacher entity
