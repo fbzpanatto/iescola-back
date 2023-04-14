@@ -1,5 +1,5 @@
-import {Column, PrimaryGeneratedColumn, ManyToOne, Entity, TableInheritance} from "typeorm"
-import {PersonType} from "./PersonType";
+import { Column, PrimaryGeneratedColumn, ManyToOne, Entity, TableInheritance } from "typeorm"
+import { PersonType } from "./PersonType";
 
 @Entity()
 @TableInheritance({ column: { type: "varchar", name: "name", length: 60 } })
