@@ -12,7 +12,7 @@ export class Student extends BaseEntity {
   @Column()
   ra: string;
 
-  @OneToOne(() => Person, p => p.student)
+  @OneToOne(() => Person)
   @JoinColumn()
   person: Person;
 

@@ -21,7 +21,7 @@ export const AppDataSource = new DataSource({
   password: "1234",
   database: "iescoladb",
   synchronize: true,
-  logging: true,
+  logging: false,
   entities: [
     Bimester,
     Person,
