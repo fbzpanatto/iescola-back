@@ -1,21 +1,24 @@
-import { Column, ManyToOne, OneToMany, Entity } from "typeorm"
+import { Column, ManyToOne, OneToMany, Entity, OneToOne, JoinColumn, PrimaryGeneratedColumn, BaseEntity } from "typeorm"
 import { Classroom } from "./Classroom";
 import { StudentGradeTest } from "./StudentGradeTest";
 import { Person } from "./Person";
-import { Category } from "./Category";
 
 @Entity()
-export class Student extends Person {
+export class Student extends BaseEntity {
+
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
-  ra: string
+  ra: string;
+
+  @OneToOne(() => Person, p => p.student)
+  @JoinColumn()
+  person: Person;
 
   @ManyToOne(type => Classroom, c => c.students)
   classroom: Classroom
 
   @OneToMany(type => StudentGradeTest, st => st.student)
   studentGradeTests: StudentGradeTest[];
-
-  @ManyToOne(type => Category, category => category.students)
-  category: Category
 }

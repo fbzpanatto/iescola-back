@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 import { Max } from "class-validator";
 import { Teacher } from "./Teacher";
 import { Student } from "./Student";
+import {Person} from "./Person";
 
 @Entity()
 export class Category {
@@ -16,9 +17,6 @@ export class Category {
   @Column()
   active: boolean
 
-  @OneToMany(type => Teacher, teacher  => teacher.category)
-  teachers: Teacher[]
-
-  @OneToMany(type => Student, student  => student.category)
-  students: Student[]
+  @OneToMany(()=> Person, p => p.category)
+  persons: Person[]
 }

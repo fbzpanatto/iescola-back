@@ -1,15 +1,23 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
-import { Length } from "class-validator";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToOne, ManyToOne } from "typeorm";
+import { Student } from "./Student";
+import { Teacher } from "./Teacher";
+import { Category } from "./Category";
 
-export abstract class Person {
+@Entity()
+export class Person extends BaseEntity {
 
   @PrimaryGeneratedColumn()
-  id: number
-
-  @Length(60)
-  @Column()
-  name: string
+  id: number;
 
   @Column()
-  active: boolean
+  nome: string;
+
+  @ManyToOne(() => Category, c => c.persons)
+  category: Category;
+
+  @OneToOne(() => Student)
+  student: Student;
+
+  @OneToOne(() => Teacher)
+  teacher: Teacher;
 }
