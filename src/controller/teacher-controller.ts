@@ -1,8 +1,7 @@
 import { GenericController } from "./generic-controller";
 import { Teacher } from "../entity/Teacher";
 import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
-import { classroomController } from "./classroom-controller";
-import {disciplineController} from "./discipline-controller";
+import { disciplineController } from "./discipline-controller";
 
 class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {

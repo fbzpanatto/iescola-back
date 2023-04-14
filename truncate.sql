@@ -8,7 +8,7 @@ TRUNCATE TABLE bimester;
 TRUNCATE TABLE test;
 TRUNCATE TABLE teacher;
 TRUNCATE TABLE discipline;
-TRUNCATE TABLE teacher_disciplines_discipline;
+TRUNCATE TABLE teacher_disciplines_disciplineteacherstudentcategory;
 TRUNCATE TABLE year;
 
 SET FOREIGN_KEY_CHECKS=1;

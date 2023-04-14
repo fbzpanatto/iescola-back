@@ -1,26 +1,13 @@
-import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, Unique} from "typeorm"
+import { Column, ManyToOne, OneToMany, ChildEntity } from "typeorm"
 import { Classroom } from "./Classroom";
 import { StudentGradeTest } from "./StudentGradeTest";
+import { Person } from "./Person";
 
-@Entity()
-export class Student {
+@ChildEntity()
+export class Student extends Person {
 
-  @PrimaryGeneratedColumn()
-  id: number
-
-  @Column({
-    length: 100
-  })
-  name: string
-
-  @Column({
-    length: 20,
-    unique: true
-  })
+  @Column({ nullable: true })
   ra: string
-
-  @Column()
-  active: boolean
 
   @ManyToOne(type => Classroom, c => c.students)
   classroom: Classroom

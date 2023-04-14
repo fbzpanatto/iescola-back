@@ -1,21 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm"
+import {Entity, Column, ManyToMany, JoinTable, ChildEntity} from "typeorm"
 import { Discipline } from "./Discipline";
+import { Person} from "./Person";
 
-@Entity()
-export class Teacher {
-
-  @PrimaryGeneratedColumn()
-  id: number
-
-  @Column({
-    length: 60,
-  })
-  name: string
+@ChildEntity()
+export class Teacher extends Person {
 
   @ManyToMany(() => Discipline)
   @JoinTable()
   disciplines: Discipline[]
-
-  @Column()
-  active: boolean
 }
