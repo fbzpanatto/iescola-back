@@ -6,7 +6,6 @@ import { classroomController } from "./classroom-controller";
 import { categoryController } from "./category-controller";
 import { Classroom } from "../entity/Classroom";
 import { Category } from "../entity/Category";
-import { studentController } from "./student-controller";
 
 class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
