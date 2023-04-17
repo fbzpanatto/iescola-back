@@ -25,7 +25,7 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     if(body.category){
 
-      const category = await this.getCategory(body) as Category ;
+      const category = await this.getCategory(body);
       if (!category) throw new Error('Category not found');
 
       person.category = category;
@@ -36,7 +36,7 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
       const student = new Student();
       student.ra = body.ra;
 
-      const classroom = await this.getClassroom(body) as Classroom
+      const classroom = await this.getClassroom(body)
       if (!classroom) throw new Error('Classroom not found');
 
       student.classroom = classroom;
@@ -50,9 +50,9 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
       let disciplines: Discipline[] = [];
 
       for (const disciplineId of body.disciplines) {
-        const discipline = await disciplineController.findOneBy(Number(disciplineId));
+        const discipline = await this.getDiscipline(disciplineId)
         if (discipline) {
-          disciplines.push(discipline as Discipline);
+          disciplines.push(discipline);
         }
       }
 
@@ -64,11 +64,15 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
   }
 
   async getClassroom(body: DeepPartial<ObjectLiteral>) {
-    return await classroomController.findOneBy(body.classroom.id);
+    return await classroomController.findOneBy(Number(body.classroom.id)) as Classroom;
   }
 
   async getCategory(body: DeepPartial<ObjectLiteral>) {
-    return await categoryController.findOneBy(body.category.id);
+    return await categoryController.findOneBy(Number(body.category.id)) as Category;
+  }
+
+  async getDiscipline(body: DeepPartial<ObjectLiteral>) {
+    return await disciplineController.findOneBy(Number(body.discipline.id)) as Discipline;
   }
 
 }
