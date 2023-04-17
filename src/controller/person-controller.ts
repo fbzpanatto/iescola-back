@@ -69,8 +69,8 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
     return await categoryController.findOneBy(Number(body.category.id)) as Category;
   }
 
-  async getDiscipline(body: DeepPartial<ObjectLiteral>) {
-    return await disciplineController.findOneBy(Number(body.discipline.id)) as Discipline;
+  async getDiscipline(disciplineId: number | string) {
+    return await disciplineController.findOneBy(disciplineId) as Discipline;
   }
 
 }

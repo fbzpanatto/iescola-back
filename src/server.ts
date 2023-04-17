@@ -16,11 +16,15 @@ import { TestRouter } from "./routes/test-router";
 import { YearRouter } from "./routes/year-router";
 import { CategoryRouter } from "./routes/category-routes";
 
-const app = express();
+import { Application } from "express";
+
+const app: Application = express();
+
+const cors = require('cors');
 
 const route = Router()
 
-app.use(express.json())
+app.use(cors({origin: true}));
 
 route.use('/bimester', BimesterRouter)
 route.use('/classroom', ClassroomRouter)

@@ -5,7 +5,7 @@ export const PersonRouter = Router()
 
 PersonRouter.get('/', (req: Request, res: Response) => {
 
-  personController.getAll()
+  personController.getAll({ relations: ['category', 'student', 'teacher']})
     // TODO: Add response status code
     .then(r => res.json({ method: 'GET', resource: req.baseUrl, payload: r }))
 })
