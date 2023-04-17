@@ -1,14 +1,16 @@
 import { GenericController } from "./generic-controller";
-import { Person } from "../entity/Person";
 import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
-import { Student}  from "../entity/Student";
+
 import { classroomController } from "./classroom-controller";
 import { categoryController } from "./category-controller";
-import { Classroom } from "../entity/Classroom";
+import { disciplineController} from "./discipline-controller";
+
 import { Category } from "../entity/Category";
-import {Teacher} from "../entity/Teacher";
-import {disciplineController} from "./discipline-controller";
-import {Discipline} from "../entity/Discipline";
+import { Classroom } from "../entity/Classroom";
+import { Discipline} from "../entity/Discipline";
+import { Person } from "../entity/Person";
+import { Student}  from "../entity/Student";
+import { Teacher} from "../entity/Teacher";
 
 class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
