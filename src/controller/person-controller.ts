@@ -51,9 +51,7 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       for (const disciplineId of body.disciplines) {
         const discipline = await this.getDiscipline(disciplineId)
-        if (discipline) {
-          disciplines.push(discipline);
-        }
+        discipline ? disciplines.push(discipline) : null;
       }
 
       teacher.disciplines = disciplines;
