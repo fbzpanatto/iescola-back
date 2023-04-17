@@ -14,20 +14,8 @@ StudentRouter.get('/:id', (req: Request, res: Response) => {
     .then(r => res.json({ method: 'GET', resource: '/student', payload: r }))
 })
 
-StudentRouter.post('/', (req: Request, res: Response) => {
-  studentController.saveData(req.body)
-    // TODO: Add response status code
-    .then(r => res.json({ method: 'POST', resource: '/student', payload: r }))
-})
-
 StudentRouter.put('/:id', (req: Request, res: Response) => {
   studentController.updateOneBy(req.params.id, req.body)
     // TODO: Add response status code
     .then(r => res.json({ method: 'PUT', resource: '/student', payload: r }))
-})
-
-StudentRouter.delete('/:id', (req: Request, res: Response) => {
-  studentController.deleteOneBy(req.params.id)
-    // TODO: Add response status code
-    .then(r => res.json({ method: 'DELETE', resource: '/student', payload: r }))
 })
