@@ -6,6 +6,9 @@ import { classroomController } from "./classroom-controller";
 import { categoryController } from "./category-controller";
 import { Classroom } from "../entity/Classroom";
 import { Category } from "../entity/Category";
+import {Teacher} from "../entity/Teacher";
+import {disciplineController} from "./discipline-controller";
+import {Discipline} from "../entity/Discipline";
 
 class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -15,7 +18,6 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const person = new Person();
-    const student = new Student();
 
     person.name = body.name
 
@@ -29,15 +31,32 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     if(body.ra){
 
+      const student = new Student();
       student.ra = body.ra;
 
       const classroom = await this.getClassroom(body) as Classroom
       if (!classroom) throw new Error('Classroom not found');
 
       student.classroom = classroom;
+      person.student = student;
+
     }
 
-    person.student = student;
+    if (body.disciplines) {
+
+      const teacher = new Teacher();
+      let disciplines: Discipline[] = [];
+
+      for (const disciplineId of body.disciplines) {
+        const discipline = await disciplineController.findOneBy(Number(disciplineId));
+        if (discipline) {
+          disciplines.push(discipline as Discipline);
+        }
+      }
+
+      teacher.disciplines = disciplines;
+      person.teacher = teacher;
+    }
 
     return await this.repository.save(person);
   }

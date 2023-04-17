@@ -12,14 +12,12 @@ export class Person extends BaseEntity {
   @Column()
   name: string;
 
-  @ManyToOne(() => Category, c => c.persons)
+  @ManyToOne(type => Category, c => c.persons)
   category: Category;
 
-  @OneToOne(type => Student, s => s.person, {
-    cascade: true
-  })
+  @OneToOne(type => Student, s => s.person, { cascade: true })
   student: Student;
 
-  @OneToOne(() => Teacher)
+  @OneToOne(type => Teacher, t => t.person, { cascade: true })
   teacher: Teacher;
 }
