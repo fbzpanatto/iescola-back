@@ -4,6 +4,7 @@ import { Year } from "./Year";
 import { Bimester } from "./Bimester";
 import { Teacher } from "./Teacher";
 import { Discipline } from "./Discipline";
+import {TestCategory} from "./TestCategory";
 
 @Entity()
 export class Test {
@@ -27,6 +28,9 @@ export class Test {
 
   @ManyToOne(type => Year, y => y.tests, { nullable: false, eager: true })
   year: Year
+
+  @ManyToOne(type => TestCategory, tc => tc.tests, { nullable: false, eager: true })
+  category: TestCategory
 
   @ManyToOne(type => Bimester, b => b.tests, { nullable: false, eager: true })
   bimester: Bimester
