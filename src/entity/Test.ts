@@ -19,21 +19,21 @@ export class Test {
   @Column('json')
   questions: { id: number, answer: string }[];
 
-  @Column()
+  @Column({select: false})
   active: boolean
 
   @OneToMany(type => StudentGradeTest, st => st.test)
   studentGradeTests: StudentGradeTest[];
 
-  @ManyToOne(type => Year, y => y.tests, { nullable: false })
+  @ManyToOne(type => Year, y => y.tests, { nullable: false, eager: true })
   year: Year
 
-  @ManyToOne(type => Bimester, b => b.tests, { nullable: false })
+  @ManyToOne(type => Bimester, b => b.tests, { nullable: false, eager: true })
   bimester: Bimester
 
-  @ManyToOne(type => Teacher, t => t.tests, { nullable: false })
+  @ManyToOne(type => Teacher, t => t.tests, { nullable: false, eager: true })
   teacher: Teacher
 
-  @ManyToOne(type => Discipline, d => d.tests, { nullable: false })
+  @ManyToOne(type => Discipline, d => d.tests, { nullable: false, eager: true })
   discipline: Discipline
 }

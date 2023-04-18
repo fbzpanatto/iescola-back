@@ -22,7 +22,7 @@ export class Teacher extends BaseEntity {
   @JoinTable()
   disciplines: Discipline[]
 
-  @OneToOne(() => Person, p => p.teacher)
+  @OneToOne(() => Person, p => p.teacher, {eager: true})
   @JoinColumn()
   person: Person;
 

@@ -14,7 +14,7 @@ export class Year {
   @Column({ unique: true})
   name: number
 
-  @Column()
+  @Column({select: false})
   active: boolean
 
   @OneToMany(type => Classroom, c => c.year)

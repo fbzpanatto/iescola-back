@@ -12,7 +12,7 @@ export class Bimester {
   @Column({ unique: true})
   name: string
 
-  @Column()
+  @Column({select: false})
   active: boolean
 
   @OneToMany( type => Test, t => t.year)

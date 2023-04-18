@@ -12,7 +12,7 @@ export class Discipline {
   })
   name: string
 
-  @Column()
+  @Column({select: false})
   active: boolean
 
   @OneToMany(() => Test, t => t.discipline)
