@@ -11,8 +11,7 @@ import {
 import { Discipline } from "./Discipline";
 import { Person} from "./Person";
 import {Test} from "./Test";
-import {StudentGradeTest} from "./StudentGradeTest";
-import {TeacherClasses} from "./TeacherClasses";
+import {Classroom} from "./Classroom";
 
 @Entity()
 export class Teacher extends BaseEntity {
@@ -24,15 +23,14 @@ export class Teacher extends BaseEntity {
   @JoinTable()
   disciplines: Discipline[]
 
+  @ManyToMany(() => Classroom)
+  @JoinTable()
+  classrooms: Classroom[]
+
   @OneToOne(() => Person, p => p.teacher, {eager: true})
   @JoinColumn()
   person: Person;
 
   @OneToMany(() => Test, t => t.teacher)
   tests: Test[]
-
-  // TODO: uma tabela para guardar a relação entre professor e salas
-
-  @OneToMany(type => TeacherClasses, tc => tc.teacher)
-  teacherClasses: TeacherClasses[];
 }

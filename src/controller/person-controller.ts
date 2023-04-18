@@ -44,17 +44,23 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     }
 
-    if (body.disciplines) {
+    if (body.disciplines || body.classes) {
 
       const teacher = new Teacher();
-      let disciplines: Discipline[] = [];
 
-      for (const disciplineId of body.disciplines) {
-        const discipline = await this.getDiscipline(disciplineId)
-        discipline ? disciplines.push(discipline) : null;
+      if(body.disciplines) {
+
+        let disciplines: Discipline[] = [];
+
+        for (const disciplineId of body.disciplines) {
+          const discipline = await this.getDiscipline(disciplineId)
+          discipline ? disciplines.push(discipline) : null;
+        }
+
+        teacher.disciplines = disciplines;
+
       }
 
-      teacher.disciplines = disciplines;
       person.teacher = teacher;
     }
 
