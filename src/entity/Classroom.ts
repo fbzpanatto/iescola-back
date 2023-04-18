@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "ty
 import { School } from "./School";
 import { Student } from "./Student";
 import { Year } from "./Year";
+import { TeacherClasses } from "./TeacherClasses";
 
 @Entity()
 export class Classroom {
@@ -25,4 +26,7 @@ export class Classroom {
 
   @ManyToOne(type => Year, y => y.classrooms, { eager: true})
   year: Year
+
+  @OneToMany(type => TeacherClasses, tc => tc.classroom)
+  teacherClasses: TeacherClasses[]
 }

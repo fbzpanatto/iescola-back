@@ -11,6 +11,8 @@ import {
 import { Discipline } from "./Discipline";
 import { Person} from "./Person";
 import {Test} from "./Test";
+import {StudentGradeTest} from "./StudentGradeTest";
+import {TeacherClasses} from "./TeacherClasses";
 
 @Entity()
 export class Teacher extends BaseEntity {
@@ -30,4 +32,7 @@ export class Teacher extends BaseEntity {
   tests: Test[]
 
   // TODO: uma tabela para guardar a relação entre professor e salas
+
+  @OneToMany(type => TeacherClasses, tc => tc.teacher)
+  teacherClasses: TeacherClasses[];
 }
