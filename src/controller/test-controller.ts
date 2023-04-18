@@ -5,11 +5,13 @@ import { Year } from "../entity/Year";
 import { Bimester } from "../entity/Bimester";
 import { Teacher } from "../entity/Teacher";
 import { Discipline } from "../entity/Discipline";
+import {TestCategory} from "../entity/TestCategory";
 
 import { bimesterController } from "./bimester-controller";
 import { teacherController } from "./teacher-controller";
 import { disciplineController } from "./discipline-controller";
 import { yearController } from "./year-controller";
+import { testCategoryController } from "./testCategory-controller";
 
 class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -30,10 +32,15 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     const discipline = await this.getDiscipline(body.discipline.id);
     if (!discipline) throw new Error('Discipline not found');
 
+    const testCategory = await this.getTestCategory(body.category.id);
+    if (!testCategory) throw new Error('Test Category not found');
+
+    body.name ?? testCategory.name
     body.year = year;
     body.bimester = bimester;
     body.teacher = teacher;
     body.discipline = discipline;
+    body.category = testCategory;
 
     return await this.repository.save(body);
   }
@@ -52,6 +59,10 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async getDiscipline(disciplineId: number | string) {
     return await disciplineController.findOneBy(disciplineId) as Discipline;
+  }
+
+  async getTestCategory(testCategoryId: number | string) {
+    return await testCategoryController.findOneBy(testCategoryId) as TestCategory;
   }
 
 }

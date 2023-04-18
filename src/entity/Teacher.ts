@@ -30,5 +30,4 @@ export class Teacher extends BaseEntity {
   tests: Test[]
 
   // TODO: uma tabela para guardar a relação entre professor e salas
-  // TODO: uma tabela para guardar a relação entre professor e escolas
 }

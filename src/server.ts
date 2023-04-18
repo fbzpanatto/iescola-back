@@ -15,6 +15,8 @@ import { TeacherRouter } from "./routes/teacher-router";
 import { TestRouter } from "./routes/test-router";
 import { YearRouter } from "./routes/year-router";
 import { CategoryRouter } from "./routes/category-routes";
+import { TestCategoryRouter } from "./routes/testCategory-routes";
+
 
 const bodyParser = require('body-parser');
 
@@ -41,6 +43,7 @@ route.use('/teacher', TeacherRouter)
 route.use('/test', TestRouter)
 route.use('/year', YearRouter)
 route.use('/category', CategoryRouter)
+route.use('/test-category', TestCategoryRouter)
 
 app.use(route)
 

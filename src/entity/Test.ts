@@ -4,7 +4,7 @@ import { Year } from "./Year";
 import { Bimester } from "./Bimester";
 import { Teacher } from "./Teacher";
 import { Discipline } from "./Discipline";
-import {TestCategory} from "./TestCategory";
+import { TestCategory } from "./TestCategory";
 
 @Entity()
 export class Test {
