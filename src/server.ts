@@ -16,9 +16,13 @@ import { TestRouter } from "./routes/test-router";
 import { YearRouter } from "./routes/year-router";
 import { CategoryRouter } from "./routes/category-routes";
 
+const bodyParser = require('body-parser');
+
 import { Application } from "express";
 
 const app: Application = express();
+
+app.use(bodyParser.json());
 
 const cors = require('cors');
 

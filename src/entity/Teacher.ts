@@ -1,6 +1,16 @@
-import { Entity, ManyToMany, JoinTable, OneToOne, JoinColumn, BaseEntity, PrimaryGeneratedColumn } from "typeorm"
+import {
+  Entity,
+  ManyToMany,
+  JoinTable,
+  OneToOne,
+  JoinColumn,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  OneToMany
+} from "typeorm"
 import { Discipline } from "./Discipline";
 import { Person} from "./Person";
+import {Test} from "./Test";
 
 @Entity()
 export class Teacher extends BaseEntity {
@@ -15,4 +25,7 @@ export class Teacher extends BaseEntity {
   @OneToOne(() => Person, p => p.teacher)
   @JoinColumn()
   person: Person;
+
+  @OneToMany(() => Test, t => t.teacher)
+  tests: Test[]
 }
