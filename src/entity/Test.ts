@@ -36,4 +36,6 @@ export class Test {
 
   @ManyToOne(type => Discipline, d => d.tests, { nullable: false, eager: true })
   discipline: Discipline
+
+  //TODO: add test category
 }
