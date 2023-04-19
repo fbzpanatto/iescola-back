@@ -16,7 +16,6 @@ export class Student extends BaseEntity {
   @JoinColumn()
   person: Person;
 
-  // TODO: uma tabela para guardar a relação entre aluno e salas
   @ManyToOne(type => Classroom, c => c.students)
   classroom: Classroom
 

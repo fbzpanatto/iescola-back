@@ -27,7 +27,7 @@ export class Test {
   @OneToMany(type => StudentTests, st => st.test)
   studentTests: StudentTests[];
 
-  @OneToMany( type => TestClasses, t => t.test)
+  @OneToMany( type => TestClasses, t => t.test, { eager: true })
   testClasses: TestClasses[]
 
   @ManyToOne(type => Year, y => y.tests, { eager: true })

@@ -11,6 +11,6 @@ export class TestClasses {
   @ManyToOne( type => Test, t => t.testClasses)
   test: Test
 
-  @ManyToOne( type => Classroom, c => c.testClasses)
+  @ManyToOne( type => Classroom, c => c.testClasses, { eager: true })
   classroom: Classroom
 }
