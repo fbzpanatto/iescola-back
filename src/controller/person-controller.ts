@@ -1,19 +1,19 @@
-import {GenericController} from "./generic-controller";
-import {DeepPartial, EntityTarget, ObjectLiteral} from "typeorm";
+import { GenericController } from "./generic-controller";
+import { DeepPartial, EntityTarget, ObjectLiteral} from "typeorm";
 
-import {classroomController} from "./classroom-controller";
-import {categoryController} from "./category-controller";
-import {disciplineController} from "./discipline-controller";
+import { classroomController } from "./classroom-controller";
+import { categoryController } from "./category-controller";
+import { disciplineController } from "./discipline-controller";
+import { teacherClassesController} from "./teacherClasses-controller";
+import { teacherController} from "./teacher-controller";
 
-import {Category} from "../entity/Category";
-import {Classroom} from "../entity/Classroom";
-import {Discipline} from "../entity/Discipline";
-import {Person} from "../entity/Person";
-import {Student} from "../entity/Student";
-import {Teacher} from "../entity/Teacher";
-import {TeacherClasses} from "../entity/TeacherClasses";
-import {teacherClassesController} from "./teacherClasses-controller";
-import {teacherController} from "./teacher-controller";
+import { Category} from "../entity/Category";
+import { Classroom} from "../entity/Classroom";
+import { Discipline} from "../entity/Discipline";
+import { Person} from "../entity/Person";
+import { Student} from "../entity/Student";
+import { Teacher} from "../entity/Teacher";
+import { TeacherClasses} from "../entity/TeacherClasses";
 
 class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -26,7 +26,7 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     person.name = body.name
 
-    if(body.category) { person.category = await this.getCategory(body) }
+    if(body.category) { person.category = await this.getCategory(body.category.id) }
 
     if(body.ra){
 
@@ -74,8 +74,8 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
     return await classroomController.findOneBy(classId) as Classroom;
   }
 
-  async getCategory(body: DeepPartial<ObjectLiteral>) {
-    return await categoryController.findOneBy(Number(body.category.id)) as Category;
+  async getCategory(categoryId: number | string) {
+    return await categoryController.findOneBy(categoryId) as Category;
   }
 
   async getDiscipline(disciplineId: number | string) {
