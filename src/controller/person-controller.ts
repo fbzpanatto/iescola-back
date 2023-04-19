@@ -49,6 +49,7 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
     if(body.classes){
 
       let teacher = new Teacher()
+      await teacherController.saveData(teacher)
 
       for (const classId of body.classes) {
 
