@@ -58,7 +58,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
       }
     }
 
-    return await this.repository.save(teacher);
+    return await teacher.save()
   }
 }
 

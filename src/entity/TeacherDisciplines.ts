@@ -8,15 +8,15 @@ export class TeacherDisciplines {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({nullable: true})
-  statedAt: Date;
-
-  @Column({nullable: true})
-  endedAt: Date;
-
   @ManyToOne(() => Discipline, d => d.teacherDisciplines)
   discipline: Discipline;
 
   @ManyToOne(() => Teacher, t => t.teacherDisciplines)
   teacher: Teacher;
+
+  @Column({nullable: true})
+  statedAt: Date;
+
+  @Column({nullable: true})
+  endedAt: Date;
 }

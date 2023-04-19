@@ -3,7 +3,6 @@ import { categoryController } from "./category-controller";
 
 import { Category} from "../entity/Category";
 import { Person} from "../entity/Person";
-import { AppDataSource } from "../data-source";
 
 export class PersonClass {
 
@@ -14,13 +13,8 @@ export class PersonClass {
     person.name = body.name;
     person.category = await categoryController.findOneBy(body.category.id) as Category;
 
-    await PersonClass.repository.save(person);
+    await person.save()
 
     return person;
-  }
-
-  private static get repository() {
-
-    return AppDataSource.getRepository(Person);
   }
 }
