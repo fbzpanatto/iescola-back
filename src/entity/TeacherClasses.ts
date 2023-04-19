@@ -8,7 +8,7 @@ export class TeacherClasses {
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(() => Classroom, c => c.teacherClasses)
+  @ManyToOne(() => Classroom, c => c.teacherClasses, {eager: true})
   classroom: Classroom;
 
   @ManyToOne(() => Teacher, t => t.teacherClasses)

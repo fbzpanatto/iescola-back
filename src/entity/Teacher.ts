@@ -35,6 +35,6 @@ export class Teacher extends BaseEntity {
   @OneToMany(() => Test, t => t.teacher)
   tests: Test[]
 
-  @OneToMany(() => TeacherClasses, t => t.teacher, {cascade: true})
+  @OneToMany(() => TeacherClasses, t => t.teacher, {eager: true})
   teacherClasses: TeacherClasses[]
 }
