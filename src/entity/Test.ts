@@ -5,6 +5,7 @@ import { Bimester } from "./Bimester";
 import { Teacher } from "./Teacher";
 import { Discipline } from "./Discipline";
 import { TestCategory } from "./TestCategory";
+import { TestClasses } from "./TestClasses";
 
 @Entity()
 export class Test {
@@ -26,18 +27,21 @@ export class Test {
   @OneToMany(type => StudentTests, st => st.test)
   studentTests: StudentTests[];
 
-  @ManyToOne(type => Year, y => y.tests, { nullable: false, eager: true })
+  @OneToMany( type => TestClasses, t => t.test)
+  testClasses: TestClasses[]
+
+  @ManyToOne(type => Year, y => y.tests, { eager: true })
   year: Year
 
-  @ManyToOne(type => TestCategory, tc => tc.tests, { nullable: false, eager: true })
+  @ManyToOne(type => TestCategory, tc => tc.tests, { eager: true })
   category: TestCategory
 
-  @ManyToOne(type => Bimester, b => b.tests, { nullable: false, eager: true })
+  @ManyToOne(type => Bimester, b => b.tests, { eager: true })
   bimester: Bimester
 
-  @ManyToOne(type => Teacher, t => t.tests, { nullable: false, eager: true })
+  @ManyToOne(type => Teacher, t => t.tests, { eager: true })
   teacher: Teacher
 
-  @ManyToOne(type => Discipline, d => d.tests, { nullable: false, eager: true })
+  @ManyToOne(type => Discipline, d => d.tests, { eager: true })
   discipline: Discipline
 }
