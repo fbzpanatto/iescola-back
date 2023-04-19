@@ -5,7 +5,7 @@ import { Year } from "../entity/Year";
 import { Bimester } from "../entity/Bimester";
 import { Teacher } from "../entity/Teacher";
 import { Discipline } from "../entity/Discipline";
-import {TestCategory} from "../entity/TestCategory";
+import { TestCategory } from "../entity/TestCategory";
 
 import { bimesterController } from "./bimester-controller";
 import { teacherController } from "./teacher-controller";
@@ -21,19 +21,10 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const year = await this.getYear(body.year.id);
-    if (!year) throw new Error('Year not found');
-
     const bimester = await this.getBimester(body.bimester.id);
-    if (!bimester) throw new Error('Bimester not found');
-
     const teacher = await this.getTeacher(body.teacher.id);
-    if (!teacher) throw new Error('Teacher not found');
-
     const discipline = await this.getDiscipline(body.discipline.id);
-    if (!discipline) throw new Error('Discipline not found');
-
     const testCategory = await this.getTestCategory(body.category.id);
-    if (!testCategory) throw new Error('Test Category not found');
 
     body.name ?? testCategory.name
     body.year = year;
