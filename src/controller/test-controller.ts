@@ -41,7 +41,6 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     if(body.testClasses) {
 
       for (let classId of body.testClasses) {
-
         const classroom = await this.getClassroom(classId)
         const testClasses = new TestClasses()
 
@@ -50,7 +49,6 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
         await testClassesController.saveData(testClasses)
       }
-
     }
 
     test.year = year;
