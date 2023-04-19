@@ -36,7 +36,7 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
       const student = new Student();
       student.ra = body.ra;
 
-      const classroom = await this.getClassroom(body)
+      const classroom = await this.getClassroom(body.clarrssroom.id)
       if (!classroom) throw new Error('Classroom not found');
 
       student.classroom = classroom;
@@ -61,14 +61,26 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       }
 
+      if(body.classes) {
+
+          let classes: Classroom[] = [];
+
+          for (const classId of body.classes) {
+            const classroom = await this.getClassroom(classId)
+            classroom ? classes.push(classroom) : null;
+          }
+
+          teacher.classes = classes;
+      }
+
       person.teacher = teacher;
     }
 
     return await this.repository.save(person);
   }
 
-  async getClassroom(body: DeepPartial<ObjectLiteral>) {
-    return await classroomController.findOneBy(Number(body.classroom.id)) as Classroom;
+  async getClassroom(classId: number | string) {
+    return await classroomController.findOneBy(classId) as Classroom;
   }
 
   async getCategory(body: DeepPartial<ObjectLiteral>) {

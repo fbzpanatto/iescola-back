@@ -25,7 +25,7 @@ export class Teacher extends BaseEntity {
 
   @ManyToMany(() => Classroom)
   @JoinTable()
-  classrooms: Classroom[]
+  classes: Classroom[]
 
   @OneToOne(() => Person, p => p.teacher, {eager: true})
   @JoinColumn()
