@@ -6,7 +6,6 @@ import { AppDataSource } from "./data-source";
 
 import { BimesterRouter } from "./routes/bimester-router";
 import { ClassroomRouter } from "./routes/classroom-router";
-import { PersonRouter } from "./routes/person-router";
 import { DisciplineRouter } from "./routes/discipline-router";
 import { SchoolRouter } from "./routes/school-router";
 import { SgtRouter } from "./routes/studentGradeTest-router";
@@ -35,7 +34,6 @@ app.use(cors({origin: true}));
 route.use('/bimester', BimesterRouter)
 route.use('/classroom', ClassroomRouter)
 route.use('/discipline', DisciplineRouter)
-route.use('/person', PersonRouter)
 route.use('/school', SchoolRouter)
 route.use('/student-grade-test', SgtRouter)
 route.use('/student', StudentRouter)

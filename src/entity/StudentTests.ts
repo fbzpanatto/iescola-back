@@ -1,12 +1,12 @@
-import {Entity, Column, PrimaryColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import { Entity, Column, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import { Student } from "./Student";
 import { Test } from "./Test";
 
 @Entity()
-export class StudentGradeTest {
+export class StudentTests {
 
   @PrimaryGeneratedColumn()
-  studentGradeTestId: number
+  id: number
 
   @Column()
   studentId: number
@@ -17,9 +17,9 @@ export class StudentGradeTest {
   @Column('json')
   studentAnswers: { id: number, answer: string }[];
 
-  @ManyToOne(() => Student, (s) => s.studentGradeTests)
+  @ManyToOne(() => Student, (s) => s.studentTests)
   student: Student
 
-  @ManyToOne(() => Test, (t) => t.studentGradeTests)
+  @ManyToOne(() => Test, (t) => t.studentTests)
   test: Test
 }

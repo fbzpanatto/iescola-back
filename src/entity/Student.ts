@@ -1,6 +1,6 @@
 import { Column, ManyToOne, OneToMany, Entity, OneToOne, JoinColumn, PrimaryGeneratedColumn, BaseEntity } from "typeorm"
 import { Classroom } from "./Classroom";
-import { StudentGradeTest } from "./StudentGradeTest";
+import { StudentTests } from "./StudentTests";
 import { Person } from "./Person";
 
 @Entity()
@@ -20,6 +20,6 @@ export class Student extends BaseEntity {
   @ManyToOne(type => Classroom, c => c.students)
   classroom: Classroom
 
-  @OneToMany(type => StudentGradeTest, st => st.student)
-  studentGradeTests: StudentGradeTest[];
+  @OneToMany(type => StudentTests, st => st.student)
+  studentTests: StudentTests[];
 }

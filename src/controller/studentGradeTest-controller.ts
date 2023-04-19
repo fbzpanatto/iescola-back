@@ -1,5 +1,5 @@
 import { GenericController } from "./generic-controller";
-import { StudentGradeTest } from "../entity/StudentGradeTest";
+import { StudentTests } from "../entity/StudentTests";
 import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
 
 import { studentController } from "./student-controller";
@@ -7,7 +7,7 @@ import { testController } from "./test-controller";
 
 class StudentGradeTestController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
-    super(StudentGradeTest);
+    super(StudentTests);
   }
 
   override async saveData(body: DeepPartial<ObjectLiteral>) {

@@ -16,7 +16,7 @@ export class School {
   })
   name: string
 
-  @Column()
+  @Column({select: false})
   active: boolean
 
   @OneToMany(type => Classroom, c => c.school)

@@ -1,32 +1,21 @@
 import {
   Entity,
-  ManyToMany,
-  JoinTable,
   OneToOne,
   JoinColumn,
   BaseEntity,
   PrimaryGeneratedColumn,
   OneToMany
 } from "typeorm"
-import { Discipline } from "./Discipline";
-import { Person} from "./Person";
-import {Test} from "./Test";
-import {Classroom} from "./Classroom";
-import {TeacherClasses} from "./TeacherClasses";
+import { Person } from "./Person";
+import { Test } from "./Test";
+import { TeacherClasses } from "./TeacherClasses";
+import { TeacherDisciplines } from "./TeacherDisciplines";
 
 @Entity()
 export class Teacher extends BaseEntity {
 
   @PrimaryGeneratedColumn()
   id: number;
-
-  @ManyToMany(() => Discipline)
-  @JoinTable()
-  disciplines: Discipline[]
-
-  /* @ManyToMany(() => Classroom)
-  @JoinTable()
-  classes: Classroom[] */
 
   @OneToOne(() => Person, p => p.teacher, {eager: true})
   @JoinColumn()
@@ -37,4 +26,7 @@ export class Teacher extends BaseEntity {
 
   @OneToMany(() => TeacherClasses, t => t.teacher, {eager: true})
   teacherClasses: TeacherClasses[]
+
+  @OneToMany(()=> TeacherDisciplines, t => t.teacher, {eager: true})
+  teacherDisciplines: TeacherDisciplines[]
 }

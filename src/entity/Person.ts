@@ -15,9 +15,9 @@ export class Person extends BaseEntity {
   @ManyToOne(type => Category, c => c.persons)
   category: Category;
 
-  @OneToOne(type => Student, s => s.person, { cascade: true })
+  @OneToOne(type => Student, s => s.person)
   student: Student;
 
-  @OneToOne(type => Teacher, t => t.person, { cascade: true })
+  @OneToOne(type => Teacher, t => t.person)
   teacher: Teacher;
 }

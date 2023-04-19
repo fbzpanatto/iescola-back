@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from "typeorm"
-import { StudentGradeTest } from "./StudentGradeTest";
+import { StudentTests } from "./StudentTests";
 import { Year } from "./Year";
 import { Bimester } from "./Bimester";
 import { Teacher } from "./Teacher";
@@ -23,8 +23,8 @@ export class Test {
   @Column({select: false})
   active: boolean
 
-  @OneToMany(type => StudentGradeTest, st => st.test)
-  studentGradeTests: StudentGradeTest[];
+  @OneToMany(type => StudentTests, st => st.test)
+  studentTests: StudentTests[];
 
   @ManyToOne(type => Year, y => y.tests, { nullable: false, eager: true })
   year: Year
