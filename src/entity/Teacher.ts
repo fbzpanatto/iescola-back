@@ -12,6 +12,7 @@ import { Discipline } from "./Discipline";
 import { Person} from "./Person";
 import {Test} from "./Test";
 import {Classroom} from "./Classroom";
+import {TeacherClasses} from "./TeacherClasses";
 
 @Entity()
 export class Teacher extends BaseEntity {
@@ -23,9 +24,9 @@ export class Teacher extends BaseEntity {
   @JoinTable()
   disciplines: Discipline[]
 
-  @ManyToMany(() => Classroom)
+  /* @ManyToMany(() => Classroom)
   @JoinTable()
-  classes: Classroom[]
+  classes: Classroom[] */
 
   @OneToOne(() => Person, p => p.teacher, {eager: true})
   @JoinColumn()
@@ -33,4 +34,7 @@ export class Teacher extends BaseEntity {
 
   @OneToMany(() => Test, t => t.teacher)
   tests: Test[]
+
+  @OneToMany(() => TeacherClasses, t => t.teacher, {cascade: true})
+  teacherClasses: TeacherClasses[]
 }

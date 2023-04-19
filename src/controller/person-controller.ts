@@ -3,7 +3,7 @@ import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
 
 import { classroomController } from "./classroom-controller";
 import { categoryController } from "./category-controller";
-import { disciplineController} from "./discipline-controller";
+import { disciplineController } from "./discipline-controller";
 
 import { Category } from "../entity/Category";
 import { Classroom } from "../entity/Classroom";
@@ -11,6 +11,9 @@ import { Discipline} from "../entity/Discipline";
 import { Person } from "../entity/Person";
 import { Student}  from "../entity/Student";
 import { Teacher} from "../entity/Teacher";
+import { TeacherClasses } from "../entity/TeacherClasses";
+import { teacherClassesController } from "./teacherClasses-controller";
+import { teacherController } from "./teacher-controller";
 
 class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -36,41 +39,28 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
       const student = new Student();
       student.ra = body.ra;
 
-      const classroom = await this.getClassroom(body.clarrssroom.id)
+      const classroom = await this.getClassroom(body.classroom.id)
       if (!classroom) throw new Error('Classroom not found');
 
       student.classroom = classroom;
       person.student = student;
-
     }
 
-    if (body.disciplines || body.classes) {
+    if(body.classes){
 
-      const teacher = new Teacher();
+      let teacher = new Teacher()
 
-      if(body.disciplines) {
+      for (const classId of body.classes) {
 
-        let disciplines: Discipline[] = [];
+        let teacherClass = new TeacherClasses();
 
-        for (const disciplineId of body.disciplines) {
-          const discipline = await this.getDiscipline(disciplineId)
-          discipline ? disciplines.push(discipline) : null;
-        }
+        const classroom = await this.getClassroom(classId)
+        if (!classroom) throw new Error('Classroom not found');
 
-        teacher.disciplines = disciplines;
+        teacherClass.classroom = classroom;
+        teacherClass.teacher = teacher;
 
-      }
-
-      if(body.classes) {
-
-          let classes: Classroom[] = [];
-
-          for (const classId of body.classes) {
-            const classroom = await this.getClassroom(classId)
-            classroom ? classes.push(classroom) : null;
-          }
-
-          teacher.classes = classes;
+        await teacherClassesController.saveData(teacherClass);
       }
 
       person.teacher = teacher;

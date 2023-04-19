@@ -13,6 +13,7 @@ import { Student } from "./entity/Student";
 import { Test } from "./entity/Test";
 import { Person } from "./entity/Person";
 import { TestCategory } from "./entity/TestCategory";
+import { TeacherClasses } from "./entity/TeacherClasses";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -35,7 +36,8 @@ export const AppDataSource = new DataSource({
     TestCategory,
     Teacher,
     Test,
-    Year
+    Year,
+    TeacherClasses
   ],
   subscribers: [],
   migrations: [],

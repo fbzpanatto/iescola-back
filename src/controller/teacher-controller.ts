@@ -8,7 +8,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
     super(Teacher);
   }
 
-  override async saveData(body: DeepPartial<ObjectLiteral>) {
+  /* override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const disciplines: ObjectLiteral[] = [];
 
@@ -22,7 +22,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
     body.disciplines = disciplines;
 
     return await this.repository.save(body);
-  }
+  } */
 
 }
 
