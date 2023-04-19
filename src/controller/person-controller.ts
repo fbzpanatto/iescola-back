@@ -1,19 +1,19 @@
-import { GenericController } from "./generic-controller";
-import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
+import {GenericController} from "./generic-controller";
+import {DeepPartial, EntityTarget, ObjectLiteral} from "typeorm";
 
-import { classroomController } from "./classroom-controller";
-import { categoryController } from "./category-controller";
-import { disciplineController } from "./discipline-controller";
+import {classroomController} from "./classroom-controller";
+import {categoryController} from "./category-controller";
+import {disciplineController} from "./discipline-controller";
 
-import { Category } from "../entity/Category";
-import { Classroom } from "../entity/Classroom";
-import { Discipline} from "../entity/Discipline";
-import { Person } from "../entity/Person";
-import { Student}  from "../entity/Student";
-import { Teacher} from "../entity/Teacher";
-import { TeacherClasses } from "../entity/TeacherClasses";
-import { teacherClassesController } from "./teacherClasses-controller";
-import { teacherController } from "./teacher-controller";
+import {Category} from "../entity/Category";
+import {Classroom} from "../entity/Classroom";
+import {Discipline} from "../entity/Discipline";
+import {Person} from "../entity/Person";
+import {Student} from "../entity/Student";
+import {Teacher} from "../entity/Teacher";
+import {TeacherClasses} from "../entity/TeacherClasses";
+import {teacherClassesController} from "./teacherClasses-controller";
+import {teacherController} from "./teacher-controller";
 
 class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -26,13 +26,7 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     person.name = body.name
 
-    if(body.category){
-
-      const category = await this.getCategory(body);
-      if (!category) throw new Error('Category not found');
-
-      person.category = category;
-    }
+    if(body.category) { person.category = await this.getCategory(body) }
 
     if(body.ra){
 
@@ -46,25 +40,31 @@ class PersonController extends GenericController<EntityTarget<ObjectLiteral>> {
       person.student = student;
     }
 
-    if(body.classes){
+    if(body.disciplines || body.classes) {
 
-      let teacher = new Teacher()
+      const teacher = new Teacher()
       await teacherController.saveData(teacher)
+      person.teacher = teacher;
 
-      for (const classId of body.classes) {
-
-        let teacherClass = new TeacherClasses();
-
-        const classroom = await this.getClassroom(classId)
-        if (!classroom) throw new Error('Classroom not found');
-
-        teacherClass.classroom = classroom;
-        teacherClass.teacher = teacher;
-
-        await teacherClassesController.saveData(teacherClass);
+      if(body.disciplines) {
+        // TODO: implementar disciplinas
       }
 
-      person.teacher = teacher;
+      if(body.classes){
+
+        for (const classId of body.classes) {
+
+          let teacherClass = new TeacherClasses();
+
+          const classroom = await this.getClassroom(classId)
+          if (!classroom) throw new Error('Classroom not found');
+
+          teacherClass.classroom = classroom;
+          teacherClass.teacher = teacher;
+
+          await teacherClassesController.saveData(teacherClass);
+        }
+      }
     }
 
     return await this.repository.save(person);
