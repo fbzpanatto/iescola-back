@@ -12,13 +12,13 @@ export class Student extends BaseEntity {
   @Column()
   ra: string;
 
-  @OneToOne(() => Person)
+  @OneToOne(() => Person, {eager: true})
   @JoinColumn()
   person: Person;
 
-  @ManyToOne(type => Classroom, c => c.students)
+  @ManyToOne(type => Classroom, c => c.students, {cascade: true})
   classroom: Classroom
 
-  @OneToMany(type => StudentTests, st => st.student)
+  @OneToMany(type => StudentTests, st => st.student, {cascade: true})
   studentTests: StudentTests[];
 }

@@ -21,8 +21,6 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
-
-    // TODO: ao invés de fazer isso, tentar apenas com body e substituir os dados como feito em test controller.
     const teacher = new Teacher();
     teacher.person = await PersonClass.newPerson(body);
     await teacher.save();

@@ -19,7 +19,7 @@ export class Classroom {
   @Column()
   active: boolean
 
-  @OneToMany(type => Student, s => s.classroom)
+  @OneToMany(type => Student, s => s.classroom, {eager: true})
   students: Student[]
 
   @OneToMany( type => TeacherClasses, t => t.classroom)

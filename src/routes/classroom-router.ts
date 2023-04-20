@@ -3,6 +3,11 @@ import { classroomController } from "../controller/classroom-controller";
 
 export const ClassroomRouter = Router()
 
+ClassroomRouter.get('/:id/students', (req: Request, res: Response) => {
+  classroomController.findOneBy(req.params.id)
+    .then(r => res.status(200).json({ method: 'GET', resource: '/classroom/' + req.params.id + '/students', payload: r }))
+})
+
 ClassroomRouter.get('/', (req: Request, res: Response) => {
   classroomController.getAll()
     // TODO: Add response status code

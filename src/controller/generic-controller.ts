@@ -1,5 +1,5 @@
 import { AppDataSource } from "../data-source";
-import { DeepPartial, EntityTarget, FindManyOptions, ObjectLiteral } from "typeorm";
+import { DeepPartial, EntityTarget, FindManyOptions, FindOneOptions, ObjectLiteral } from "typeorm";
 
 export class GenericController<T> {
 
@@ -18,6 +18,11 @@ export class GenericController<T> {
   async findOneBy(id: number | string) {
 
     return await this.repository.findOneBy({ id: Number(id) });
+  }
+
+  async findOne(options: FindOneOptions<ObjectLiteral>) {
+
+      return await this.repository.findOne(options);
   }
 
   async updateOneBy(id: string, body: DeepPartial<ObjectLiteral>) {
