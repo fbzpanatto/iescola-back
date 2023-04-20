@@ -1,14 +1,14 @@
-import { GenericController } from "./generic-controller";
-import { Student } from "../entity/Student";
-import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
-import { classroomController } from "./classroom-controller";
-import { PersonClass } from "./person-controller";
-import { Classroom } from "../entity/Classroom";
-import { Request } from "express";
-import { StudentTests } from "../entity/StudentTests";
-import { studentGradeTestController } from "./studentGradeTest-controller";
-import { testController } from "./test-controller";
-import { Test } from "../entity/Test";
+import {GenericController} from "./generic-controller";
+import {Student} from "../entity/Student";
+import {DeepPartial, EntityTarget, ObjectLiteral} from "typeorm";
+import {classroomController} from "./classroom-controller";
+import {PersonClass} from "./person-controller";
+import {Classroom} from "../entity/Classroom";
+import {Request} from "express";
+import {StudentTests} from "../entity/StudentTests";
+import {studentGradeTestController} from "./studentGradeTest-controller";
+import {testController} from "./test-controller";
+import {Test} from "../entity/Test";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -31,11 +31,24 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         studentTests.student = student
         studentTests.test = test
 
+        studentTests.studentAnswers = test.questions.map(q => {
+          return { id: q.id, answer: '' }
+        })
+
         await studentGradeTestController.saveData(studentTests)
 
       }
     }
-    return await this.repository.find({ where: { classroom: { id: req.query.classroom }, studentTests: { test: { id: req.query.test } } }})
+
+    return {
+      test: test,
+      students: await this.repository.find({
+        where: {
+          classroom: { id: req.query.classroom },
+          studentTests: { test: { id: test.id } }
+        }
+      })
+    }
   }
 
   override async saveData(body: DeepPartial<ObjectLiteral>) {
