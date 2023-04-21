@@ -6,7 +6,7 @@ import {PersonClass} from "./person-controller";
 import {Classroom} from "../entity/Classroom";
 import {Request} from "express";
 import {StudentTests} from "../entity/StudentTests";
-import {studentGradeTestController} from "./studentGradeTest-controller";
+import {studentTestsController} from "./studentTests-controller";
 import {testController} from "./test-controller";
 import {Test} from "../entity/Test";
 
@@ -22,7 +22,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     for(let student of students) {
 
-      const studentTest = await studentGradeTestController.findOne({ where: { student: { id: student.id }, test: { id: test.id } } })
+      const studentTest = await studentTestsController.findOne({ where: { student: { id: student.id }, test: { id: test.id } } })
 
       if (!studentTest) {
 
@@ -35,7 +35,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
           return { id: q.id, answer: '' }
         })
 
-        await studentGradeTestController.saveData(studentTests)
+        await studentTestsController.saveData(studentTests)
 
       }
     }
