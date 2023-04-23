@@ -22,6 +22,11 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     super(Test);
   }
 
+  // TODO: Refactor this method
+  /* override async getAll() {
+    return await this.repository.find({ relations: ['year', 'bimester', 'teacher', 'discipline', 'category', 'testClasses'] })
+  } */
+
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const test = new Test()
