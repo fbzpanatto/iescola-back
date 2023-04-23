@@ -17,9 +17,6 @@ export class StudentTests {
   @Column('json', { nullable: true })
   studentAnswers: { id: number, answer: string }[];
 
-  @Column({ nullable: true })
-  grade: number;
-
   @ManyToOne(() => Student, (s) => s.studentTests)
   student: Student
 
