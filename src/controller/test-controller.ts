@@ -17,15 +17,41 @@ import { testCategoryController } from "./testCategory-controller";
 import { testClassesController } from "./testClasses-controller";
 import { classroomController } from "./classroom-controller";
 
+interface TestClass {name: string, school: string, classroomId: number, classroom: string, year: number, bimester: string, category: string, teacher: string, discipline: string}
+
 class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
     super(Test);
   }
 
-  // TODO: Refactor this method
-  /* override async getAll() {
-    return await this.repository.find({ relations: ['year', 'bimester', 'teacher', 'discipline', 'category', 'testClasses'] })
-  } */
+  override async getAll() {
+
+    let response: { testId: number, classes: TestClass[] }[] = []
+
+    const tests = await this.repository.find({ relations: ['year', 'bimester', 'teacher', 'discipline', 'category', 'testClasses'] })
+
+    for (let test of tests) {
+
+      let testClasses: TestClass[] = []
+
+      for(let testClass of test.testClasses) {
+        let data = {
+          name: test.name,
+          school: testClass.classroom.school.name,
+          classroomId: testClass.classroom.id,
+          classroom: testClass.classroom.name,
+          year: test.year.name,
+          bimester: test.bimester.name,
+          category: test.category.name,
+          teacher: test.teacher.person.name,
+          discipline: test.discipline.name,
+        }
+        testClasses.push(data)
+      }
+      response.push({ testId: test.id, classes: testClasses })
+    }
+    return response
+  }
 
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
