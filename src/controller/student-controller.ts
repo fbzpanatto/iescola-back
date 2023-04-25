@@ -22,8 +22,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     for(let student of students) {
 
-      const grade: number = 0
-
       const studentTest = await studentTestsController.findOne({ where: { student: { id: student.id }, test: { id: test.id } } })
 
       if (!studentTest) {
@@ -41,9 +39,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
         return
       }
-
-
-
     }
 
     return {
