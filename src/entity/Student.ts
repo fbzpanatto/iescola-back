@@ -16,9 +16,9 @@ export class Student extends BaseEntity {
   @JoinColumn()
   person: Person;
 
-  @ManyToOne(type => Classroom, c => c.students, {cascade: true})
+  @ManyToOne(type => Classroom, c => c.studentTests, {cascade: true})
   classroom: Classroom
 
-  @OneToMany(type => StudentTests, st => st.student, {cascade: true, eager: true})
+  @OneToMany(type => StudentTests, st => st.student)
   studentTests: StudentTests[];
 }

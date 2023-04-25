@@ -17,36 +17,55 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async linkStudentsWithTests(req: Request) {
 
-    const students = await this.repository.find({ where: { classroom: { id: req.query.classroom } }}) as Student[];
+    const studentsClass = await this.repository.find({ where: { classroom: { id: req.query.classroom } }}) as Student[];
     const test = await testController.findOneBy(req.query.test as string) as Test;
 
-    for(let student of students) {
+    for(let student of studentsClass) {
 
-      const studentTest = await studentTestsController.findOne({ where: { student: { id: student.id }, test: { id: test.id } } })
+      const relation = await studentTestsController.findOne({ where: { student: { id: student.id }, test: { id: test.id } } })
 
-      if (!studentTest) {
+      if (!relation) {
 
-        const studentTests = new StudentTests()
+        const studentTest = new StudentTests()
 
-        studentTests.student = student
-        studentTests.test = test
+        studentTest.student = student
+        studentTest.test = test
 
-        studentTests.studentAnswers = test.questions.map(q => {
+        studentTest.studentAnswers = test.questions.map(q => {
           return { id: q.id, answer: '' }
         })
 
-        await studentTestsController.saveData(studentTests)
+        await studentTestsController.saveData(studentTest)
 
         return
       }
     }
 
+    let studentsTest = await studentTestsController.getAll({
+      select: ['id', 'studentAnswers', 'completed'],
+      relations: ['student', 'student.person'],
+      where: {
+        student: { classroom: { id: req.query.classroom } },
+        test: { id: test.id },
+      }
+    })
+
     return {
-      test: test,
-      students: await this.repository.find({
-        where: {
-          classroom: { id: req.query.classroom },
-          studentTests: { test: { id: test.id } }
+      test: {
+        id: test.id,
+        questions: test.questions,
+      },
+      studentTests: studentsTest.map((st) => {
+        return {
+          id: st.id,
+          student: {
+            id: st.student.id,
+            person: st.student.person,
+            test: {
+              answers: st.studentAnswers,
+              completed: st.completed
+            }
+          },
         }
       })
     }
