@@ -1,14 +1,17 @@
-import {GenericController} from "./generic-controller";
-import {Student} from "../entity/Student";
-import {DeepPartial, EntityTarget, ObjectLiteral} from "typeorm";
-import {classroomController} from "./classroom-controller";
-import {PersonClass} from "./person-controller";
-import {Classroom} from "../entity/Classroom";
-import {Request} from "express";
-import {StudentTests} from "../entity/StudentTests";
-import {studentTestsController} from "./studentTests-controller";
-import {testController} from "./test-controller";
-import {Test} from "../entity/Test";
+import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
+
+import { Request } from "express";
+import { GenericController } from "./generic-controller";
+
+import { Student } from "../entity/Student";
+import { PersonClass } from "./person-controller";
+import { Classroom } from "../entity/Classroom";
+import { StudentTests } from "../entity/StudentTests";
+import { Test } from "../entity/Test";
+
+import { classroomController } from "./classroom-controller";
+import { studentTestsController } from "./studentTests-controller";
+import { testController } from "./test-controller";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
