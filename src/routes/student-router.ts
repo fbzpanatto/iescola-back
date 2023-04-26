@@ -8,6 +8,11 @@ StudentRouter.get('/register-answers', (req: Request, res: Response) => {
     .then(r => res.status(200).json({ method: 'GET', resource: '/student', payload: r }))
 })
 
+StudentRouter.get('/test-creation', (req: Request, res: Response) => {
+  studentController.testCreation()
+      .then(r => res.status(200).json({ method: 'GET', resource: '/student', payload: r }))
+})
+
 StudentRouter.get('/:id', (req: Request, res: Response) => {
   studentController.findOneBy(req.params.id)
     .then(r => res.status(200).json({ method: 'GET', resource: '/student', payload: r }))
