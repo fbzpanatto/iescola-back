@@ -21,7 +21,7 @@ export class Test {
   @Column('json')
   questions: { id: number, answer: string }[];
 
-  @Column({select: false})
+  @Column({select: false, default: true})
   active: boolean
 
   @OneToMany(type => StudentTests, st => st.test)

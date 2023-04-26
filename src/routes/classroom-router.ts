@@ -20,6 +20,12 @@ ClassroomRouter.get('/:id', (req: Request, res: Response) => {
     .then(r => res.json({ method: 'GET', resource: '/classroom', payload: r }))
 })
 
+ClassroomRouter.post('/many', (req: Request, res: Response) => {
+  classroomController.many(req.body)
+      // TODO: Add response status code
+      .then(r => res.json({ method: 'POST', resource: '/classroom', payload: r }))
+})
+
 ClassroomRouter.post('/', (req: Request, res: Response) => {
   classroomController.saveData(req.body)
     // TODO: Add response status code
@@ -30,6 +36,12 @@ ClassroomRouter.put('/:id', (req: Request, res: Response) => {
   classroomController.updateOneBy(req.params.id, req.body)
     // TODO: Add response status code
     .then(r => res.json({ method: 'PUT', resource: '/classroom', payload: r }))
+})
+
+ClassroomRouter.put('/update-all/:id', (req: Request, res: Response) => {
+  classroomController.updateCategoryId(req.params.id, req.body)
+      // TODO: Add response status code
+      .then(r => res.json({ method: 'PUT', resource: '/classroom', payload: r }))
 })
 
 ClassroomRouter.delete('/:id', (req: Request, res: Response) => {

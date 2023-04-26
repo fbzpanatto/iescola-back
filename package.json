@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "sheets": "ts-node-dev src/sheets/sheets.ts",
     "dev": "nodemon --exec ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts",
     "killtask": "taskkill /F /IM node.exe"
   },
@@ -26,6 +27,7 @@
     "@types/node": "^18.15.11",
     "nodemon": "^2.0.22",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "xlsx": "^0.18.5"
   }
 }

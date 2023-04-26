@@ -9,6 +9,28 @@ class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>>
     super(Classroom);
   }
 
+  async many(body: DeepPartial<ObjectLiteral>) {
+
+    for(let element of body['register']) {
+
+      const school = await schoolController.findOneBy(element.school.id);
+      const year = await yearController.findOneBy(element.year.id);
+
+      for(let classroom of element['classes']) {
+
+        let object = {
+          name: classroom.name,
+          school: school,
+          year: year
+        }
+
+        await this.repository.save(object);
+      }
+    }
+
+    return 'teste'
+  }
+
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const school = await schoolController.findOneBy(body.school.id);
@@ -21,6 +43,16 @@ class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>>
     body.year = year;
 
     return await this.repository.save(body);
+  }
+
+  async updateCategoryId(id: string, body: DeepPartial<ObjectLiteral>) {
+
+    console.log(body)
+
+    const classrooms = await this.repository.find();
+
+
+    return 'updateCategoryId'
   }
 
 }

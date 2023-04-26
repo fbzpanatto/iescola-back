@@ -7,16 +7,16 @@ export class School {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({unique: true} )
-  inep: string
-
   @Column({
     length: 100,
     unique: true
   })
   name: string
 
-  @Column({select: false})
+  @Column({unique: true, nullable: true} )
+  inep: string
+
+  @Column({select: false, default: true})
   active: boolean
 
   @OneToMany(type => Classroom, c => c.school)

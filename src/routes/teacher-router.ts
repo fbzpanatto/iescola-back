@@ -19,3 +19,8 @@ TeacherRouter.post('/', (req: Request, res: Response) => {
   teacherController.saveData(req.body)
     .then(r => res.json({ method: 'POST', resource: '/teacher', payload: r }))
 })
+
+TeacherRouter.post('/create-for-all', (req: Request, res: Response) => {
+  teacherController.createForAll(req.body)
+      .then(r => res.json({ method: 'POST', resource: '/teacher', payload: r }))
+})

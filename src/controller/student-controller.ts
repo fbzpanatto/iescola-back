@@ -74,7 +74,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
   }
 
-  override async saveData(body: DeepPartial<ObjectLiteral>) {
+  /* override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const student = new Student();
     student.person = await PersonClass.newPerson(body);
@@ -85,7 +85,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
 
     return await student.save()
-  }
+  } */
 
 }
 

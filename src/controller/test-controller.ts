@@ -24,6 +24,43 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     super(Test);
   }
 
+  async many(body: DeepPartial<ObjectLiteral>) {
+
+    const classes = await classroomController.getAll({ where: { category: { id: body.classCategory.id } } }) as Classroom[]
+
+    const test = new Test()
+
+    test.name = body.name;
+    test.questions = body.questions;
+    test.active = body.active;
+
+    await this.repository.save(test)
+
+    const year = await this.getYear(body.year.id);
+    const bimester = await this.getBimester(body.bimester.id);
+    const teacher = await this.getTeacher(body.teacher.id);
+    const discipline = await this.getDiscipline(body.discipline.id);
+    const testCategory = await this.getTestCategory(body.category.id);
+
+    for(let classroom of classes) {
+
+      const testClasses = new TestClasses()
+
+      testClasses.classroom = classroom
+      testClasses.test = test
+
+      await testClassesController.saveData(testClasses)
+    }
+
+    test.year = year;
+    test.bimester = bimester;
+    test.teacher = teacher;
+    test.discipline = discipline;
+    test.category = testCategory;
+
+    return await this.repository.save(test);
+  }
+
   override async getAll() {
 
     let response: { testId: number, classes: TestClass[] }[] = []

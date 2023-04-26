@@ -6,6 +6,7 @@ import { AppDataSource } from "./data-source";
 
 import { BimesterRouter } from "./routes/bimester-router";
 import { ClassroomRouter } from "./routes/classroom-router";
+import { ClassCategoryRouter } from "./routes/classCategory-router";
 import { DisciplineRouter } from "./routes/discipline-router";
 import { SchoolRouter } from "./routes/school-router";
 import { SgtRouter } from "./routes/studentGradeTest-router";
@@ -42,6 +43,7 @@ route.use('/test', TestRouter)
 route.use('/year', YearRouter)
 route.use('/category', CategoryRouter)
 route.use('/test-category', TestCategoryRouter)
+route.use('/class-category', ClassCategoryRouter)
 
 app.use(route)
 

@@ -19,6 +19,34 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
     super(Teacher);
   }
 
+  async createForAll(body: DeepPartial<ObjectLiteral>) {
+
+    const teacher = new Teacher();
+    teacher.person = await PersonClass.newPerson(body);
+    await teacher.save();
+
+    const classrooms = await classroomController.getAll() as Classroom[];
+    const disciplines = await disciplineController.getAll() as Discipline[];
+
+    for(let classroom of classrooms) {
+      const teacherClass = new TeacherClasses() ;
+      teacherClass.classroom = classroom;
+      teacherClass.teacher = teacher;
+
+      await teacherClassesController.saveData(teacherClass);
+    }
+
+    for (let discipline of disciplines) {
+      const teacherDiscipline = new TeacherDisciplines();
+      teacherDiscipline.discipline = discipline;
+      teacherDiscipline.teacher = teacher;
+
+      await teacherDisciplinesController.saveData(teacherDiscipline);
+    }
+
+    return 'teste'
+  }
+
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const teacher = new Teacher();

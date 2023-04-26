@@ -1,9 +1,10 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm"
 import { School } from "./School";
-import { Student } from "./Student";
 import { Year } from "./Year";
 import { TeacherClasses } from "./TeacherClasses";
 import { TestClasses } from "./TestClasses";
+import { StudentClasses } from "./StudentClasses";
+import {ClassCategory} from "./ClassCategory";
 
 @Entity()
 export class Classroom {
@@ -16,11 +17,11 @@ export class Classroom {
   })
   name: string
 
-  @Column()
+  @Column({ default: true, select: false })
   active: boolean
 
-  @OneToMany(type => Student, s => s.classroom)
-  students: Student[]
+  @OneToMany( type => StudentClasses, sc => sc.classroom)
+  studentClasses: StudentClasses[]
 
   @OneToMany( type => TeacherClasses, t => t.classroom)
   teacherClasses: TeacherClasses[]
@@ -33,4 +34,7 @@ export class Classroom {
 
   @ManyToOne(type => Year, y => y.classrooms, { eager: true})
   year: Year
+
+  @ManyToOne( type => ClassCategory, c => c.classrooms)
+  category: ClassCategory
 }

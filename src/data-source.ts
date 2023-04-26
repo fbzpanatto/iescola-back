@@ -4,8 +4,10 @@ import { DataSource } from "typeorm"
 import { Bimester } from "./entity/Bimester";
 import { Category } from "./entity/Category";
 import { Classroom } from "./entity/Classroom";
+import { ClassCategory } from "./entity/ClassCategory";
 import { Discipline } from "./entity/Discipline";
 import { School } from "./entity/School";
+import { StudentClasses } from "./entity/StudentClasses";
 import { StudentTests } from "./entity/StudentTests";
 import { Teacher } from "./entity/Teacher";
 import { Year } from "./entity/Year";
@@ -31,9 +33,11 @@ export const AppDataSource = new DataSource({
     Person,
     Category,
     Classroom,
+    ClassCategory,
     Discipline,
     School,
     Student,
+    StudentClasses,
     StudentTests,
     Test,
     TestCategory,

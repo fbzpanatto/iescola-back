@@ -1,0 +1,31 @@
+{
+    "schools": [
+        { "name": "EMEB PROF AGENOR VEDOVELLO" },
+        { "name": "EMEB PROF ANGELA LYGIA PARODI SCAVONE" },
+        { "name": "EMEB ANNA ABREU" },
+        { "name": "EMEB CEL MANOEL JOAQUIM DE ARAÚJO CAMPOS" },
+        { "name": "EMEB BASILIO CONSOLINE" },
+        { "name": "EMEB BENNO CARLOS CLAUS" },
+        { "name": "EMEB PROF ELIETE APARECIDA SANFINS FUSUSSI" },
+        { "name": "EMEB CEL FRANCISCO RODRIGUES BARBOSA" },
+        { "name": "EMEB PROF GUIOMAR ALMEIDA CIARBELLO" },
+        { "name": "EMEB PROF INÊS PRADO ZAMBONI" },
+        { "name": "EMEB CEL JÚLIO CÉSAR" },
+        { "name": "EMEB PROF LUIZ PÂNTANO" },
+        { "name": "EMEB PROF MARA CABRAL SIMÕES ALEGRE" },
+        { "name": "EMEB PROF MARIA DO CARMO PARIZOTTO MOSCA" },
+        { "name": "EMEB PROF MARIA GEMMA RELA REINALDO" },
+        { "name": "EMEB PROF MARIA MERCEDES DE ARAÚJO" },
+        { "name": "EMEB PROF MARIA SALLES DE SOUZA" },
+        { "name": "EMEB PROF MARIA TERESA DEGANI DE SOUZA" },
+        { "name": "EMEB PROF MARIA APARECIDA TOMAZINI" },
+        { "name": "EMEB PROF MARINA ARAÚJO PIRES" },
+        { "name": "EMEB PROF NAZARETH DE SIQUEIRA RANGEL BARBOZA" },
+        { "name": "EMEB PHILOMENA SALVIA ZUPARDO" },
+        { "name": "EMEB ROSA MARIA FERRARI BELGINI" },
+        { "name": "EMEB ROSA SCAVONE" },
+        { "name": "EMEB PROF SEBASTIÃO DE CAMARGO PIRES" },
+        { "name": "EMEB PROF SONIA RITA PENTEADO AGUIAR SANTOS" },
+        { "name": "EMEB PROF VERA LUCIA CARRIDE DE PALMA" }
+    ]
+}

@@ -21,6 +21,12 @@ SchoolRouter.post('/', (req: Request, res: Response) => {
     .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
 })
 
+SchoolRouter.post('/many', (req: Request, res: Response) => {
+  schoolController.manyData(req.body)
+      // TODO: Add response status code
+      .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+})
+
 SchoolRouter.put('/:id', (req: Request, res: Response) => {
   schoolController.updateOneBy(req.params.id, req.body)
     // TODO: Add response status code

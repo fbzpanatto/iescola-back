@@ -21,6 +21,12 @@ TestRouter.post('/', (req: Request, res: Response) => {
     .then(r => res.json({ method: 'POST', resource: '/test', payload: r }))
 })
 
+TestRouter.post('/many', (req: Request, res: Response) => {
+  testController.many(req.body)
+      // TODO: Add response status code
+      .then(r => res.json({ method: 'POST', resource: '/test', payload: r }))
+})
+
 TestRouter.put('/:id', (req: Request, res: Response) => {
   testController.updateOneBy(req.params.id, req.body)
     // TODO: Add response status code

@@ -19,4 +19,7 @@ export class TeacherDisciplines {
 
   @Column({nullable: true})
   endedAt: Date;
+
+  @Column({ default: true})
+  active: boolean
 }
