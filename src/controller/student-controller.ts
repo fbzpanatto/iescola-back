@@ -22,7 +22,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   }
 
   async testCreation(){
-    const localDataToSave = require('../sheets/agenor/agenor_5a_matematica.json')
+    const localDataToSave = require('../sheets/agenor/agenor_5b_matematica.json')
 
     const myArrayToSave: { [key: number | string]: any }[] = []
 
