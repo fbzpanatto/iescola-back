@@ -21,6 +21,7 @@ import { TestCategoryRouter } from "./routes/testCategory-routes";
 const bodyParser = require('body-parser');
 
 import { Application } from "express";
+import {TestClassesRouter} from "./routes/testClasses-router";
 
 const app: Application = express();
 
@@ -44,6 +45,7 @@ route.use('/year', YearRouter)
 route.use('/category', CategoryRouter)
 route.use('/test-category', TestCategoryRouter)
 route.use('/class-category', ClassCategoryRouter)
+route.use('/test-classes', TestClassesRouter)
 
 app.use(route)
 

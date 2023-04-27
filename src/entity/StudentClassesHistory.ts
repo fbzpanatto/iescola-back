@@ -3,7 +3,7 @@ import { Student } from "./Student";
 import { Classroom } from "./Classroom";
 
 @Entity()
-export class StudentClasses {
+export class StudentClassesHistory {
 
     @PrimaryGeneratedColumn()
     id: number

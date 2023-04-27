@@ -3,8 +3,9 @@ import { School } from "./School";
 import { Year } from "./Year";
 import { TeacherClasses } from "./TeacherClasses";
 import { TestClasses } from "./TestClasses";
-import { StudentClasses } from "./StudentClasses";
+import { StudentClassesHistory } from "./StudentClassesHistory";
 import {ClassCategory} from "./ClassCategory";
+import {Student} from "./Student";
 
 @Entity()
 export class Classroom {
@@ -20,8 +21,11 @@ export class Classroom {
   @Column({ default: true, select: false })
   active: boolean
 
-  @OneToMany( type => StudentClasses, sc => sc.classroom)
-  studentClasses: StudentClasses[]
+  @OneToMany(type => Student, s => s.classroom, {eager: true})
+  students: Student[]
+
+  @OneToMany( type => StudentClassesHistory, sc => sc.classroom)
+  studentClasses: StudentClassesHistory[]
 
   @OneToMany( type => TeacherClasses, t => t.classroom)
   teacherClasses: TeacherClasses[]

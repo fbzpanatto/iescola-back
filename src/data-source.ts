@@ -7,7 +7,7 @@ import { Classroom } from "./entity/Classroom";
 import { ClassCategory } from "./entity/ClassCategory";
 import { Discipline } from "./entity/Discipline";
 import { School } from "./entity/School";
-import { StudentClasses } from "./entity/StudentClasses";
+import { StudentClassesHistory } from "./entity/StudentClassesHistory";
 import { StudentTests } from "./entity/StudentTests";
 import { Teacher } from "./entity/Teacher";
 import { Year } from "./entity/Year";
@@ -37,7 +37,7 @@ export const AppDataSource = new DataSource({
     Discipline,
     School,
     Student,
-    StudentClasses,
+    StudentClassesHistory,
     StudentTests,
     Test,
     TestCategory,

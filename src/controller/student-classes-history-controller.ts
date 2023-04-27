@@ -1,11 +1,11 @@
 import { GenericController } from "./generic-controller";
 import { EntityTarget, ObjectLiteral } from "typeorm";
-import { StudentClasses } from "../entity/StudentClasses";
+import { StudentClassesHistory } from "../entity/StudentClassesHistory";
 
 class StudentClassesController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
-    super(StudentClasses);
+    super(StudentClassesHistory);
   }
 }
 
-export const studentClassesController = new StudentClassesController();
+export const studentClassesHistoryController = new StudentClassesController();

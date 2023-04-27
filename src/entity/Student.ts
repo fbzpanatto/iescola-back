@@ -1,7 +1,8 @@
-import { Column, OneToMany, Entity, OneToOne, JoinColumn, PrimaryGeneratedColumn, BaseEntity } from "typeorm"
+import {Column, OneToMany, Entity, OneToOne, JoinColumn, PrimaryGeneratedColumn, BaseEntity, ManyToOne} from "typeorm"
 import { StudentTests } from "./StudentTests";
 import { Person } from "./Person";
-import { StudentClasses } from "./StudentClasses";
+import { StudentClassesHistory } from "./StudentClassesHistory";
+import {Classroom} from "./Classroom";
 
 @Entity()
 export class Student extends BaseEntity {
@@ -22,8 +23,11 @@ export class Student extends BaseEntity {
   @Column({ default: true, select: false })
   active: boolean;
 
-  @OneToMany( type => StudentClasses, sc => sc.student)
-  studentClasses: StudentClasses[];
+  @ManyToOne( type => Classroom, c => c.students)
+  classroom: Classroom;
+
+  @OneToMany( type => StudentClassesHistory, sc => sc.student)
+  studentClasses: StudentClassesHistory[];
 
   @OneToMany(type => StudentTests, st => st.student)
   studentTests: StudentTests[];

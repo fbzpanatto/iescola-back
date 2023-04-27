@@ -4,271 +4,271 @@
             "school": { "id": 1 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "5C" },
-                { "name": "9A" },
-                { "name": "9B" },
-                { "name": "9C" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "5C", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 },
+                { "name": "9C", "category": 2 }
             ]
         },
         {
             "school": { "id": 2 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 }
             ]
         },
         {
             "school": { "id": 3 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" },
-                { "name": "9B" },
-                { "name": "9C" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 },
+                { "name": "9C", "category": 2 }
             ]
         },
         {
             "school": { "id": 4 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" },
-                { "name": "9B" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 }
             ]
         },
         {
             "school": { "id": 5 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" },
-                { "name": "9B" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 }
             ]
         },
         {
             "school": { "id": 6 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 }
             ]
         },
         {
             "school": { "id": 7 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" },
-                { "name": "9B" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 }
             ]
         },
         {
             "school": { "id": 8 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" },
-                { "name": "9B" },
-                { "name": "9C" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 },
+                { "name": "9C", "category": 2 }
             ]
         },
         {
             "school": { "id": 9 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" },
-                { "name": "9B" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 }
             ]
         },
         {
             "school": { "id": 10 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "5C" },
-                { "name": "9A" },
-                { "name": "9B" },
-                { "name": "9C" },
-                { "name": "9D" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "5C", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 },
+                { "name": "9C", "category": 2 },
+                { "name": "9D", "category": 2 }
             ]
         },
         {
             "school": { "id": 11 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "5C" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "5C", "category": 1 }
             ]
         },
         {
             "school": { "id": 12 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" },
-                { "name": "9B" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 }
             ]
         },
         {
             "school": { "id": 13 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "9A" }
+                { "name": "5A", "category": 1 },
+                { "name": "9A", "category": 2 }
             ]
         },
         {
             "school": { "id": 14 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "9A" }
+                { "name": "5A", "category": 1 },
+                { "name": "9A", "category": 2 }
             ]
         },
         {
             "school": { "id": 15 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "5C" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "5C", "category": 1 }
             ]
         },
         {
             "school": { "id": 16 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 }
             ]
         },
         {
             "school": { "id": 17 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "9A" }
+                { "name": "5A", "category": 1 },
+                { "name": "9A", "category": 2 }
             ]
         },
         {
             "school": { "id": 18 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "5C" },
-                { "name": "5D" },
-                { "name": "9A" },
-                { "name": "9B" },
-                { "name": "9C" },
-                { "name": "9D" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "5C", "category": 1 },
+                { "name": "5D", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 },
+                { "name": "9C", "category": 2 },
+                { "name": "9D", "category": 2 }
             ]
         },
         {
             "school": { "id": 19 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "9A" }
+                { "name": "5A", "category": 1 },
+                { "name": "9A", "category": 2 }
             ]
         },
         {
             "school": { "id": 20 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "9A" }
+                { "name": "5A", "category": 1 },
+                { "name": "9A", "category": 2 }
             ]
         },
         {
             "school": { "id": 21 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "5C" },
-                { "name": "9A" },
-                { "name": "9B" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "5C", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 }
             ]
         },
         {
             "school": { "id": 22 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "9A" },
-                { "name": "9B" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 }
             ]
         },
         {
             "school": { "id": 23 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "9A" }
+                { "name": "5A", "category": 1 },
+                { "name": "9A", "category": 2 }
             ]
         },
         {
             "school": { "id": 24 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "5C" },
-                { "name": "9A" },
-                { "name": "9B" },
-                { "name": "9C" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "5C", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 },
+                { "name": "9C", "category": 2 }
             ]
         },
         {
             "school": { "id": 25 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "5C" },
-                { "name": "9A" },
-                { "name": "9B" },
-                { "name": "9C" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "5C", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 },
+                { "name": "9C", "category": 2 }
             ]
         },
         {
             "school": { "id": 26 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "5B" },
-                { "name": "5C" },
-                { "name": "5D" },
-                { "name": "9A" },
-                { "name": "9B" },
-                { "name": "9C" },
-                { "name": "9D" }
+                { "name": "5A", "category": 1 },
+                { "name": "5B", "category": 1 },
+                { "name": "5C", "category": 1 },
+                { "name": "5D", "category": 1 },
+                { "name": "9A", "category": 2 },
+                { "name": "9B", "category": 2 },
+                { "name": "9C", "category": 2 },
+                { "name": "9D", "category": 2 }
             ]
         },
         {
             "school": { "id": 27 },
             "year": { "id": 1 },
             "classes": [
-                { "name": "5A" },
-                { "name": "9A" }
+                { "name": "5A", "category": 1 },
+                { "name": "9A", "category": 2 }
             ]
         }
     ]

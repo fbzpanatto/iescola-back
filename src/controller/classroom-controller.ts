@@ -3,6 +3,7 @@ import { Classroom } from "../entity/Classroom";
 import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
 import { schoolController } from "./school-controller";
 import { yearController } from "./year-controller";
+import {classCategoryController} from "./classCategory-controller";
 
 class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -18,10 +19,13 @@ class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>>
 
       for(let classroom of element['classes']) {
 
+        const category = await classCategoryController.findOneBy(classroom.category);
+
         let object = {
           name: classroom.name,
           school: school,
-          year: year
+          year: year,
+          category: category
         }
 
         await this.repository.save(object);
