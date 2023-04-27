@@ -10,7 +10,6 @@ class SchoolController extends GenericController<EntityTarget<ObjectLiteral>> {
   async manyData(body: DeepPartial<ObjectLiteral>, options?: any) {
 
     for (let school of body['schools']) {
-      console.log(school)
       await this.repository.save(school, options);
     }
 

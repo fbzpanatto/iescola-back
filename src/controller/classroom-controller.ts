@@ -51,8 +51,6 @@ class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>>
 
   async updateCategoryId(id: string, body: DeepPartial<ObjectLiteral>) {
 
-    console.log(body)
-
     const classrooms = await this.repository.find();
 
 

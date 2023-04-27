@@ -8,13 +8,12 @@ import { PersonClass } from "./person-controller";
 import { Classroom } from "../entity/Classroom";
 import { StudentTests } from "../entity/StudentTests";
 import { Test } from "../entity/Test";
+import { StudentClassesHistory} from "../entity/StudentClassesHistory";
 
 import { classroomController } from "./classroom-controller";
 import { studentTestsController } from "./studentTests-controller";
 import { testController } from "./test-controller";
-import {StudentClassesHistory} from "../entity/StudentClassesHistory";
-import {studentClassesHistoryController} from "./student-classes-history-controller";
-import {testClassesController} from "./testClasses-controller";
+import { studentClassesHistoryController } from "./student-classes-history-controller";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -22,53 +21,70 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   }
 
   async testCreation(){
-    const localDataToSave = require('../sheets/agenor/agenor_5b_matematica.json')
 
-    const myArrayToSave: { [key: number | string]: any }[] = []
+    const runTimeClassExecution = ['5A', '5B', '5C', '9A', '9B', '9C']
+    const runTimeSchool = 'agenor'
+    const runTimeSubject = 'matematica'
 
-    for(let register of localDataToSave) {
+    for(let classroom of runTimeClassExecution) {
 
-      const questions = Object.keys(register).filter(key => !isNaN(Number(key)))
+      const localDataToSave = require(`../sheets/${runTimeSchool}/${runTimeSchool}_${classroom}_${runTimeSubject}.json`)
+
+      const myArrayToSave: { [key: number | string]: any }[] = []
+
+      for(let register of localDataToSave) {
+
+        const questions = Object.keys(register).filter(key => !isNaN(Number(key)))
           .map(questionId => {
 
             let object: { [key: number | string]: any } = {}
             object.id = questionId
-            object.answer = register[questionId].toUpperCase()
+
+            if(object.answer === 'undefined' || object.answer === '-') {
+              object.answer = ''
+            } else {
+              object.answer = register[questionId].toUpperCase()
+            }
 
             return object
           })
 
-      myArrayToSave.push({
-        questions: questions,
-        name: register.name,
-        classroom: register['class'],
-        test: register.test,
-        category: register.category,
-        no: register.no,
-        completed: register.completed
-      })
+        let completed: boolean = Number(register.completed) === 1
 
-    }
+        myArrayToSave.push({
+          questions: questions,
+          name: register.name,
+          classroom: register['class'],
+          test: register.test,
+          category: register.category,
+          no: register.no,
+          completed: completed
+        })
 
-    for(let newElement of myArrayToSave) {
+      }
 
-      const student = new Student();
-      student.person = await PersonClass.newPerson({ name: newElement.name, category: { id: newElement.category } });
-      student.no = newElement.no
-      student.classroom = await classroomController.findOneBy(newElement.classroom) as Classroom
-      await student.save()
+      for(let newElement of myArrayToSave) {
 
-      const studentClassroom = new StudentClassesHistory()
-      studentClassroom.student = student
-      studentClassroom.classroom = await classroomController.findOneBy(newElement.classroom) as Classroom
-      await studentClassesHistoryController.saveData(studentClassroom)
+        const student = new Student();
+        student.person = await PersonClass.newPerson({ name: newElement.name, category: { id: newElement.category } });
+        student.no = newElement.no
+        student.classroom = await classroomController.findOneBy(newElement.classroom) as Classroom
 
-      const studentTest = new StudentTests()
-      studentTest.student = student
-      studentTest.test = await testController.findOneBy(newElement.test) as Test
-      studentTest.completed = newElement.completed
-      studentTest.studentAnswers = newElement.questions
-      await studentTestsController.saveData(studentTest)
+        await student.save()
+
+        const studentClassroom = new StudentClassesHistory()
+        studentClassroom.student = student
+        studentClassroom.classroom = await classroomController.findOneBy(newElement.classroom) as Classroom
+        await studentClassesHistoryController.saveData(studentClassroom)
+
+        const studentTest = new StudentTests()
+        studentTest.student = student
+        studentTest.test = await testController.findOneBy(newElement.test) as Test
+        studentTest.completed = newElement.completed
+        studentTest.studentAnswers = newElement.questions
+        await studentTestsController.saveData(studentTest)
+      }
+
     }
 
     return 'ok'

@@ -4,28 +4,28 @@
     "bimester": { "id": 1 },
     "teacher": { "id": 1 },
     "discipline": { "id": 1 },
-    "classCategory": { "id": 1 },
+    "classCategory": { "id": 2 },
     "category": { "id": 1 },
     "questions": [
         {
             "id": 1,
-            "answer": "A"
+            "answer": "C"
         },
         {
             "id": 2,
-            "answer": "A"
+            "answer": "C"
         },
         {
             "id": 3,
-            "answer": "C"
-        },
-        {
-            "id": 4,
             "answer": "A"
         },
         {
+            "id": 4,
+            "answer": "B"
+        },
+        {
             "id": 5,
-            "answer": "C"
+            "answer": "A"
         },
         {
             "id": 6,
@@ -37,11 +37,11 @@
         },
         {
             "id": 8,
-            "answer": "A"
+            "answer": "D"
         },
         {
             "id": 9,
-            "answer": "B"
+            "answer": "C"
         },
         {
             "id": 10,
@@ -49,50 +49,38 @@
         },
         {
             "id": 11,
-            "answer": "A"
-        },
-        {
-            "id": 12,
             "answer": "B"
         },
         {
+            "id": 12,
+            "answer": "C"
+        },
+        {
             "id": 13,
-            "answer": "A"
+            "answer": "C"
         },
         {
             "id": 14,
-            "answer": "C"
+            "answer": "D"
         },
         {
             "id": 15,
-            "answer": "D"
+            "answer": "B"
         },
-        {
+            {
             "id": 16,
-            "answer": "A"
-        },
-        {
-            "id": 17,
-            "answer": "A"
-        },
-        {
-            "id": 18,
-            "answer": "D"
-        },
-        {
-            "id": 19,
-            "answer": "D"
-        },
-        {
-            "id": 20,
             "answer": "C"
         },
         {
-            "id": 21,
-            "answer": "D"
+            "id": 17,
+            "answer": "AD"
         },
         {
-            "id": 22,
+            "id": 18,
+            "answer": "A"
+        },
+        {
+            "id": 19,
             "answer": "B"
         }
     ],
