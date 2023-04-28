@@ -4,7 +4,7 @@ import { studentController } from "../controller/student-controller";
 export const StudentRouter = Router()
 
 StudentRouter.get('/register-answers', (req: Request, res: Response) => {
-  studentController.linkStudentsWithTests(req)
+  studentController.registerAnswers(req)
     .then(r => res.status(200).json({ method: 'GET', resource: '/student', payload: r }))
 })
 

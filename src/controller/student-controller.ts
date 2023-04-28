@@ -90,7 +90,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     return 'ok'
   }
 
-  async linkStudentsWithTests(req: Request) {
+  async registerAnswers(req: Request) {
 
     const studentsClass = await studentClassesHistoryController.getAll({
       relations: ['student', 'student.person', 'classroom', 'classroom.testClasses'],
