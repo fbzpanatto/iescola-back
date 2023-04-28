@@ -146,25 +146,13 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       const notCompleted = studentTest.studentAnswers.every((answer) => answer.answer === '')
 
       if (!notCompleted) {
-        studentTest.score = this.studentScore(test, studentTest)
         studentTest.completed = true
-
         await studentTestsController.saveData(studentTest)
+
       } else {
         notCompletedCounter++
       }
     }
-
-    console.log(notCompletedCounter)
-  }
-
-  private studentScore( test:Test, studentTest: StudentTests) {
-    return studentTest.studentAnswers.reduce((acc, curr) => {
-      if (curr.answer === test.questions.find(q => q.id === Number(curr.id))?.answer) {
-        return acc + 1
-      }
-      return acc
-    }, 0)
   }
 
   private formatData = (st: StudentTests) => {
@@ -177,8 +165,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         classroom: st.student.classroom.id,
         test: {
           answers: st.studentAnswers,
-          completed: st.completed,
-          score: st.score
+          completed: st.completed
         }
       },
     }
