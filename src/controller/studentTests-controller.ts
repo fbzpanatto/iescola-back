@@ -27,12 +27,6 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       dataToUpdate[key] = body[key];
     }
 
-    dataToUpdate.score = body.studentAnswers.reduce((acc: number, curr: { id: number, answer: string }) => {
-      const question = test.questions.find(q => q.id === Number(curr.id));
-      if (question?.answer === curr.answer) acc++;
-      return acc;
-    }, 0)
-
     await this.repository.save(dataToUpdate)
 
     return this.totalByQuestion(test, student.classroom.id)
@@ -49,16 +43,19 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       }
     }) as StudentTests[]
 
-    return test.questions.map(q => {
-      return {
-        id: q.id,
-        total: studentsTestByClass.reduce((acc, curr) => {
-          const answer = curr.studentAnswers.find(a => Number(a.id) === q.id);
-          if (answer?.answer === q.answer) acc++;
-          return acc;
-        }, 0)
-      }
-    })
+    return {
+      totalTestCompleted: studentsTestByClass.length,
+      totalByQuestion: test.questions.map(q => {
+        return {
+          id: q.id,
+          total: studentsTestByClass.reduce((acc, curr) => {
+            const answer = curr.studentAnswers.find(a => Number(a.id) === q.id);
+            if (answer?.answer === q.answer) acc++;
+            return acc;
+          }, 0)
+        }
+      })
+    }
   }
 }
 

@@ -113,10 +113,12 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     const studentsTest = await studentTestsController.getAll(studentsTestQuery) as StudentTests[]
 
+    const totals = await this.totalByQuestion(test, classroomId as string)
+
     return {
       test: { id: test.id, questions: test.questions },
-      totalByQuestion: await this.totalByQuestion(test, classroomId as string),
       studentTests: studentsTest.map(this.formatData),
+      ...totals
     }
   }
 
