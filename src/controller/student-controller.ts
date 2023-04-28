@@ -121,6 +121,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   private async updateRelation( students: Student[], test: Test ) {
 
+    let notCompletedCounter = 0
+
     for(let student of students) {
 
       const query: FindOneOptions<ObjectLiteral> = { where: { student: { id: student.id }, test: { id: test.id } } }
@@ -128,7 +130,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       const studentTest = await studentTestsController.findOne(query) as StudentTests
 
       if (!studentTest) {
-
         const studentTest = new StudentTests()
 
         studentTest.student = student
@@ -145,15 +146,16 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       const notCompleted = studentTest.studentAnswers.every((answer) => answer.answer === '')
 
       if (!notCompleted) {
-
         studentTest.score = this.studentScore(test, studentTest)
         studentTest.completed = true
+
+        await studentTestsController.saveData(studentTest)
+      } else {
+        notCompletedCounter++
       }
-
-      await studentTestsController.saveData(studentTest)
-
     }
 
+    console.log(notCompletedCounter)
   }
 
   private studentScore( test:Test, studentTest: StudentTests) {
