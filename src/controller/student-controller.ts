@@ -1,7 +1,7 @@
-import {DeepPartial, EntityTarget, FindOneOptions, ObjectLiteral} from "typeorm";
+import { DeepPartial, EntityTarget, FindOneOptions, ObjectLiteral } from "typeorm";
 
-import {Request} from "express";
-import {GenericController} from "./generic-controller";
+import { Request } from "express";
+import { GenericController } from "./generic-controller";
 
 import {Student} from "../entity/Student";
 import {PersonClass} from "./person-controller";
@@ -119,25 +119,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
   }
 
-  override async saveData(body: DeepPartial<ObjectLiteral>) {
-
-    const student = new Student();
-    student.person = await PersonClass.newPerson(body);
-    student.ra = body.ra;
-
-    await student.save()
-
-    if (body.classroom) {
-      const studentClassroom = new StudentClassesHistory()
-      studentClassroom.student = student
-      studentClassroom.classroom = await classroomController.findOneBy(body.classroom.id) as Classroom
-
-      await studentClassesHistoryController.saveData(studentClassroom)
-    }
-
-    return await student.save()
-  }
-
   private async updateRelation( students: Student[], test: Test ) {
 
     for(let student of students) {
@@ -199,6 +180,25 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         }
       },
     }
+  }
+
+  override async saveData(body: DeepPartial<ObjectLiteral>) {
+
+    const student = new Student();
+    student.person = await PersonClass.newPerson(body);
+    student.ra = body.ra;
+
+    await student.save()
+
+    if (body.classroom) {
+      const studentClassroom = new StudentClassesHistory()
+      studentClassroom.student = student
+      studentClassroom.classroom = await classroomController.findOneBy(body.classroom.id) as Classroom
+
+      await studentClassesHistoryController.saveData(studentClassroom)
+    }
+
+    return await student.save()
   }
 
 }
