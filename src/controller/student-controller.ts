@@ -115,7 +115,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     return {
       test: { id: test.id, questions: test.questions },
-      studentTests: studentsTest.map(this.formatData)
+      totalByQuestion: await this.totalByQuestion(test, classroomId as string),
+      studentTests: studentsTest.map(this.formatData),
     }
   }
 
@@ -188,6 +189,10 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
 
     return await student.save()
+  }
+
+  async totalByQuestion(test: Test, classroomId: number | string) {
+    return await studentTestsController.totalByQuestion(test, classroomId)
   }
 
 }
