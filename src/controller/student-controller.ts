@@ -1,19 +1,19 @@
-import { DeepPartial, EntityTarget, FindOneOptions, ObjectLiteral } from "typeorm";
+import {DeepPartial, EntityTarget, FindOneOptions, ObjectLiteral} from "typeorm";
 
-import { Request } from "express";
-import { GenericController } from "./generic-controller";
+import {Request} from "express";
+import {GenericController} from "./generic-controller";
 
-import { Student } from "../entity/Student";
-import { PersonClass } from "./person-controller";
-import { Classroom } from "../entity/Classroom";
-import { StudentTests } from "../entity/StudentTests";
-import { Test } from "../entity/Test";
-import { StudentClassesHistory} from "../entity/StudentClassesHistory";
+import {Student} from "../entity/Student";
+import {PersonClass} from "./person-controller";
+import {Classroom} from "../entity/Classroom";
+import {StudentTests} from "../entity/StudentTests";
+import {Test} from "../entity/Test";
+import {StudentClassesHistory} from "../entity/StudentClassesHistory";
 
-import { classroomController } from "./classroom-controller";
-import { studentTestsController } from "./studentTests-controller";
-import { testController } from "./test-controller";
-import { studentClassesHistoryController } from "./student-classes-history-controller";
+import {classroomController} from "./classroom-controller";
+import {studentTestsController} from "./studentTests-controller";
+import {testController} from "./test-controller";
+import {studentClassesHistoryController} from "./student-classes-history-controller";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -144,16 +144,15 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       const query: FindOneOptions<ObjectLiteral> = { where: { student: { id: student.id }, test: { id: test.id } } }
 
-      const relation = await studentTestsController.findOne(query) as StudentTests
+      const studentTest = await studentTestsController.findOne(query) as StudentTests
 
-      if (!relation) {
+      if (!studentTest) {
 
         const studentTest = new StudentTests()
 
         studentTest.student = student
         studentTest.test = test
         studentTest.completed = false
-        studentTest.score = 0
 
         studentTest.studentAnswers = test.questions.map(q => { return { id: q.id, answer: '' } })
 
@@ -161,8 +160,28 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
         return
       }
+
+      const notCompleted = studentTest.studentAnswers.every((answer) => answer.answer === '')
+
+      if (!notCompleted) {
+
+        studentTest.score = this.score(test, studentTest)
+        studentTest.completed = true
+      }
+
+      await studentTestsController.saveData(studentTest)
+
     }
 
+  }
+
+  private score( test:Test, studentTest: StudentTests) {
+    return studentTest.studentAnswers.reduce((acc, curr) => {
+      if (curr.answer === test.questions.find(q => q.id === Number(curr.id))?.answer) {
+        return acc + 1
+      }
+      return acc
+    }, 0)
   }
 
   private formatData = (st: StudentTests) => {
