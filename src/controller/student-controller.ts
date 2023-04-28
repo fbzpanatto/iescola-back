@@ -1,4 +1,4 @@
-import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
+import { DeepPartial, EntityTarget, FindOneOptions, ObjectLiteral } from "typeorm";
 
 import { Request } from "express";
 import { GenericController } from "./generic-controller";
@@ -92,66 +92,30 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async registerAnswers(req: Request) {
 
-    const studentsClass = await studentClassesHistoryController.getAll({
-      relations: ['student', 'student.person', 'classroom', 'classroom.testClasses'],
-      where: {
-        classroom: { id: req.query.classroom},
-      }
-    }) as StudentClassesHistory[];
+    const { test: testId, classroom: classroomId } = req.query
 
-    const test = await testController.findOneBy(req.query.test as string) as Test;
+    const test = await testController.findOneBy(testId as string) as Test;
 
-    const students = studentsClass.map(studentClass => studentClass.student)
-
-    for(let student of students) {
-
-        const relation = await studentTestsController.findOne({ where: { student: { id: student.id }, test: { id: test.id } } })
-
-        if (!relation) {
-
-            const studentTest = new StudentTests()
-
-            studentTest.student = student
-            studentTest.test = test
-
-            studentTest.studentAnswers = test.questions.map(q => {
-            return { id: q.id, answer: '' }
-            })
-
-            await studentTestsController.saveData(studentTest)
-
-            return
-        }
+    const classroomQuery:  FindOneOptions<ObjectLiteral> = {
+      select: ['id', 'name', 'students'],
+      relations: ['students', 'students.person'],
+      where: { id: classroomId }
     }
 
-    let studentsTest = await studentTestsController.getAll({
-      select: ['id', 'studentAnswers', 'completed'],
+    const { students } =  await classroomController.findOne(classroomQuery) as Classroom
+
+    await this.updateRelation(students, test)
+
+    const studentsTestQuery: FindOneOptions<ObjectLiteral> = {
       relations: ['student', 'student.person', 'student.classroom'],
-      where: {
-        test: { id: test.id },
-        student: { classroom: { id: req.query.classroom }}
-      }
-    })
+      where: { test: { id: test.id }, student: { classroom: { id: classroomId } } }
+    }
+
+    const studentsTest = await studentTestsController.getAll(studentsTestQuery) as StudentTests[]
 
     return {
-      test: {
-        id: test.id,
-        questions: test.questions,
-      },
-      studentTests: studentsTest.map((st) => {
-        return {
-          id: st.id,
-          student: {
-            id: st.student.id,
-            no: st.student.no,
-            person: st.student.person,
-            test: {
-              answers: st.studentAnswers,
-              completed: st.completed
-            }
-          },
-        }
-      })
+      test: { id: test.id, questions: test.questions },
+      studentTests: studentsTest.map(this.formatData)
     }
   }
 
@@ -172,6 +136,50 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
 
     return await student.save()
+  }
+
+  private async updateRelation( students: Student[], test: Test ) {
+
+    for(let student of students) {
+
+      const query: FindOneOptions<ObjectLiteral> = { where: { student: { id: student.id }, test: { id: test.id } } }
+
+      const relation = await studentTestsController.findOne(query) as StudentTests
+
+      if (!relation) {
+
+        const studentTest = new StudentTests()
+
+        studentTest.student = student
+        studentTest.test = test
+        studentTest.completed = false
+        studentTest.score = 0
+
+        studentTest.studentAnswers = test.questions.map(q => { return { id: q.id, answer: '' } })
+
+        await studentTestsController.saveData(studentTest)
+
+        return
+      }
+    }
+
+  }
+
+  private formatData = (st: StudentTests) => {
+    return {
+      id: st.id,
+      student: {
+        id: st.student.id,
+        no: st.student.no,
+        person: st.student.person,
+        classroom: st.student.classroom.id,
+        test: {
+          answers: st.studentAnswers,
+          completed: st.completed,
+          score: st.score
+        }
+      },
+    }
   }
 
 }

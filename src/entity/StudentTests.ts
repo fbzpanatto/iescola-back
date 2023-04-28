@@ -20,6 +20,9 @@ export class StudentTests {
   @Column( { nullable: true })
   completed: boolean;
 
+  @Column({ nullable: true })
+  score: number;
+
   @ManyToOne(() => Student, (s) => s.studentTests)
   student: Student
 
