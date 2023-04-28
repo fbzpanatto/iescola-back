@@ -146,7 +146,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       if (!notCompleted) {
 
-        studentTest.score = this.score(test, studentTest)
+        studentTest.score = this.studentScore(test, studentTest)
         studentTest.completed = true
       }
 
@@ -156,7 +156,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   }
 
-  private score( test:Test, studentTest: StudentTests) {
+  private studentScore( test:Test, studentTest: StudentTests) {
     return studentTest.studentAnswers.reduce((acc, curr) => {
       if (curr.answer === test.questions.find(q => q.id === Number(curr.id))?.answer) {
         return acc + 1
