@@ -3,17 +3,17 @@ import { DeepPartial, EntityTarget, FindOneOptions, ObjectLiteral } from "typeor
 import { Request } from "express";
 import { GenericController } from "./generic-controller";
 
-import {Student} from "../entity/Student";
-import {PersonClass} from "./person-controller";
-import {Classroom} from "../entity/Classroom";
-import {StudentTests} from "../entity/StudentTests";
-import {Test} from "../entity/Test";
-import {StudentClassesHistory} from "../entity/StudentClassesHistory";
+import { Student } from "../entity/Student";
+import { PersonClass } from "./person-controller";
+import { Classroom } from "../entity/Classroom";
+import { StudentTests } from "../entity/StudentTests";
+import { Test } from "../entity/Test";
+import { StudentClassesHistory } from "../entity/StudentClassesHistory";
 
-import {classroomController} from "./classroom-controller";
-import {studentTestsController} from "./studentTests-controller";
-import {testController} from "./test-controller";
-import {studentClassesHistoryController} from "./student-classes-history-controller";
+import { classroomController} from "./classroom-controller";
+import { studentTestsController} from "./studentTests-controller";
+import { testController} from "./test-controller";
+import { studentClassesHistoryController} from "./student-classes-history-controller";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
