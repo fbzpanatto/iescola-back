@@ -43,18 +43,28 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       }
     }) as StudentTests[]
 
+    const totalByQuestion = test.questions.map(q => {
+      return {
+        id: q.id,
+        total: studentsTestByClass.reduce((acc, curr) => {
+          const answer = curr.studentAnswers.find(a => Number(a.id) === q.id);
+          if (answer?.answer === q.answer) acc++;
+          return acc;
+        }, 0)
+      }
+    })
+
+    const rateByQuestion = totalByQuestion.map(q => {
+      return {
+        id: q.id,
+        rate: `${Math.floor((q.total / studentsTestByClass.length) * 100)}%`
+      }
+    })
+
     return {
       totalTestCompleted: studentsTestByClass.length,
-      totalByQuestion: test.questions.map(q => {
-        return {
-          id: q.id,
-          total: studentsTestByClass.reduce((acc, curr) => {
-            const answer = curr.studentAnswers.find(a => Number(a.id) === q.id);
-            if (answer?.answer === q.answer) acc++;
-            return acc;
-          }, 0)
-        }
-      })
+      totalByQuestion: totalByQuestion,
+      rateByQuestion: rateByQuestion
     }
   }
 }
