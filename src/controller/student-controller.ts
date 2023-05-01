@@ -106,20 +106,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     await this.updateRelation(students, test)
 
-    const studentsTestQuery: FindOneOptions<ObjectLiteral> = {
-      relations: ['student', 'student.person', 'student.classroom'],
-      where: { test: { id: test.id }, student: { classroom: { id: classroomId } } }
-    }
-
-    const studentsTest = await studentTestsController.getAll(studentsTestQuery) as StudentTests[]
-
-    const totals = await this.totalByQuestion(test, classroomId as string)
-
-    return {
-      test: { id: test.id, questions: test.questions },
-      studentTests: studentsTest.map(this.formatData),
-      ...totals
-    }
+    return await this.dataToFront(test, classroomId as string)
   }
 
   private async updateRelation( students: Student[], test: Test ) {
@@ -158,22 +145,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
   }
 
-  private formatData = (st: StudentTests) => {
-    return {
-      id: st.id,
-      student: {
-        id: st.student.id,
-        no: st.student.no,
-        person: st.student.person,
-        classroom: st.student.classroom.id,
-        test: {
-          answers: st.studentAnswers,
-          completed: st.completed
-        }
-      },
-    }
-  }
-
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const student = new Student();
@@ -193,8 +164,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     return await student.save()
   }
 
-  async totalByQuestion(test: Test, classroomId: number | string) {
-    return await studentTestsController.totalByQuestion(test, classroomId)
+  async dataToFront(test: Test, classroomId: number | string) {
+    return await studentTestsController.dataToFront(test, classroomId)
   }
 
 }

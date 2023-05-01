@@ -1,10 +1,12 @@
-import {GenericController} from "./generic-controller";
-import {StudentTests} from "../entity/StudentTests";
-import {DeepPartial, EntityTarget, ObjectLiteral} from "typeorm";
-import {studentController} from "./student-controller";
-import {Student} from "../entity/Student";
-import {testController} from "./test-controller";
-import {Test} from "../entity/Test";
+import { GenericController } from "./generic-controller";
+import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
+
+import { StudentTests } from "../entity/StudentTests";
+import { Test } from "../entity/Test";
+import { Student } from "../entity/Student";
+
+import { testController } from "./test-controller";
+import { studentController } from "./student-controller";
 
 class StudentTestsController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -29,24 +31,22 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
     await this.repository.save(dataToUpdate)
 
-    return this.totalByQuestion(test, student.classroom.id)
+    return this.dataToFront(test, student.classroom.id)
   }
 
-  async totalByQuestion(test: Test, classroomId: number | string) {
+  async dataToFront(test: Test, classroomId: number | string) {
 
-    const studentsTestByClass = await this.repository.find({
+    const studentsTests = await this.repository.find({
       relations: ['student', 'student.classroom'],
-      where: {
-        test: {id: test.id},
-        completed: true,
-        student: {classroom: {id: classroomId}}
-      }
+      where: { test: {id: test.id}, student: {classroom: {id: classroomId}} }
     }) as StudentTests[]
+
+    const studentsTestsCompleted = studentsTests.filter(st => st.completed)
 
     const totalByQuestion = test.questions.map(q => {
       return {
         id: q.id,
-        total: studentsTestByClass.reduce((acc, curr) => {
+        total: studentsTestsCompleted.reduce((acc, curr) => {
           const answer = curr.studentAnswers.find(a => Number(a.id) === q.id);
           if (answer?.answer === q.answer) acc++;
           return acc;
@@ -57,16 +57,40 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
     const rateByQuestion = totalByQuestion.map(q => {
       return {
         id: q.id,
-        rate: `${Math.floor((q.total / studentsTestByClass.length) * 100)}%`
+        rate: `${Math.floor((q.total / studentsTestsCompleted.length) * 100)}%`
       }
     })
 
     return {
-      totalTestCompleted: studentsTestByClass.length,
+      test: { id: test.id, questions: test.questions },
+      studentTests: studentsTests.map(st => this.formatStudentTest(st, test)),
+      totalTestCompleted: studentsTestsCompleted.length,
       totalByQuestion: totalByQuestion,
       rateByQuestion: rateByQuestion
     }
   }
+
+  private formatStudentTest = (st: StudentTests, test: Test) => {
+    return {
+      id: st.id,
+      student: {
+        id: st.student.id,
+        no: st.student.no,
+        person: st.student.person,
+        classroom: st.student.classroom.id,
+        test: {
+          answers: st.studentAnswers,
+          completed: st.completed,
+          score: st.studentAnswers.reduce((acc, curr) => {
+            const question = test.questions.find(q => q.id === Number(curr.id));
+            if (question?.answer === curr.answer) acc++;
+            return acc;
+          }, 0)
+        }
+      },
+    }
+  }
+
 }
 
 export const studentTestsController = new StudentTestsController();
