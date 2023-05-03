@@ -1,16 +1,16 @@
 import { Teacher } from "../entity/Teacher";
 import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
-import { PersonClass } from "./person-controller";
-import { GenericController } from "./generic-controller";
+import { PersonClass } from "./personController";
+import { GenericController } from "./genericController";
 import { Classroom } from "../entity/Classroom";
 import { TeacherClasses } from "../entity/TeacherClasses";
 import { TeacherDisciplines } from "../entity/TeacherDisciplines";
 import { Discipline } from "../entity/Discipline";
 
-import { classroomController } from "./classroom-controller";
-import { disciplineController } from "./discipline-controller";
-import { teacherClassesController } from "./teacherClasses-controller";
-import { teacherDisciplinesController } from "./teacherDisciplines-controller";
+import { classroomController } from "./classroomController";
+import { disciplineController } from "./disciplineController";
+import { teacherClassesController } from "./teacherClassesController";
+import { teacherDisciplinesController } from "./teacherDisciplinesController";
 
 
 class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {

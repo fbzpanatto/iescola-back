@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { yearController } from "../controller/year-controller";
+import { yearController } from "../controller/yearController";
 
 export const YearRouter = Router()
 

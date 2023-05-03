@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { classCategoryController } from "../controller/classCategory-controller";
+import { classCategoryController } from "../controller/classCategoryController";
 
 export const ClassCategoryRouter = Router()
 

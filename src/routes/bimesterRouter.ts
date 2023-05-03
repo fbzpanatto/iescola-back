@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { bimesterController } from "../controller/bimester-controller";
+import { bimesterController } from "../controller/bimesterController";
 
 export const BimesterRouter = Router()
 

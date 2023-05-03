@@ -1,5 +1,5 @@
 import { DeepPartial, ObjectLiteral } from "typeorm";
-import { categoryController } from "./category-controller";
+import { categoryController } from "./categoryController";
 
 import { Category} from "../entity/Category";
 import { Person} from "../entity/Person";

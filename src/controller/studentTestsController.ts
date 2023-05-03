@@ -1,14 +1,14 @@
-import { GenericController } from "./generic-controller";
+import { GenericController } from "./genericController";
 import {DeepPartial, EntityTarget, FindOneOptions, ObjectLiteral} from "typeorm";
 
 import { StudentTests } from "../entity/StudentTests";
 import { Test } from "../entity/Test";
 import { Student } from "../entity/Student";
 
-import { testController } from "./test-controller";
-import { studentController } from "./student-controller";
+import { testController } from "./testController";
+import { studentController } from "./studentController";
 import {Request} from "express";
-import {classroomController} from "./classroom-controller";
+import {classroomController} from "./classroomController";
 import {Classroom} from "../entity/Classroom";
 
 class StudentTestsController extends GenericController<EntityTarget<ObjectLiteral>> {

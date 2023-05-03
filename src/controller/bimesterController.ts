@@ -1,4 +1,4 @@
-import { GenericController } from "./generic-controller";
+import { GenericController } from "./genericController";
 import { Bimester } from "../entity/Bimester";
 import { EntityTarget, ObjectLiteral } from "typeorm";
 

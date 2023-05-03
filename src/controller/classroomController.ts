@@ -1,9 +1,9 @@
-import { GenericController } from "./generic-controller";
+import { GenericController } from "./genericController";
 import { Classroom } from "../entity/Classroom";
 import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
-import { schoolController } from "./school-controller";
-import { yearController } from "./year-controller";
-import {classCategoryController} from "./classCategory-controller";
+import { schoolController } from "./schoolController";
+import { yearController } from "./yearController";
+import {classCategoryController} from "./classCategoryController";
 
 class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {

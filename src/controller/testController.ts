@@ -1,4 +1,4 @@
-import { GenericController } from "./generic-controller";
+import { GenericController } from "./genericController";
 import { Test } from "../entity/Test";
 import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
 import { Year } from "../entity/Year";
@@ -9,13 +9,13 @@ import { TestCategory } from "../entity/TestCategory";
 import { Classroom } from "../entity/Classroom";
 import { TestClasses } from "../entity/TestClasses";
 
-import { bimesterController } from "./bimester-controller";
-import { teacherController } from "./teacher-controller";
-import { disciplineController } from "./discipline-controller";
-import { yearController } from "./year-controller";
-import { testCategoryController } from "./testCategory-controller";
-import { testClassesController } from "./testClasses-controller";
-import { classroomController } from "./classroom-controller";
+import { bimesterController } from "./bimesterController";
+import { teacherController } from "./teacherController";
+import { disciplineController } from "./disciplineController";
+import { yearController } from "./yearController";
+import { testCategoryController } from "./testCategoryController";
+import { testClassesController } from "./testClassesController";
+import { classroomController } from "./classroomController";
 
 interface TestClass {name: string, school: string, classroomId: number, classroom: string, year: number, bimester: string, category: string, teacher: string, discipline: string}
 

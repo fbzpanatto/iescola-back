@@ -1,4 +1,4 @@
-import { GenericController } from "./generic-controller";
+import { GenericController } from "./genericController";
 import { EntityTarget, ObjectLiteral } from "typeorm";
 import { TeacherDisciplines } from "../entity/TeacherDisciplines";
 
