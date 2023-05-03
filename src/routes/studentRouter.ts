@@ -3,11 +3,6 @@ import { studentController } from "../controller/student-controller";
 
 export const StudentRouter = Router()
 
-StudentRouter.get('/register-answers', (req: Request, res: Response) => {
-  studentController.registerAnswers(req)
-    .then(r => res.status(200).json({ method: 'GET', resource: '/student', payload: r }))
-})
-
 StudentRouter.get('/test-creation', (req: Request, res: Response) => {
   studentController.testCreation()
       .then(r => res.status(200).json({ method: 'GET', resource: '/student', payload: r }))

@@ -4,24 +4,24 @@ import express from 'express'
 import { Router } from 'express';
 import { AppDataSource } from "./data-source";
 
-import { BimesterRouter } from "./routes/bimester-router";
-import { ClassroomRouter } from "./routes/classroom-router";
-import { ClassCategoryRouter } from "./routes/classCategory-router";
-import { DisciplineRouter } from "./routes/discipline-router";
-import { SchoolRouter } from "./routes/school-router";
-import { SgtRouter } from "./routes/studentGradeTest-router";
-import { StudentRouter } from "./routes/student-router";
-import { TeacherRouter } from "./routes/teacher-router";
-import { TestRouter } from "./routes/test-router";
-import { YearRouter } from "./routes/year-router";
-import { CategoryRouter } from "./routes/category-routes";
-import { TestCategoryRouter } from "./routes/testCategory-routes";
+import { BimesterRouter } from "./routes/bimesterRouter";
+import { ClassroomRouter } from "./routes/classroomRouter";
+import { ClassCategoryRouter } from "./routes/classCategoryRouter";
+import { DisciplineRouter } from "./routes/disciplineRouter";
+import { SchoolRouter } from "./routes/schoolRouter";
+import { StudentTestsRouter } from "./routes/studentTestsRouter";
+import { StudentRouter } from "./routes/studentRouter";
+import { TeacherRouter } from "./routes/teacherRouter";
+import { TestRouter } from "./routes/testRouter";
+import { YearRouter } from "./routes/yearRouter";
+import { CategoryRouter } from "./routes/categoryRoutes";
+import { TestCategoryRouter } from "./routes/testCategoryRouter";
 
 
 const bodyParser = require('body-parser');
 
 import { Application } from "express";
-import {TestClassesRouter} from "./routes/testClasses-router";
+import {TestClassesRouter} from "./routes/testClassesRouter";
 
 const app: Application = express();
 
@@ -33,19 +33,22 @@ const route = Router()
 
 app.use(cors({origin: true}));
 
+route.use('/year', YearRouter)
 route.use('/bimester', BimesterRouter)
+route.use('/school', SchoolRouter)
+route.use('/class-category', ClassCategoryRouter)
 route.use('/classroom', ClassroomRouter)
 route.use('/discipline', DisciplineRouter)
-route.use('/school', SchoolRouter)
-route.use('/student-answers', SgtRouter)
-route.use('/student', StudentRouter)
-route.use('/teacher', TeacherRouter)
-route.use('/test', TestRouter)
-route.use('/year', YearRouter)
+
 route.use('/category', CategoryRouter)
+
+route.use('/teacher', TeacherRouter)
+route.use('/student', StudentRouter)
+
 route.use('/test-category', TestCategoryRouter)
-route.use('/class-category', ClassCategoryRouter)
+route.use('/test', TestRouter)
 route.use('/test-classes', TestClassesRouter)
+route.use('/student-tests', StudentTestsRouter)
 
 app.use(route)
 

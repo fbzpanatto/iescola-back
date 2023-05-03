@@ -11,7 +11,7 @@ import { Test } from "../entity/Test";
 import { StudentClassesHistory } from "../entity/StudentClassesHistory";
 
 import { classroomController} from "./classroom-controller";
-import { studentTestsController} from "./studentTests-controller";
+import { studentTestsController} from "./studentTestsController";
 import { testController} from "./test-controller";
 import { studentClassesHistoryController} from "./student-classes-history-controller";
 
@@ -90,61 +90,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     return 'ok'
   }
 
-  async registerAnswers(req: Request) {
-
-    const { test: testId, classroom: classroomId } = req.query
-
-    const test = await testController.findOneBy(testId as string) as Test;
-
-    const classroomQuery:  FindOneOptions<ObjectLiteral> = {
-      select: ['id', 'name', 'students'],
-      relations: ['students', 'students.person'],
-      where: { id: classroomId }
-    }
-
-    const { students } =  await classroomController.findOne(classroomQuery) as Classroom
-
-    await this.updateRelation(students, test)
-
-    return await this.dataToFront(test, classroomId as string)
-  }
-
-  private async updateRelation( students: Student[], test: Test ) {
-
-    let notCompletedCounter = 0
-
-    for(let student of students) {
-
-      const query: FindOneOptions<ObjectLiteral> = { where: { student: { id: student.id }, test: { id: test.id } } }
-
-      const studentTest = await studentTestsController.findOne(query) as StudentTests
-
-      if (!studentTest) {
-        const studentTest = new StudentTests()
-
-        studentTest.student = student
-        studentTest.test = test
-        studentTest.completed = false
-
-        studentTest.studentAnswers = test.questions.map(q => { return { id: q.id, answer: '' } })
-
-        await studentTestsController.saveData(studentTest)
-
-        return
-      }
-
-      const notCompleted = studentTest.studentAnswers.every((answer) => answer.answer === '')
-
-      if (!notCompleted) {
-        studentTest.completed = true
-        await studentTestsController.saveData(studentTest)
-
-      } else {
-        notCompletedCounter++
-      }
-    }
-  }
-
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const student = new Student();
@@ -162,10 +107,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
 
     return await student.save()
-  }
-
-  async dataToFront(test: Test, classroomId: number | string) {
-    return await studentTestsController.dataToFront(test, classroomId)
   }
 
 }
