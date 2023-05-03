@@ -47,6 +47,8 @@ export class GenericController<T> {
       return await this.repository.delete(dataToDelete);
   }
 
+
+
   protected get repository() {
 
     return AppDataSource.getRepository(this.entity);
