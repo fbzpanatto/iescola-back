@@ -4,7 +4,7 @@ import { teacherController } from "../controller/teacherController";
 export const TeacherRouter = Router()
 
 TeacherRouter.get('/', (req: Request, res: Response) => {
-  teacherController.getAll()
+  teacherController.getAllTeachers()
     // TODO: Add response status code
     .then(r => res.json({ method: 'GET', resource: '/teacher', payload: r }))
 })

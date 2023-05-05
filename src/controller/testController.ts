@@ -24,19 +24,6 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     super(Test);
   }
 
-  async getOne(testId: number) {
-
-    return await this.repository
-      .createQueryBuilder('test')
-      .leftJoinAndSelect('test.year', 'year')
-      .leftJoinAndSelect('test.bimester', 'bimester')
-      .leftJoinAndSelect('test.teacher', 'teacher')
-      .leftJoinAndSelect('test.discipline', 'discipline')
-      .leftJoinAndSelect('test.category', 'category')
-      .where('test.id = :id', { id: testId })
-      .getOne()
-  }
-
   async many(body: DeepPartial<ObjectLiteral>) {
 
     const classes = await classroomController.getAll({ where: { category: { id: body.classCategory.id } } }) as Classroom[]
@@ -102,6 +89,23 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
     return response
   }
+
+  async getOne(id: number | string) {
+    const test = await this.repository.findOneBy({ id: Number(id) }) as Test;
+
+    return {
+      id: test.id,
+      name: test.name,
+      questions: test.questions,
+      discipline: test.discipline,
+      teacher: test.teacher.person.name,
+      year: test.year,
+      bimester: test.bimester,
+      category: test.category,
+      active: test.active,
+    }
+  }
+
 
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 

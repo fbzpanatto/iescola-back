@@ -10,7 +10,7 @@ TestRouter.get('/', (req: Request, res: Response) => {
 })
 
 TestRouter.get('/:id', (req: Request, res: Response) => {
-  testController.findOneBy(req.params.id)
+  testController.getOne(req.params.id)
     // TODO: Add response status code
     .then(r => res.json({ method: 'GET', resource: '/test', payload: r }))
 })
