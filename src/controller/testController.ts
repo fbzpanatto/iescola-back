@@ -99,6 +99,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       questions: test.questions,
       discipline: test.discipline,
       teacher: test.teacher.person.name,
+      teacherPerson: test.teacher,
       year: test.year,
       bimester: test.bimester,
       category: test.category,

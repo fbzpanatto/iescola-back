@@ -24,14 +24,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
     return teachers.map(teacher => {
       return {
         id: teacher.id,
-        personId: teacher.person.id,
         name: teacher.person.name,
-        // email: teacher.person.email,
-        // phone: teacher.person.phone,
-        // cpf: teacher.person.cpf,
-        // active: teacher.person.active,
-        // createdAt: teacher.person.createdAt,
-        // updatedAt: teacher.person.updatedAt
       }
     })
   }
