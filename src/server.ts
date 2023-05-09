@@ -16,12 +16,12 @@ import { TestRouter } from "./routes/testRouter";
 import { YearRouter } from "./routes/yearRouter";
 import { CategoryRouter } from "./routes/categoryRoutes";
 import { TestCategoryRouter } from "./routes/testCategoryRouter";
-
+import { TestClassesRouter } from "./routes/testClassesRouter";
+import { TeacherDisciplineRouter} from "./routes/teacherDisciplineRouter";
 
 const bodyParser = require('body-parser');
 
 import { Application } from "express";
-import {TestClassesRouter} from "./routes/testClassesRouter";
 
 const app: Application = express();
 
@@ -43,6 +43,7 @@ route.use('/discipline', DisciplineRouter)
 route.use('/category', CategoryRouter)
 
 route.use('/teacher', TeacherRouter)
+route.use('/teacher-discipline', TeacherDisciplineRouter)
 route.use('/student', StudentRouter)
 
 route.use('/test-category', TestCategoryRouter)
