@@ -93,6 +93,15 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
   async getOne(id: number | string) {
     const test = await this.repository.findOneBy({ id: Number(id) }) as Test;
 
+    let testClasses = test.testClasses
+      .map((testClass) => { return { id: testClass.classroom.id, name: testClass.classroom.name }})
+      .sort((a, b) => a.id - b.id)
+
+    let teacherClasses = test.teacher
+      .teacherClasses
+      .map((teacherClass) => { return { id: teacherClass.classroom.id, name: teacherClass.classroom.name }})
+      .sort((a, b) => a.id - b.id)
+
     let teacherDisciplines = test.teacher
       .teacherDisciplines
       .map((discipline) => { return { id: discipline.discipline.id,  name: discipline.discipline.name }})
@@ -105,6 +114,8 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       discipline: test.discipline,
       teacherPerson: test.teacher,
       teacherDisciplines: teacherDisciplines,
+      teacherClasses: teacherClasses,
+      testClasses: testClasses,
       year: test.year,
       bimester: test.bimester,
       category: test.category,
