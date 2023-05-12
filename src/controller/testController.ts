@@ -8,7 +8,6 @@ import { testClassesController } from "./testClassesController";
 import { classroomController } from "./classroomController";
 import {studentTestsController} from "./studentTestsController";
 import {StudentTests} from "../entity/StudentTests";
-import {Student} from "../entity/Student";
 
 interface TestClass {name: string, school: string, classroomId: number, classroom: string, year: number, bimester: string, category: string, teacher: string, discipline: string}
 
@@ -115,6 +114,36 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     const test = await this.findOneBy(id) as Test;
 
+    if(body.removeQuestion) {
+
+      const index = test.questions.findIndex((question: { id: number, answer: string }) => Number(question.id) === Number(body.removeQuestion))
+      test.questions.splice(index, 1)
+
+      for(let question of test.questions) {
+        if(question.id > body.removeQuestion) {
+          question.id -= 1
+        }
+      }
+
+      // adjust student tests
+      const studentsTests = await studentTestsController.getAll({
+        relations: ['student'],
+        where: { test: { id: test.id }}
+      }) as StudentTests[]
+
+      for(let studentTest of studentsTests) {
+        let answers = studentTest.studentAnswers
+        answers.splice(index, 1)
+        for(let answer of answers) {
+          if(answer.id > body.removeQuestion) {
+            answer.id -= 1
+          }
+        }
+        studentTest.studentAnswers = answers
+        await studentTestsController.saveData(studentTest)
+      }
+    }
+
     if(body.questions) {
 
       const condition = test.questions.length === body.questions.length
@@ -128,26 +157,10 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
             return question
           }
         }) as { id: number, answer: string }[]
-
         this.addNewQuestions(test, newQuestions)
-
-      } else if (body.questions.length < test.questions.length) {
-
-        let questionsToDelete = test.questions.filter((question: { id: number, answer: string }) => {
-          const index = body.questions.findIndex((q: { id: number, answer: string }) => Number(q.id) === Number(question.id))
-          const element = !!body.questions[index]
-          if(!element) {
-            return question
-          }
-        }) as { id: number, answer: string }[]
-
-        console.log(questionsToDelete)
-
-        this.removeQuestions(test, questionsToDelete)
       }
+      test.questions = body.questions
     }
-
-    test.questions = body.questions
 
     return await this.repository.save(test);
   }
@@ -167,23 +180,6 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       }
       await studentTestsController.saveData(studentTest)
     }
-  }
-
-  async removeQuestions(test: Test, questions: { id: number, answer: string }[]) {
-
-      const studentsTests = await studentTestsController.getAll({
-        relations: ['student'],
-        where: { test: { id: test.id }}
-      }) as StudentTests[]
-
-      for(let studentTest of studentsTests) {
-        for(let question of questions) {
-          const index = studentTest.studentAnswers.findIndex(q => Number(q.id) === Number(question.id))
-
-          studentTest.studentAnswers.splice(index, 1)
-        }
-        await studentTestsController.saveData(studentTest)
-      }
   }
 
 }
