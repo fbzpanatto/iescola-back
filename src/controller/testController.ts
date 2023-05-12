@@ -119,7 +119,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       const condition = test.questions.length === body.questions.length
 
-      if(!condition) {
+      if(!condition && (body.questions.length > test.questions.length)) {
 
         let newQuestions = body.questions.filter((question: { id: number, answer: string }) => {
           const index = test.questions.findIndex(q => Number(q.id) === Number(question.id))
@@ -129,9 +129,22 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
           }
         }) as { id: number, answer: string }[]
 
-        this.updateQuestionsInAllTests(test, newQuestions)
-      }
+        this.addNewQuestions(test, newQuestions)
 
+      } else if (body.questions.length < test.questions.length) {
+
+        let questionsToDelete = test.questions.filter((question: { id: number, answer: string }) => {
+          const index = body.questions.findIndex((q: { id: number, answer: string }) => Number(q.id) === Number(question.id))
+          const element = !!body.questions[index]
+          if(!element) {
+            return question
+          }
+        }) as { id: number, answer: string }[]
+
+        console.log(questionsToDelete)
+
+        this.removeQuestions(test, questionsToDelete)
+      }
     }
 
     test.questions = body.questions
@@ -139,7 +152,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     return await this.repository.save(test);
   }
 
-  async updateQuestionsInAllTests(test: Test, questions: { id: number, answer: string }[]) {
+  async addNewQuestions(test: Test, questions: { id: number, answer: string }[]) {
 
     let newQuestions = questions.map(q => { return { id: q.id, answer: '' } })
 
@@ -155,6 +168,24 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       await studentTestsController.saveData(studentTest)
     }
   }
+
+  async removeQuestions(test: Test, questions: { id: number, answer: string }[]) {
+
+      const studentsTests = await studentTestsController.getAll({
+        relations: ['student'],
+        where: { test: { id: test.id }}
+      }) as StudentTests[]
+
+      for(let studentTest of studentsTests) {
+        for(let question of questions) {
+          const index = studentTest.studentAnswers.findIndex(q => Number(q.id) === Number(question.id))
+
+          studentTest.studentAnswers.splice(index, 1)
+        }
+        await studentTestsController.saveData(studentTest)
+      }
+  }
+
 }
 
 export const testController = new TestController();
