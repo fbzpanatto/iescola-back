@@ -6,6 +6,9 @@ import { TestClasses } from "../entity/TestClasses";
 
 import { testClassesController } from "./testClassesController";
 import { classroomController } from "./classroomController";
+import {studentTestsController} from "./studentTestsController";
+import {StudentTests} from "../entity/StudentTests";
+import {Student} from "../entity/Student";
 
 interface TestClass {name: string, school: string, classroomId: number, classroom: string, year: number, bimester: string, category: string, teacher: string, discipline: string}
 
@@ -16,7 +19,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
   }
 
   async getOne(id: number | string) {
-    const test = await this.repository.findOneBy({ id: Number(id) }) as Test;
+    const test = await this.findOneBy(id) as Test ;
 
     let testClasses = test.testClasses
       .map((testClass) => { return { id: testClass.classroom.id, name: testClass.classroom.name }})
@@ -106,6 +109,51 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
 
     return await this.repository.save(test)
+  }
+
+  override async updateOneBy (id: string, body: DeepPartial<ObjectLiteral>) {
+
+    const test = await this.findOneBy(id) as Test;
+
+    if(body.questions) {
+
+      const condition = test.questions.length === body.questions.length
+
+      if(!condition) {
+
+        let newQuestions = body.questions.filter((question: { id: number, answer: string }) => {
+          const index = test.questions.findIndex(q => Number(q.id) === Number(question.id))
+          const element = !!test.questions[index]
+          if(!element) {
+            return question
+          }
+        }) as { id: number, answer: string }[]
+
+        this.updateQuestionsInAllTests(test, newQuestions)
+      }
+
+    }
+
+    test.questions = body.questions
+
+    return await this.repository.save(test);
+  }
+
+  async updateQuestionsInAllTests(test: Test, questions: { id: number, answer: string }[]) {
+
+    let newQuestions = questions.map(q => { return { id: q.id, answer: '' } })
+
+    const studentsTests = await studentTestsController.getAll({
+      relations: ['student'],
+      where: { test: { id: test.id }}
+    }) as StudentTests[]
+
+    for(let studentTest of studentsTests) {
+      for(let question of newQuestions) {
+        studentTest.studentAnswers.push(question)
+      }
+      await studentTestsController.saveData(studentTest)
+    }
   }
 }
 
