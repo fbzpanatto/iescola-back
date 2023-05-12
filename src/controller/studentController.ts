@@ -93,18 +93,10 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const student = new Student();
+
     student.person = await PersonClass.newPerson(body);
     student.ra = body.ra;
-
-    await student.save()
-
-    if (body.classroom) {
-      const studentClassroom = new StudentClassesHistory()
-      studentClassroom.student = student
-      studentClassroom.classroom = await classroomController.findOneBy(body.classroom.id) as Classroom
-
-      await studentClassesHistoryController.saveData(studentClassroom)
-    }
+    student.classroom = body.classroom
 
     return await student.save()
   }

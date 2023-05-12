@@ -48,27 +48,25 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       const studentTest = await this.repository.findOne(query) as StudentTests
 
       if (!studentTest) {
-        const studentTest = new StudentTests()
+        const newStudentTest = new StudentTests()
 
-        studentTest.student = student
-        studentTest.test = test
-        studentTest.completed = false
+        newStudentTest.student = student
+        newStudentTest.test = test
+        newStudentTest.completed = false
+        newStudentTest.studentAnswers = test.questions.map(q => { return { id: q.id, answer: '' } })
 
-        studentTest.studentAnswers = test.questions.map(q => { return { id: q.id, answer: '' } })
-
-        await studentTestsController.saveData(studentTest)
-
-        return
-      }
-
-      const notCompleted = studentTest.studentAnswers.every((answer) => answer.answer === '')
-
-      if (!notCompleted) {
-        studentTest.completed = true
-        await studentTestsController.saveData(studentTest)
+        await studentTestsController.saveData(newStudentTest)
 
       } else {
-        notCompletedCounter++
+        const notCompleted = studentTest.studentAnswers.every((answer) => answer.answer === '')
+
+        if (!notCompleted) {
+          studentTest.completed = true
+          await studentTestsController.saveData(studentTest)
+
+        } else {
+          notCompletedCounter++
+        }
       }
     }
   }
@@ -117,7 +115,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
     const rateByQuestion = totalByQuestion.map(q => {
       return {
         id: q.id,
-        rate: `${Math.floor((q.total / studentsTestsCompleted.length) * 100)}%`
+        rate: `${Math.floor((q.total / studentsTestsCompleted.length) * 100)}`
       }
     })
 
