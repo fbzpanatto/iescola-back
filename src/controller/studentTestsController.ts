@@ -26,7 +26,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
     const classroomQuery:  FindOneOptions<ObjectLiteral> = {
       select: ['id', 'name', 'students'],
-      relations: ['students', 'students.person'],
+      relations: ['students', 'students.person', 'school'],
       where: { id: classroomId }
     }
 
@@ -95,6 +95,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
   }
 
   async dataToFront(test: Test, classroom: Classroom) {
+
     const testClassroom = await testClassesController.findOne({
       relations: ['testGiver'],
       where: { test: {id: test.id}, classroom: {id: classroom.id}}
