@@ -20,17 +20,15 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
   }
 
   async getAllTeachers() {
-    const teachers = await this.repository.find({ relations: ['person', 'teacherDisciplines'] })
+    const teachers = await this.repository.find({ relations: ['person', 'teacherDisciplines', 'teacherClasses.classroom.school'] })
 
     return teachers.map(teacher => {
       return {
         id: teacher.id,
         name: teacher.person.name,
-
         teacherClasses: teacher.teacherClasses
           .map((teacherClass: any) => { return { id: teacherClass.classroom.id, name: teacherClass.classroom.name, school: teacherClass.classroom.school.name }})
           .sort((a: { id: number, name: string }, b: { id: number, name: string }) => a.id - b.id),
-
         teacherDisciplines: teacher.teacherDisciplines
           .map((teacherDiscipline: any) => { return { id: teacherDiscipline.discipline.id, name: teacherDiscipline.discipline.name }})
           .sort((a: { id: number, name: string }, b: { id: number, name: string }) => a.id - b.id)

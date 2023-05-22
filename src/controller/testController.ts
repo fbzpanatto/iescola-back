@@ -1,13 +1,14 @@
-import { GenericController } from "./genericController";
-import { Test } from "../entity/Test";
 import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
+import { GenericController } from "./genericController";
+
 import { Classroom } from "../entity/Classroom";
 import { TestClasses } from "../entity/TestClasses";
+import { StudentTests } from "../entity/StudentTests";
+import { Test } from "../entity/Test";
 
 import { testClassesController } from "./testClassesController";
 import { classroomController } from "./classroomController";
-import {studentTestsController} from "./studentTestsController";
-import {StudentTests} from "../entity/StudentTests";
+import { studentTestsController} from "./studentTestsController";
 
 interface TestClass {name: string, school: string, classroomId: number, classroom: string, year: number, bimester: string, category: string, teacher: string, discipline: string}
 
@@ -15,6 +16,38 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   constructor() {
     super(Test);
+  }
+
+  override async getAll() {
+
+    let response: { testId: number, classes: TestClass[] }[] = []
+
+    const tests = await this.repository.find({
+      relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person', 'testClasses.classroom.school'],
+      select: ['id', 'name'],
+    }) as Test[]
+
+    for (let test of tests) {
+
+      let testClasses: TestClass[] = []
+
+      for(let testClass of test.testClasses) {
+        let data = {
+          name: test.name,
+          school: testClass.classroom.school.name,
+          classroomId: testClass.classroom.id,
+          classroom: testClass.classroom.name,
+          year: test.year.name,
+          bimester: test.bimester.name,
+          category: test.category.name,
+          teacher: test.teacher.person.name,
+          discipline: test.discipline.name,
+        }
+        testClasses.push(data)
+      }
+      response.push({ testId: test.id, classes: testClasses })
+    }
+    return response
   }
 
   async getOne(id: number | string) {
@@ -48,38 +81,6 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       },
       testClasses: testClasses,
     }
-  }
-
-  override async getAll() {
-
-    let response: { testId: number, classes: TestClass[] }[] = []
-
-    const tests = await this.repository.find({
-      relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person', 'testClasses.classroom.school'],
-      select: ['id', 'name'],
-    }) as Test[]
-
-    for (let test of tests) {
-
-      let testClasses: TestClass[] = []
-
-      for(let testClass of test.testClasses) {
-        let data = {
-          name: test.name,
-          school: testClass.classroom.school.name,
-          classroomId: testClass.classroom.id,
-          classroom: testClass.classroom.name,
-          year: test.year.name,
-          bimester: test.bimester.name,
-          category: test.category.name,
-          teacher: test.teacher.person.name,
-          discipline: test.discipline.name,
-        }
-        testClasses.push(data)
-      }
-      response.push({ testId: test.id, classes: testClasses })
-    }
-    return response
   }
 
   override async saveData(body: DeepPartial<ObjectLiteral>) {
