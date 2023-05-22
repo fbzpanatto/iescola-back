@@ -28,7 +28,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
         name: teacher.person.name,
 
         teacherClasses: teacher.teacherClasses
-          .map((teacherClass: any) => { return { id: teacherClass.classroom.id, name: teacherClass.classroom.name }})
+          .map((teacherClass: any) => { return { id: teacherClass.classroom.id, name: teacherClass.classroom.name, school: teacherClass.classroom.school.name }})
           .sort((a: { id: number, name: string }, b: { id: number, name: string }) => a.id - b.id),
 
         teacherDisciplines: teacher.teacherDisciplines

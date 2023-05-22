@@ -21,7 +21,7 @@ export class Classroom {
   @Column({ default: true, select: false })
   active: boolean
 
-  @OneToMany(type => Student, s => s.classroom, {eager: true})
+  @OneToMany(type => Student, s => s.classroom)
   students: Student[]
 
   @OneToMany( type => StudentClassesHistory, sc => sc.classroom)
@@ -33,10 +33,10 @@ export class Classroom {
   @OneToMany( type => TestClasses, t => t.classroom)
   testClasses: TestClasses[]
 
-  @ManyToOne(type => School, s => s.classrooms, { eager: true})
+  @ManyToOne(type => School, s => s.classrooms)
   school: School
 
-  @ManyToOne(type => Year, y => y.classrooms, { eager: true})
+  @ManyToOne(type => Year, y => y.classrooms)
   year: Year
 
   @ManyToOne( type => ClassCategory, c => c.classrooms)

@@ -18,7 +18,7 @@ TestClassesRouter.post('/', (req: Request, res: Response) => {
     .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
 })
 
-TestClassesRouter.put('/:id', (req: Request, res: Response) => {
+TestClassesRouter.put('/', (req: Request, res: Response) => {
   testClassesController.updateOneBy(req.params.id, req.body)
     .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
 })

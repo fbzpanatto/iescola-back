@@ -27,21 +27,21 @@ export class Test {
   @OneToMany(type => StudentTests, st => st.test)
   studentTests: StudentTests[];
 
-  @OneToMany( type => TestClasses, t => t.test, { eager: true })
+  @OneToMany( type => TestClasses, t => t.test)
   testClasses: TestClasses[]
 
-  @ManyToOne(type => Year, y => y.tests, { eager: true })
+  @ManyToOne(type => Year, y => y.tests)
   year: Year
 
-  @ManyToOne(type => TestCategory, tc => tc.tests, { eager: true })
+  @ManyToOne(type => TestCategory, tc => tc.tests)
   category: TestCategory
 
-  @ManyToOne(type => Bimester, b => b.tests, { eager: true })
+  @ManyToOne(type => Bimester, b => b.tests)
   bimester: Bimester
 
-  @ManyToOne(type => Teacher, t => t.tests, { eager: true })
+  @ManyToOne(type => Teacher, t => t.tests)
   teacher: Teacher
 
-  @ManyToOne(type => Discipline, d => d.tests, { eager: true })
+  @ManyToOne(type => Discipline, d => d.tests)
   discipline: Discipline
 }

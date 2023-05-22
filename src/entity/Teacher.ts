@@ -17,16 +17,16 @@ export class Teacher extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Person, p => p.teacher, {eager: true})
+  @OneToOne(() => Person, p => p.teacher)
   @JoinColumn()
   person: Person;
 
   @OneToMany(() => Test, t => t.teacher)
   tests: Test[]
 
-  @OneToMany(() => TeacherClasses, t => t.teacher, {eager: true })
+  @OneToMany(() => TeacherClasses, t => t.teacher)
   teacherClasses: TeacherClasses[]
 
-  @OneToMany(()=> TeacherDisciplines, t => t.teacher, {eager: true})
+  @OneToMany(()=> TeacherDisciplines, t => t.teacher)
   teacherDisciplines: TeacherDisciplines[]
 }

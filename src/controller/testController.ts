@@ -54,7 +54,10 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     let response: { testId: number, classes: TestClass[] }[] = []
 
-    const tests = await this.repository.find()
+    const tests = await this.repository.find({
+      relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person', 'testClasses.classroom.school'],
+      select: ['id', 'name'],
+    }) as Test[]
 
     for (let test of tests) {
 

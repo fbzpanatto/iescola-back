@@ -10,6 +10,8 @@ import { Test } from "../entity/Test";
 import { testController } from "./testController";
 import { studentController } from "./studentController";
 import { classroomController } from "./classroomController";
+import {testClassesController} from "./testClassesController";
+import {TestClasses} from "../entity/TestClasses";
 
 class StudentTestsController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -93,6 +95,15 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
   }
 
   async dataToFront(test: Test, classroom: Classroom) {
+    const testClassroom = await testClassesController.findOne({
+      relations: ['testGiver'],
+      where: { test: {id: test.id}, classroom: {id: classroom.id}}
+    }) as TestClasses
+
+    let testGiver = {
+      id: testClassroom.testGiver?.id,
+      person: testClassroom.testGiver?.person.name
+    }
 
     const studentsTests = await this.repository.find({
       relations: ['student', 'student.classroom'],
@@ -125,7 +136,8 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       studentTests: studentsTests.map(st => this.formatStudentTest(st, test)),
       totalTestCompleted: studentsTestsCompleted.length,
       totalByQuestion: totalByQuestion,
-      rateByQuestion: rateByQuestion
+      rateByQuestion: rateByQuestion,
+      testGiver: testGiver
     }
   }
 
