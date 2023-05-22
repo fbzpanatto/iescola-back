@@ -18,7 +18,11 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
   }
 
   async getOne(id: number | string) {
-    const test = await this.findOneBy(id) as Test ;
+
+    const test = await this.repository.findOne({
+      relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person', 'teacher.teacherClasses', 'teacher.teacherDisciplines', 'testClasses.classroom.school'],
+      where: { id: Number(id) },
+    }) as Test
 
     let testClasses = test.testClasses
       .map((testClass) => { return { id: testClass.classroom.id, name: testClass.classroom.name }})
@@ -26,7 +30,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     let teacherClasses = test.teacher
       .teacherClasses
-      .map((teacherClass) => { return { id: teacherClass.classroom.id, name: teacherClass.classroom.name }})
+      .map((classroom) => { return { id: classroom.classroom.id, name: classroom.classroom.name }})
       .sort((a, b) => a.id - b.id)
 
     let teacherDisciplines = test.teacher
@@ -35,18 +39,14 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       .sort((a, b) => a.id - b.id)
 
     return {
-      id: test.id,
-      name: test.name,
-      questions: test.questions,
-      discipline: test.discipline,
-      teacherPerson: test.teacher,
-      teacherDisciplines: teacherDisciplines,
-      teacherClasses: teacherClasses,
+      ...test,
+      teacher: {
+        id: test.teacher.id,
+        person: test.teacher.person,
+        classes: teacherClasses,
+        disciplines: teacherDisciplines,
+      },
       testClasses: testClasses,
-      year: test.year,
-      bimester: test.bimester,
-      category: test.category,
-      active: test.active,
     }
   }
 
