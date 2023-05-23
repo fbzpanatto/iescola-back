@@ -6,16 +6,69 @@ import { Classroom } from "../entity/Classroom";
 import { Student } from "../entity/Student";
 import { StudentTests } from "../entity/StudentTests";
 import { Test } from "../entity/Test";
+import { TestClasses } from "../entity/TestClasses";
+
 
 import { testController } from "./testController";
 import { studentController } from "./studentController";
 import { classroomController } from "./classroomController";
-import {testClassesController} from "./testClassesController";
-import {TestClasses} from "../entity/TestClasses";
+import { testClassesController } from "./testClassesController";
 
 class StudentTestsController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
     super(StudentTests);
+  }
+
+  async analyzes(req: Request) {
+
+    const { test: testId, classroom: classroomId } = req.query
+
+    const test = await testController.findOneBy(testId as string) as Test;
+
+    const classroomQuery:  FindOneOptions<ObjectLiteral> = { relations: ['school'], where: { id: classroomId }}
+    const classroom = await classroomController.findOne(classroomQuery) as Classroom;
+    const school = classroom.school
+
+    const classesQuery: FindOneOptions<ObjectLiteral> = {
+      relations: ['classroom', 'classroom.students.studentTests'],
+      where: { test: { id: test.id }, classroom: { school: { id: school.id } } }
+    }
+    const testClasses = await testClassesController.getAll(classesQuery) as TestClasses[]
+
+    const respose = []
+
+    for(let testClass of testClasses) {
+      let obj: { [key: string]: any } = {}
+      obj.classroom = testClass.classroom.name
+      obj.questions = []
+      obj.testDone = testClass.classroom.students.filter((student: Student) => student.studentTests.find((st: StudentTests) => st.testId === test.id && st.completed)).length
+
+      for(let question of test.questions) {
+        let questionObj = { id: question.id, total: 0 }
+
+        for(let student of testClass.classroom.students) {
+
+          student.studentTests.filter((st: StudentTests) => (st.testId === test.id && st.completed)).map((st: StudentTests) => {
+
+            const index = question.id
+            const answer = st.studentAnswers.find((answer: { id: number }) => answer.id === index)
+
+            if(answer) {
+              if(answer.answer === question.answer) {
+                questionObj.total += 1
+              }
+            }
+          })
+        }
+        obj['questions'].push(questionObj)
+      }
+      obj.ratePerQuestion = obj.questions.map((q: any) => {
+
+        return { id: q.id, rate: Math.floor((q.total / obj.testDone) * 100)}
+      })
+      respose.push(obj)
+    }
+    return respose
   }
 
   async registerAnswers(req: Request) {

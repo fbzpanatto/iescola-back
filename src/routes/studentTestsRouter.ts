@@ -8,6 +8,11 @@ StudentTestsRouter.get('/register-answers', (req: Request, res: Response) => {
     .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
 })
 
+StudentTestsRouter.get('/analyzes', (req: Request, res: Response) => {
+  studentTestsController.analyzes(req)
+      .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+})
+
 StudentTestsRouter.get('/', (req: Request, res: Response) => {
   studentTestsController.getAll()
     .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
