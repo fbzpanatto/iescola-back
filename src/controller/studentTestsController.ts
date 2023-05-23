@@ -35,13 +35,14 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
     }
     const testClasses = await testClassesController.getAll(classesQuery) as TestClasses[]
 
-    const respose = []
+    const respose:{ classroom?: string, questions: { id: number, total: number }[], testDone?: any, ratePerQuestion?: any }[] = []
 
     for(let testClass of testClasses) {
-      let obj: { [key: string]: any } = {}
-      obj.classroom = testClass.classroom.name
-      obj.questions = []
-      obj.testDone = testClass.classroom.students.filter((student: Student) => student.studentTests.find((st: StudentTests) => st.testId === test.id && st.completed)).length
+      let obj: { classroom?: string, questions: { id: number, total: number }[], testDone?: any, ratePerQuestion?: any } = {
+        classroom: testClass.classroom.name,
+        questions: [],
+        testDone: testClass.classroom.students.filter((student: Student) => student.studentTests.find((st: StudentTests) => st.testId === test.id && st.completed)).length
+      }
 
       for(let question of test.questions) {
         let questionObj = { id: question.id, total: 0 }
@@ -60,7 +61,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
             }
           })
         }
-        obj['questions'].push(questionObj)
+        obj.questions.push(questionObj)
       }
       obj.ratePerQuestion = obj.questions.map((q: any) => {
 
