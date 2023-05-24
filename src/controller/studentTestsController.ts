@@ -19,57 +19,57 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
     super(StudentTests);
   }
 
-  async analyzes(req: Request) {
+  async analyzes(req: Request | any) {
 
-    const { test: testId, classroom: classroomId } = req.query
-
+    const { test: testId} = req.query
     const test = await testController.findOneBy(testId as string) as Test;
 
-    const classroomQuery:  FindOneOptions<ObjectLiteral> = { relations: ['school'], where: { id: classroomId }}
-    const classroom = await classroomController.findOne(classroomQuery) as Classroom;
-    const school = classroom.school
+    const testClasses = await testClassesController.getAll({
+      relations: ['classroom.school', 'classroom.students.studentTests', 'test'],
+      where: { test: { id: test.id }}
+    }) as TestClasses[]
 
-    const classesQuery: FindOneOptions<ObjectLiteral> = {
-      relations: ['classroom', 'classroom.students.studentTests'],
-      where: { test: { id: test.id }, classroom: { school: { id: school.id } } }
-    }
-    const testClasses = await testClassesController.getAll(classesQuery) as TestClasses[]
+    const result: any = {}
 
-    const respose:{ classroom?: string, questions: { id: number, total: number }[], testDone?: any, ratePerQuestion?: any }[] = []
-
-    for(let testClass of testClasses) {
-      let obj: { classroom?: string, questions: { id: number, total: number }[], testDone?: any, ratePerQuestion?: any } = {
-        classroom: testClass.classroom.name,
-        questions: [],
-        testDone: testClass.classroom.students.filter((student: Student) => student.studentTests.find((st: StudentTests) => st.testId === test.id && st.completed)).length
+    for(let register of testClasses) {
+      if(!result[register.classroom.id]) {
+        result[register.classroom.id] = {
+          classId: register.classroom.id,
+          classroom: register.classroom.name,
+          school: register.classroom.school.name,
+          testDone: 0,
+          question: [],
+          ratePerQuestion: []
+        }
       }
 
-      for(let question of test.questions) {
-        let questionObj = { id: question.id, total: 0 }
+      for(let students of register.classroom.students) {
+        for(let studentTest of students.studentTests.filter((st: StudentTests) => st.testId === test.id && st.completed)) {
+          result[register.classroom.id].testDone++
 
-        for(let student of testClass.classroom.students) {
-
-          student.studentTests.filter((st: StudentTests) => (st.testId === test.id && st.completed)).map((st: StudentTests) => {
-
-            const index = question.id
-            const answer = st.studentAnswers.find((answer: { id: number }) => answer.id === index)
-
-            if(answer) {
-              if(answer.answer === question.answer) {
-                questionObj.total += 1
+          for(let studentAnswer of studentTest.studentAnswers) {
+            const index = test.questions.findIndex((question) => question.id === studentAnswer.id)
+            if(!result[register.classroom.id].question[index]) {
+              result[register.classroom.id].question[index] = {
+                id: studentAnswer.id,
+                total: 0
               }
             }
-          })
+            if (studentAnswer.answer === test.questions[index].answer) {
+              result[register.classroom.id].question[index].total++
+            }
+          }
         }
-        obj.questions.push(questionObj)
       }
-      obj.ratePerQuestion = obj.questions.map((q: any) => {
-
-        return { id: q.id, rate: Math.floor((q.total / obj.testDone) * 100)}
+      result[register.classroom.id].ratePerQuestion = result[register.classroom.id].question.map((question: any) => {
+        return { id: question.id, rate: Math.floor((question.total / result[register.classroom.id].testDone) * 100) }
       })
-      respose.push(obj)
     }
-    return respose
+
+    console.log(result)
+
+    return result
+
   }
 
   async registerAnswers(req: Request) {
@@ -144,6 +144,8 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
     }
 
     await this.repository.save(dataToUpdate)
+
+    await this.analyzes({ query: { test: test.id } })
 
     return this.dataToFront(test, student.classroom)
   }
