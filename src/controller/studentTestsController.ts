@@ -21,8 +21,15 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
   async analyzes(req: Request | any) {
 
-    const { test: testId} = req.query
+    const { test: testId, classroom: classId } = req.query
+
     const test = await testController.findOneBy(testId as string) as Test;
+    const classroom = await classroomController.findOne({
+      relations: [ 'school' ],
+      where: { id: classId }
+    }) as Classroom
+
+    const { school } = classroom
 
     const testClasses = await testClassesController.getAll({
       relations: ['classroom.school', 'classroom.students.studentTests', 'test'],
@@ -30,13 +37,14 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
     }) as TestClasses[]
 
     const result: any = {}
+    let totalGeral: number = 0
 
     for(let register of testClasses) {
       if(!result[register.classroom.id]) {
         result[register.classroom.id] = {
           classId: register.classroom.id,
           classroom: register.classroom.name,
-          school: register.classroom.school.name,
+          school: register.classroom.school,
           testDone: 0,
           question: [],
           ratePerQuestion: []
@@ -46,6 +54,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       for(let students of register.classroom.students) {
         for(let studentTest of students.studentTests.filter((st: StudentTests) => st.testId === test.id && st.completed)) {
           result[register.classroom.id].testDone++
+          totalGeral++
 
           for(let studentAnswer of studentTest.studentAnswers) {
             const index = test.questions.findIndex((question) => question.id === studentAnswer.id)
@@ -62,11 +71,28 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
         }
       }
       result[register.classroom.id].ratePerQuestion = result[register.classroom.id].question.map((question: any) => {
-        return { id: question.id, rate: Math.floor((question.total / result[register.classroom.id].testDone) * 100) }
+        return Math.floor((question.total / result[register.classroom.id].testDone) * 100)
       })
     }
 
-    return result
+    let municipio: { id: number, total: number, rate: number }[] = []
+
+    for(let register in result) {
+      for(let question of result[register].question) {
+        const index = municipio.findIndex((q:any) => q.id === question.id )
+        if(index === -1) {
+          municipio.push({ id: question.id, total: question.total, rate: (question.total / totalGeral) * 100  })
+        } else {
+          municipio[index].total += question.total
+          municipio[index].rate = (municipio[index].total / totalGeral) * 100
+        }
+      }
+      if(result[register].school.id != school.id) {
+        delete result[register]
+      }
+    }
+
+    return {...result, newObject: municipio, totalGeral}
 
   }
 
@@ -143,7 +169,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
     await this.repository.save(dataToUpdate)
 
-    await this.analyzes({ query: { test: test.id } })
+    await this.analyzes({ query: { test: test.id, classroom: student.classroom.id } })
 
     return this.dataToFront(test, student.classroom)
   }
