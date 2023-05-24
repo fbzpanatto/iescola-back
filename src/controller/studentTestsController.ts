@@ -46,8 +46,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
           classroom: register.classroom.name,
           school: register.classroom.school,
           testDone: 0,
-          question: [],
-          ratePerQuestion: []
+          question: []
         }
       }
 
@@ -61,18 +60,17 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
             if(!result[register.classroom.id].question[index]) {
               result[register.classroom.id].question[index] = {
                 id: studentAnswer.id,
-                total: 0
+                total: 0,
+                rate: 0
               }
             }
             if (studentAnswer.answer === test.questions[index].answer) {
               result[register.classroom.id].question[index].total++
+              result[register.classroom.id].question[index].rate = Math.floor(((result[register.classroom.id].question[index].total / result[register.classroom.id].testDone) * 100))
             }
           }
         }
       }
-      result[register.classroom.id].ratePerQuestion = result[register.classroom.id].question.map((question: any) => {
-        return Math.floor((question.total / result[register.classroom.id].testDone) * 100)
-      })
     }
 
     let municipio: { id: number, total: number, rate: number }[] = []
@@ -81,10 +79,10 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       for(let question of result[register].question) {
         const index = municipio.findIndex((q:any) => q.id === question.id )
         if(index === -1) {
-          municipio.push({ id: question.id, total: question.total, rate: (question.total / totalGeral) * 100  })
+          municipio.push({ id: question.id, total: question.total, rate: Math.floor((question.total / totalGeral) * 100)  })
         } else {
           municipio[index].total += question.total
-          municipio[index].rate = (municipio[index].total / totalGeral) * 100
+          municipio[index].rate = Math.floor((municipio[index].total / totalGeral) * 100)
         }
       }
       if(result[register].school.id != school.id) {
