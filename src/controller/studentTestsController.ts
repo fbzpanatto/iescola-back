@@ -66,8 +66,6 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       })
     }
 
-    console.log(result)
-
     return result
 
   }
