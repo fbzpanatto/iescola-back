@@ -73,16 +73,16 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       }
     }
 
-    let municipio: { id: number, total: number, rate: number }[] = []
+    let municQuestions: { id: number, total: number, rate: number }[] = []
 
     for(let register in result) {
       for(let question of result[register].question) {
-        const index = municipio.findIndex((q:any) => q.id === question.id )
+        const index = municQuestions.findIndex((q:any) => q.id === question.id )
         if(index === -1) {
-          municipio.push({ id: question.id, total: question.total, rate: Math.floor((question.total / totalGeral) * 100)  })
+          municQuestions.push({ id: question.id, total: question.total, rate: Math.floor((question.total / totalGeral) * 100)  })
         } else {
-          municipio[index].total += question.total
-          municipio[index].rate = Math.floor((municipio[index].total / totalGeral) * 100)
+          municQuestions[index].total += question.total
+          municQuestions[index].rate = Math.floor((municQuestions[index].total / totalGeral) * 100)
         }
       }
       if(result[register].school.id != school.id) {
@@ -90,7 +90,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       }
     }
 
-    return {...result, newObject: municipio, totalGeral}
+    return {...result, cityHall: { classroom: 'Municipio', question: municQuestions, testDone: totalGeral} }
 
   }
 
