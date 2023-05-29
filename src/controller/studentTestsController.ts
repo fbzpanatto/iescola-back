@@ -167,8 +167,6 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
     await this.repository.save(dataToUpdate)
 
-    await this.analyzes({ query: { test: test.id, classroom: student.classroom.id } })
-
     return this.dataToFront(test, student.classroom)
   }
 
