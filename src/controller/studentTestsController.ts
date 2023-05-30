@@ -21,6 +21,39 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
   async analyzes(req: Request | any) {
 
+    // const { test: testId, classroom: classId } = req.query
+    //
+    // console.log('testId', testId, 'classId', classId)
+    //
+    // const test = await testController.findOneBy(testId as string) as Test;
+    // const classroom = await classroomController.findOne({ relations: ['school'], where: { id: classId }}) as Classroom
+    // const { school } = classroom
+    //
+    // const testClasses = await testClassesController.getAll({
+    //   relations: ['classroom.school', 'classroom.students.studentTests'],
+    //   where: { test: { id: test.id } }
+    // }) as TestClasses[]
+    //
+    // const arrayOfClasses = testClasses.map(result => result.classroom)
+    //
+    // let myResult: { [key: string]: { testDone: number }} = {}
+    //
+    // for(let classroom of arrayOfClasses) {
+    //   console.log('id:', classroom.id, 'class: ', classroom.name, 'school: ', classroom.school.name)
+    //   if(!myResult[classroom.id]) {
+    //     myResult[classroom.id] = {
+    //       testDone: 0
+    //     }
+    //   }
+    //   for(let student of classroom.students) {
+    //     let filteredCompletedTests = student.studentTests.filter(studentTest => (studentTest.testId === test.id) && (studentTest.completed))
+    //     myResult[classroom.id].testDone += filteredCompletedTests.length
+    //     for(let studentTest of filteredCompletedTests) {
+    //       console.log(studentTest)
+    //     }
+    //   }
+    // }
+
     const { test: testId, classroom: classId } = req.query
 
     const test = await testController.findOneBy(testId as string) as Test;
@@ -51,8 +84,9 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       }
 
       for(let students of register.classroom.students) {
-        for(let studentTest of students.studentTests.filter((st: StudentTests) => st.testId === test.id && st.completed)) {
-          result[register.classroom.id].testDone++
+        let filteredArray = students.studentTests.filter((st: StudentTests) => st.testId === test.id && st.completed)
+        result[register.classroom.id].testDone += filteredArray.length
+        for(let studentTest of filteredArray) {
           totalGeral++
 
           for(let studentAnswer of studentTest.studentAnswers) {
