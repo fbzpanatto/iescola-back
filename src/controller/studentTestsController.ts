@@ -13,6 +13,7 @@ import { testController } from "./testController";
 import { studentController } from "./studentController";
 import { classroomController } from "./classroomController";
 import { testClassesController } from "./testClassesController";
+import {School} from "../entity/School";
 
 class StudentTestsController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -21,111 +22,96 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
   async analyzes(req: Request | any) {
 
-    // const { test: testId, classroom: classId } = req.query
-    //
-    // console.log('testId', testId, 'classId', classId)
-    //
-    // const test = await testController.findOneBy(testId as string) as Test;
-    // const classroom = await classroomController.findOne({ relations: ['school'], where: { id: classId }}) as Classroom
-    // const { school } = classroom
-    //
-    // const testClasses = await testClassesController.getAll({
-    //   relations: ['classroom.school', 'classroom.students.studentTests'],
-    //   where: { test: { id: test.id } }
-    // }) as TestClasses[]
-    //
-    // const arrayOfClasses = testClasses.map(result => result.classroom)
-    //
-    // let myResult: { [key: string]: { testDone: number }} = {}
-    //
-    // for(let classroom of arrayOfClasses) {
-    //   console.log('id:', classroom.id, 'class: ', classroom.name, 'school: ', classroom.school.name)
-    //   if(!myResult[classroom.id]) {
-    //     myResult[classroom.id] = {
-    //       testDone: 0
-    //     }
-    //   }
-    //   for(let student of classroom.students) {
-    //     let filteredCompletedTests = student.studentTests.filter(studentTest => (studentTest.testId === test.id) && (studentTest.completed))
-    //     myResult[classroom.id].testDone += filteredCompletedTests.length
-    //     for(let studentTest of filteredCompletedTests) {
-    //       console.log(studentTest)
-    //     }
-    //   }
-    // }
-
     const { test: testId, classroom: classId } = req.query
 
     const test = await testController.findOneBy(testId as string) as Test;
-    const classroom = await classroomController.findOne({
-      relations: [ 'school' ],
-      where: { id: classId }
-    }) as Classroom
-
+    const classroom = await classroomController.findOne({ relations: ['school'], where: { id: classId }}) as Classroom
     const { school } = classroom
 
     const testClasses = await testClassesController.getAll({
-      relations: ['classroom.school', 'classroom.students.studentTests', 'test'],
-      where: { test: { id: test.id }}
+      relations: ['classroom.school', 'classroom.students.studentTests'],
+      where: { test: { id: test.id } }
     }) as TestClasses[]
 
-    const result: any = {}
-    let totalGeral: number = 0
+    const arrayOfClasses = testClasses.map(result => result.classroom)
 
-    for(let register of testClasses) {
-      if(!result[register.classroom.id]) {
-        result[register.classroom.id] = {
-          classId: register.classroom.id,
-          classroom: register.classroom.name,
-          school: register.classroom.school,
+    let totaByClassroom: { [key: string]: { testDone: number, acertos: { id: number, totalAcerto: number }[], question: { id: number, rate: number }[], school: School, classroom: string }} = {}
+
+    for(let classroom of arrayOfClasses) {
+      if(!totaByClassroom[classroom.id]) {
+        totaByClassroom[classroom.id] = {
+          school: classroom.school,
+          classroom: classroom.name,
           testDone: 0,
+          acertos: [],
           question: []
         }
       }
 
-      for(let students of register.classroom.students) {
-        let filteredArray = students.studentTests.filter((st: StudentTests) => st.testId === test.id && st.completed)
-        result[register.classroom.id].testDone += filteredArray.length
-        for(let studentTest of filteredArray) {
-          totalGeral++
-
-          for(let studentAnswer of studentTest.studentAnswers) {
-            const index = test.questions.findIndex((question) => question.id === studentAnswer.id)
-            if(!result[register.classroom.id].question[index]) {
-              result[register.classroom.id].question[index] = {
-                id: studentAnswer.id,
-                total: 0,
-                rate: 0
-              }
+      for(let student of classroom.students) {
+        let completedTests = student.studentTests.filter(studentTest => (studentTest.testId === test.id) && (studentTest.completed))
+        totaByClassroom[classroom.id].testDone += completedTests.length
+        for(let studentTest of completedTests) {
+          for(let studentQuestion of studentTest.studentAnswers) {
+            const questionIndex = test.questions.findIndex(testQuestion => testQuestion.id === studentQuestion.id)
+            if(!totaByClassroom[classroom.id].acertos[questionIndex]) {
+              totaByClassroom[classroom.id].acertos.push({ id: studentQuestion.id, totalAcerto: 0 })
             }
-            if (studentAnswer.answer === test.questions[index].answer) {
-              result[register.classroom.id].question[index].total++
-              result[register.classroom.id].question[index].rate = Math.floor(((result[register.classroom.id].question[index].total / result[register.classroom.id].testDone) * 100))
+            if(totaByClassroom[classroom.id].acertos[questionIndex] && studentQuestion.answer === test.questions[questionIndex].answer) {
+              totaByClassroom[classroom.id].acertos[questionIndex].totalAcerto += 1
             }
           }
         }
       }
     }
 
-    let municQuestions: { id: number, total: number, rate: number }[] = []
-
-    for(let register in result) {
-      for(let question of result[register].question) {
-        const index = municQuestions.findIndex((q:any) => q.id === question.id )
-        if(index === -1) {
-          municQuestions.push({ id: question.id, total: question.total, rate: Math.floor((question.total / totalGeral) * 100)  })
-        } else {
-          municQuestions[index].total += question.total
-          municQuestions[index].rate = Math.floor((municQuestions[index].total / totalGeral) * 100)
+    for(let classroom in totaByClassroom) {
+      for(let question of totaByClassroom[classroom].acertos) {
+        const index = totaByClassroom[classroom].question.findIndex(obj => obj.id === question.id)
+        if(!totaByClassroom[classroom].question[index]) {
+          totaByClassroom[classroom].question.push({ id: question.id, rate: Math.floor((question.totalAcerto / totaByClassroom[classroom].testDone) * 100) })
         }
-      }
-      if(result[register].school.id != school.id) {
-        delete result[register]
       }
     }
 
-    return {...result, cityHall: { classroom: 'Municipio', question: municQuestions, testDone: totalGeral} }
+    const totalDoneMunicipio = Object.keys(totaByClassroom).reduce((acc: number, prev: string) => {
+      let localvalue = totaByClassroom[prev].testDone
+      return acc += localvalue
+    }, 0)
 
+    let municipio: { [key: string]: { classroom: string, testDone: number, question: { id: number, rate: number }[] } } = {
+      'cityHall': {
+        classroom: 'Municipio',
+        testDone: totalDoneMunicipio,
+        question: []
+      }
+    }
+
+    for(let question of test.questions) {
+      const index = municipio['cityHall'].question.findIndex(qt => qt.id === question.id)
+      if(!municipio['cityHall'].question[index]) {
+
+        let total:number = 0
+
+        for(let classroom in totaByClassroom) {
+          total += totaByClassroom[classroom].acertos.find(qt => qt.id === question.id)?.totalAcerto ?? 0
+        }
+
+        municipio['cityHall'].question.push({ id: question.id, rate: Math.floor((total / municipio['cityHall'].testDone) * 100) })
+
+      }
+    }
+
+    for(let register in totaByClassroom) {
+      if(totaByClassroom[register].school.id != school.id) {
+        delete totaByClassroom[register]
+      }
+    }
+
+    return {
+      ...totaByClassroom,
+      ...municipio,
+    }
   }
 
   async registerAnswers(req: Request) {
