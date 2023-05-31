@@ -4,7 +4,7 @@ import { testController } from "../controller/testController";
 export const TestRouter = Router()
 
 TestRouter.get('/', (req: Request, res: Response) => {
-  testController.getAll()
+  testController.getAllWithTerm(req)
     .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
 })
 

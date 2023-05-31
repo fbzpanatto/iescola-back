@@ -109,8 +109,8 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
     }
 
     return {
-      ...totaByClassroom,
       ...municipio,
+      ...totaByClassroom
     }
   }
 

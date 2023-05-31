@@ -1,5 +1,6 @@
-import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
+import {DeepPartial, EntityTarget, ObjectLiteral, ILike, FindOptionsWhere} from "typeorm";
 import { GenericController } from "./genericController";
+import {query, Request} from "express";
 
 import { Classroom } from "../entity/Classroom";
 import { TestClasses } from "../entity/TestClasses";
@@ -18,13 +19,14 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     super(Test);
   }
 
-  override async getAll() {
+  async getAllWithTerm(req?: Request) {
 
     let response: { testId: number, classes: TestClass[] }[] = []
 
     const tests = await this.repository.find({
       relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person', 'testClasses.classroom.school'],
       select: ['id', 'name'],
+      where: this.whereSearch(req)
     }) as Test[]
 
     for (let test of tests) {
@@ -48,6 +50,22 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       response.push({ testId: test.id, classes: testClasses })
     }
     return response
+  }
+
+  whereSearch(req?: Request):  FindOptionsWhere<ObjectLiteral> | FindOptionsWhere<ObjectLiteral>[] | undefined {
+
+    let search: string = ''
+    if(req) {
+      for(let value in req.query) {
+        if(!!req.query[value]?.length) {
+          search = req.query[value] as string
+        }
+      }
+    }
+
+    let fullSearch = {}
+    let textSearch = { testClasses: { classroom: { school: { name: ILike(`%${search}%`) } } } }
+    return search.length > 0 ? textSearch : fullSearch
   }
 
   async getOne(id: number | string) {
