@@ -55,17 +55,27 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
   whereSearch(req?: Request):  FindOptionsWhere<ObjectLiteral> | FindOptionsWhere<ObjectLiteral>[] | undefined {
 
     let search: string = ''
+    let bimester: number = 1
+
     if(req) {
       for(let value in req.query) {
-        if(!!req.query[value]?.length) {
+        if(!!req.query[value]?.length && value === 'search') {
           search = req.query[value] as string
+        }
+        if(req.query.bimester) {
+          bimester = Number(req?.query.bimester)
         }
       }
     }
 
-    let fullSearch = {}
-    let textSearch = { testClasses: { classroom: { school: { name: ILike(`%${search}%`) } } } }
-    return search.length > 0 ? textSearch : fullSearch
+    let fullSearch = {
+      bimester: { id: bimester }
+    }
+    let whereFilters = {
+      testClasses: { classroom: { school: { name: ILike(`%${search}%`) } } },
+      bimester: { id: bimester }
+    }
+    return search.length > 0 ? whereFilters : fullSearch
   }
 
   async getOne(id: number | string) {
