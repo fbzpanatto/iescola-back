@@ -56,6 +56,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     let search: string = ''
     let bimester: number = 1
+    let year: number = 1
 
     if(req) {
       for(let value in req.query) {
@@ -69,11 +70,13 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
 
     let fullSearch = {
-      bimester: { id: bimester }
+      bimester: { id: bimester },
+      year: { id: year }
     }
     let whereFilters = {
       testClasses: { classroom: { school: { name: ILike(`%${search}%`) } } },
-      bimester: { id: bimester }
+      bimester: { id: bimester },
+      year: { id: year }
     }
     return search.length > 0 ? whereFilters : fullSearch
   }
