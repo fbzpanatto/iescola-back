@@ -66,6 +66,9 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
         if(req.query.bimester) {
           bimester = Number(req?.query.bimester)
         }
+        if(req.query.year) {
+          year = Number(req?.query.year)
+        }
       }
     }
 
