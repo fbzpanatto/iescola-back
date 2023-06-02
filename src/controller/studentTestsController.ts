@@ -13,7 +13,7 @@ import { testController } from "./testController";
 import { studentController } from "./studentController";
 import { classroomController } from "./classroomController";
 import { testClassesController } from "./testClassesController";
-import {School} from "../entity/School";
+import { School } from "../entity/School";
 
 class StudentTestsController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -57,7 +57,10 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
             if(!totaByClassroom[classroom.id].acertos[questionIndex]) {
               totaByClassroom[classroom.id].acertos.push({ id: studentQuestion.id, totalAcerto: 0 })
             }
-            if(totaByClassroom[classroom.id].acertos[questionIndex] && studentQuestion.answer === test.questions[questionIndex].answer) {
+
+            const condition = test.questions[questionIndex].answer.includes(studentQuestion.answer)
+
+            if(totaByClassroom[classroom.id].acertos[questionIndex] && condition) {
               totaByClassroom[classroom.id].acertos[questionIndex].totalAcerto += 1
             }
           }
@@ -209,12 +212,15 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
     const studentsTestsCompleted = studentsTests.filter(st => st.completed)
 
-    const totalByQuestion = test.questions.map(q => {
+    const totalByQuestion = test.questions.map(testQuestion => {
       return {
-        id: q.id,
+        id: testQuestion.id,
         total: studentsTestsCompleted.reduce((acc, curr) => {
-          const answer = curr.studentAnswers.find(a => Number(a.id) === q.id);
-          if (answer?.answer === q.answer) acc++;
+          const studentQuestion = curr.studentAnswers.find(sa => Number(sa.id) === testQuestion.id);
+
+          const condition = testQuestion.answer.includes(studentQuestion?.answer as string)
+
+          if (condition) acc++;
           return acc;
         }, 0)
       }
@@ -249,9 +255,12 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
         test: {
           answers: st.studentAnswers,
           completed: st.completed,
-          score: st.studentAnswers.reduce((acc, curr) => {
-            const question = test.questions.find(q => q.id === Number(curr.id));
-            if (question?.answer === curr.answer) acc++;
+          score: st.studentAnswers.reduce((acc, studentQuestion) => {
+            const testQuestion = test.questions.find(q => q.id === Number(studentQuestion.id));
+
+            const condition = testQuestion?.answer.includes(studentQuestion.answer)
+
+            if (condition) acc++;
             return acc;
           }, 0)
         }
