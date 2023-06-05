@@ -3,7 +3,7 @@ import { Classroom } from "../entity/Classroom";
 import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
 import { schoolController } from "./schoolController";
 import { yearController } from "./yearController";
-import {classCategoryController} from "./classCategoryController";
+import { classCategoryController } from "./classCategoryController";
 
 class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {

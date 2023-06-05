@@ -18,10 +18,12 @@ import { CategoryRouter } from "./routes/categoryRoutes";
 import { TestCategoryRouter } from "./routes/testCategoryRouter";
 import { TestClassesRouter } from "./routes/testClassesRouter";
 import { TeacherDisciplineRouter} from "./routes/teacherDisciplineRouter";
+import { UserRouter } from "./routes/userRouter";
 
 const bodyParser = require('body-parser');
 
 import { Application } from "express";
+import {LoginRouter} from "./routes/loginRouter";
 
 const app: Application = express();
 
@@ -50,6 +52,9 @@ route.use('/test-category', TestCategoryRouter)
 route.use('/test', TestRouter)
 route.use('/test-classes', TestClassesRouter)
 route.use('/student-tests', StudentTestsRouter)
+
+route.use('/user', UserRouter)
+route.use('/login', LoginRouter)
 
 app.use(route)
 
