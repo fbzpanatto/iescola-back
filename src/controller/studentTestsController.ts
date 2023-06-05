@@ -58,9 +58,11 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
               totaByClassroom[classroom.id].acertos.push({ id: studentQuestion.id, totalAcerto: 0 })
             }
 
+            const notEmpty = studentQuestion?.answer != ''
+
             const condition = test.questions[questionIndex].answer.includes(studentQuestion.answer)
 
-            if(totaByClassroom[classroom.id].acertos[questionIndex] && condition) {
+            if(totaByClassroom[classroom.id].acertos[questionIndex] && (condition && notEmpty)) {
               totaByClassroom[classroom.id].acertos[questionIndex].totalAcerto += 1
             }
           }
@@ -186,6 +188,12 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
     for (const key in body) {
       dataToUpdate[key] = body[key];
+
+      if(key === 'studentAnswers') {
+        for(let question of body[key]) {
+          question.answer.toUpperCase().trim()
+        }
+      }
     }
 
     await this.repository.save(dataToUpdate)
@@ -218,9 +226,11 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
         total: studentsTestsCompleted.reduce((acc, curr) => {
           const studentQuestion = curr.studentAnswers.find(sa => Number(sa.id) === testQuestion.id);
 
+          const notEmpty = studentQuestion?.answer != ''
+
           const condition = testQuestion.answer.includes(studentQuestion?.answer as string)
 
-          if (condition) acc++;
+          if (condition && notEmpty) acc++;
           return acc;
         }, 0)
       }
@@ -258,9 +268,11 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
           score: st.studentAnswers.reduce((acc, studentQuestion) => {
             const testQuestion = test.questions.find(q => q.id === Number(studentQuestion.id));
 
+            const notEmpty = studentQuestion?.answer != ''
+
             const condition = testQuestion?.answer.includes(studentQuestion.answer)
 
-            if (condition) acc++;
+            if (condition && notEmpty) acc++;
             return acc;
           }, 0)
         }
