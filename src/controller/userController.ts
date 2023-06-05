@@ -1,14 +1,15 @@
 import { GenericController } from "./genericController";
 import { User } from "../entity/User";
 import { EntityTarget, ObjectLiteral } from "typeorm";
+import {Request, Response} from "express";
 class UserController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
     super(User);
   }
 
-  async login (body: ObjectLiteral) {
+  async login (req: Request, res: Response) {
 
-    const { user, password } = body
+    const { user, password } = req.body
 
     const parsedPassword = password
 
@@ -23,14 +24,16 @@ class UserController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       if(!loggedUser) { throw new TypeError("Invalid Credentials") }
 
-      return {
+      const data = {
         user: loggedUser.id,
         username: loggedUser.user,
         category: loggedUser.person.category.id
       }
 
+      return { status: 200, data }
+
     } catch (error: any) {
-      return { error: true, message: error.message }
+      return { error: true, message: error.message, status: 401 }
     }
   }
 }
