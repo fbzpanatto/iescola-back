@@ -1,8 +1,9 @@
-
 import express from 'express'
 
 import { Router } from 'express';
 import { AppDataSource } from "./data-source";
+
+import authorization from "./middleware/authorization";
 
 import { BimesterRouter } from "./routes/bimesterRouter";
 import { ClassroomRouter } from "./routes/classroomRouter";
@@ -19,11 +20,11 @@ import { TestCategoryRouter } from "./routes/testCategoryRouter";
 import { TestClassesRouter } from "./routes/testClassesRouter";
 import { TeacherDisciplineRouter} from "./routes/teacherDisciplineRouter";
 import { UserRouter } from "./routes/userRouter";
+import { LoginRouter } from "./routes/loginRouter";
 
 const bodyParser = require('body-parser');
 
 import { Application } from "express";
-import {LoginRouter} from "./routes/loginRouter";
 
 const app: Application = express();
 
@@ -35,25 +36,25 @@ const route = Router()
 
 app.use(cors({origin: true}));
 
-route.use('/year', YearRouter)
-route.use('/bimester', BimesterRouter)
-route.use('/school', SchoolRouter)
-route.use('/class-category', ClassCategoryRouter)
-route.use('/classroom', ClassroomRouter)
-route.use('/discipline', DisciplineRouter)
+route.use('/year', authorization, YearRouter)
+route.use('/bimester', authorization, BimesterRouter)
+route.use('/school', authorization, SchoolRouter)
+route.use('/class-category', authorization, ClassCategoryRouter)
+route.use('/classroom', authorization, ClassroomRouter)
+route.use('/discipline', authorization, DisciplineRouter)
 
-route.use('/category', CategoryRouter)
+route.use('/category', authorization, CategoryRouter)
 
-route.use('/teacher', TeacherRouter)
-route.use('/teacher-discipline', TeacherDisciplineRouter)
-route.use('/student', StudentRouter)
+route.use('/teacher', authorization, TeacherRouter)
+route.use('/teacher-discipline', authorization, TeacherDisciplineRouter)
+route.use('/student', authorization, StudentRouter)
 
-route.use('/test-category', TestCategoryRouter)
-route.use('/test', TestRouter)
-route.use('/test-classes', TestClassesRouter)
-route.use('/student-tests', StudentTestsRouter)
+route.use('/test-category', authorization, TestCategoryRouter)
+route.use('/test', authorization, TestRouter)
+route.use('/test-classes', authorization, TestClassesRouter)
+route.use('/student-tests', authorization, StudentTestsRouter)
 
-route.use('/user', UserRouter)
+route.use('/user', authorization, UserRouter)
 route.use('/login', LoginRouter)
 
 app.use(route)
