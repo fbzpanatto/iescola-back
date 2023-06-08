@@ -36,25 +36,25 @@ const route = Router()
 
 app.use(cors({origin: true}));
 
-route.use('/year', authorization, YearRouter)
-route.use('/bimester', authorization, BimesterRouter)
-route.use('/school', authorization, SchoolRouter)
-route.use('/class-category', authorization, ClassCategoryRouter)
-route.use('/classroom', authorization, ClassroomRouter)
-route.use('/discipline', authorization, DisciplineRouter)
+route.use('/year', YearRouter)
+route.use('/bimester', BimesterRouter)
+route.use('/school', SchoolRouter)
+route.use('/class-category', ClassCategoryRouter)
+route.use('/classroom', ClassroomRouter)
+route.use('/discipline', DisciplineRouter)
 
-route.use('/category', authorization, CategoryRouter)
+route.use('/category', CategoryRouter)
 
-route.use('/teacher', authorization, TeacherRouter)
-route.use('/teacher-discipline', authorization, TeacherDisciplineRouter)
-route.use('/student', authorization, StudentRouter)
+route.use('/teacher', TeacherRouter)
+route.use('/teacher-discipline', TeacherDisciplineRouter)
+route.use('/student', StudentRouter)
 
-route.use('/test-category', authorization, TestCategoryRouter)
+route.use('/test-category', TestCategoryRouter)
 route.use('/test', authorization, TestRouter)
-route.use('/test-classes', authorization, TestClassesRouter)
-route.use('/student-tests', authorization, StudentTestsRouter)
+route.use('/test-classes', TestClassesRouter)
+route.use('/student-tests', StudentTestsRouter)
 
-route.use('/user', authorization, UserRouter)
+route.use('/user', UserRouter)
 route.use('/login', LoginRouter)
 
 app.use(route)
