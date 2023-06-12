@@ -30,11 +30,10 @@ class UserController extends GenericController<EntityTarget<ObjectLiteral>> {
       const tokenPayload = {
         user: userToLogin.id,
         username: userToLogin.user,
-        category: userToLogin.person.category.id
+        category: userToLogin.person.category.id,
       }
 
-      // 7200
-      const jwtBearerToken = jwt.sign(tokenPayload, 'SECRET', { expiresIn: 10 })
+      const jwtBearerToken = jwt.sign(tokenPayload, 'SECRET', { expiresIn: 7200 })
 
       return { status: 200, data: { token: jwtBearerToken, expiresIn: jwt.decode(jwtBearerToken).exp, role: jwt.decode(jwtBearerToken).category  } }
 

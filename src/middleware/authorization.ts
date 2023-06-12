@@ -17,8 +17,9 @@ export default (req: Request, res: Response, next: NextFunction) => {
   try {
 
     const user = jwt.verify(token, 'SECRET');
-    // req.body.user = user.user
-    req.body.category = user.category
+
+    req.body.user = user
+
     next()
 
   } catch (error) {

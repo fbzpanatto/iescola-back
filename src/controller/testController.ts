@@ -1,6 +1,6 @@
-import {DeepPartial, EntityTarget, ObjectLiteral, ILike, FindOptionsWhere} from "typeorm";
+import { DeepPartial, EntityTarget, ObjectLiteral, ILike, FindOptionsWhere } from "typeorm";
 import { GenericController } from "./genericController";
-import {query, Request} from "express";
+import { Request} from "express";
 
 import { Classroom } from "../entity/Classroom";
 import { TestClasses } from "../entity/TestClasses";
@@ -10,8 +10,11 @@ import { Test } from "../entity/Test";
 import { testClassesController } from "./testClassesController";
 import { classroomController } from "./classroomController";
 import { studentTestsController} from "./studentTestsController";
+import { categoryOfTeachers } from "../middleware/isTeacher";
+import {userController} from "./userController";
+import {Teacher} from "../entity/Teacher";
 
-interface TestClass {name: string, school: string, classroomId: number, classroom: string, year: number, bimester: string, category: string, teacher: string, discipline: string}
+interface MyTestClassInterface {name: string, school: string, classroomId: number, classroom: string, year: number, bimester: string, category: string, teacher: string, discipline: string}
 
 class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
@@ -21,17 +24,17 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async getAllWithTerm(req?: Request) {
 
-    let response: { testId: number, classes: TestClass[] }[] = []
+    let response: { testId: number, classes: MyTestClassInterface[] }[] = []
 
     const tests = await this.repository.find({
-      relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person', 'testClasses.classroom.school'],
+      relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person.user', 'testClasses.classroom.school'],
       select: ['id', 'name'],
       where: this.whereSearch(req)
     }) as Test[]
 
     for (let test of tests) {
 
-      let testClasses: TestClass[] = []
+      let testClasses: MyTestClassInterface[] = []
 
       for(let testClass of test.testClasses) {
         let data = {
@@ -72,15 +75,25 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       }
     }
 
-    let fullSearch = {
+    let fullSearch: FindOptionsWhere<ObjectLiteral> = {
       bimester: { id: bimester },
       year: { id: year }
     }
-    let whereFilters = {
+
+    let whereFilters: FindOptionsWhere<ObjectLiteral> = {
       testClasses: { classroom: { school: { name: ILike(`%${search}%`) } } },
       bimester: { id: bimester },
       year: { id: year }
     }
+
+    if(Number(req?.body.user.category) === categoryOfTeachers[0]) {
+
+      const { user: userId } = req?.body.user
+
+      fullSearch.teacher = { person: { user: { id: userId } } }
+      whereFilters.teacher = { person: { user: { id: userId } } }
+    }
+
     return search.length > 0 ? whereFilters : fullSearch
   }
 

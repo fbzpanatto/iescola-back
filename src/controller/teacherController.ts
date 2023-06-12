@@ -66,6 +66,8 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
+    console.log(body)
+
     const teacher = new Teacher();
     teacher.person = await PersonClass.newPerson(body);
     await teacher.save();
@@ -74,7 +76,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       for(let element of body.teacherClasses) {
 
-        const classroom = await classroomController.findOneBy(element.classId) as Classroom;
+        const classroom = await classroomController.findOneBy(element) as Classroom;
         const teacherClass = new TeacherClasses();
 
         teacherClass.classroom = classroom;
@@ -91,7 +93,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       for(let element of body.teacherDisciplines) {
 
-        const discipline = await disciplineController.findOneBy(element.disciplineId) as Discipline;
+        const discipline = await disciplineController.findOneBy(element) as Discipline;
         const teacherDiscipline = new TeacherDisciplines();
 
         teacherDiscipline.discipline = discipline;
