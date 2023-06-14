@@ -11,8 +11,6 @@ import { testClassesController } from "./testClassesController";
 import { classroomController } from "./classroomController";
 import { studentTestsController} from "./studentTestsController";
 import { categoryOfTeachers } from "../middleware/isTeacher";
-import {userController} from "./userController";
-import {Teacher} from "../entity/Teacher";
 
 interface MyTestClassInterface {name: string, school: string, classroomId: number, classroom: string, year: number, bimester: string, category: string, teacher: string, discipline: string}
 
@@ -99,34 +97,46 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async getOne(id: number | string) {
 
-    const test = await this.repository.findOne({
-      relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person', 'teacher.teacherClasses', 'teacher.teacherDisciplines', 'testClasses.classroom.school'],
-      where: { id: Number(id) },
-    }) as Test
+    try {
 
-    let testClasses = test.testClasses
-      .map((testClass) => { return { id: testClass.classroom.id, name: testClass.classroom.name }})
-      .sort((a, b) => a.id - b.id)
+      const test = await this.repository.findOne({
+        relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person', 'teacher.teacherClasses', 'teacher.teacherDisciplines', 'testClasses.classroom.school'],
+        where: { id: Number(id) },
+      }) as Test
 
-    let teacherClasses = test.teacher
-      .teacherClasses
-      .map((classroom) => { return { id: classroom.classroom.id, name: classroom.classroom.name }})
-      .sort((a, b) => a.id - b.id)
+      if (!test) {
+        throw new Error('Test not found')
+      }
 
-    let teacherDisciplines = test.teacher
-      .teacherDisciplines
-      .map((discipline) => { return { id: discipline.discipline.id,  name: discipline.discipline.name }})
-      .sort((a, b) => a.id - b.id)
+      let testClasses = test.testClasses
+        .map((testClass) => { return { id: testClass.classroom.id, name: testClass.classroom.name }})
+        .sort((a, b) => a.id - b.id)
 
-    return {
-      ...test,
-      teacher: {
-        id: test.teacher.id,
-        person: test.teacher.person,
-        classes: teacherClasses,
-        disciplines: teacherDisciplines,
-      },
-      testClasses: testClasses,
+      let teacherClasses = test.teacher
+        .teacherClasses
+        .map((classroom) => { return { id: classroom.classroom.id, name: classroom.classroom.name }})
+        .sort((a, b) => a.id - b.id)
+
+      let teacherDisciplines = test.teacher
+        .teacherDisciplines
+        .map((discipline) => { return { id: discipline.discipline.id,  name: discipline.discipline.name }})
+        .sort((a, b) => a.id - b.id)
+
+      let responseData = {
+        ...test,
+        teacher: {
+          id: test.teacher.id,
+          person: test.teacher.person,
+          classes: teacherClasses,
+          disciplines: teacherDisciplines,
+        },
+        testClasses: testClasses,
+      }
+
+      return { status: 200, data: responseData }
+
+    } catch (error: any) {
+      return { status: 404, data: { error: true, message: error.message } }
     }
   }
 

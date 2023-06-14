@@ -11,7 +11,7 @@ TestRouter.get('/', (req: Request, res: Response) => {
 
 TestRouter.get('/:id', (req: Request, res: Response) => {
   testController.getOne(req.params.id)
-    .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+    .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
 TestRouter.post('/', isTeacher,  (req: Request, res: Response) => {
