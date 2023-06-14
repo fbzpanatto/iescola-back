@@ -11,7 +11,7 @@ class UserController extends GenericController<EntityTarget<ObjectLiteral>> {
     super(User);
   }
 
-  async login (req: Request, res: Response) {
+  async login (req: Request) {
 
     const { user, password } = req.body
 
