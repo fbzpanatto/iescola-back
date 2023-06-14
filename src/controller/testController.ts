@@ -95,17 +95,22 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     return search.length > 0 ? whereFilters : fullSearch
   }
 
-  async getOne(id: number | string) {
+  async getOne(req: Request) {
+
+    const { id } = req.params
 
     try {
 
       const test = await this.repository.findOne({
-        relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person', 'teacher.teacherClasses', 'teacher.teacherDisciplines', 'testClasses.classroom.school'],
+        relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person.user', 'teacher.teacherClasses', 'teacher.teacherDisciplines', 'testClasses.classroom.school'],
         where: { id: Number(id) },
       }) as Test
 
-      if (!test) {
-        throw new Error('Test not found')
+      const loggedUser = req.body.user
+      const teacherPersonUser = test.teacher.person.user
+
+      if (!test || Number(loggedUser.category) === categoryOfTeachers[0] && loggedUser.user !== teacherPersonUser.id ) {
+        throw new Error('Test not found or you do not have permission to access it!')
       }
 
       let testClasses = test.testClasses
