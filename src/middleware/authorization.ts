@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction} from "express";
+import {NextFunction, Request, Response} from "express";
+
 const jwt = require('jsonwebtoken')
 
 export default (req: Request, res: Response, next: NextFunction) => {
@@ -16,9 +17,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
   try {
 
-    const user = jwt.verify(token, 'SECRET');
-
-    req.body.user = user
+    req.body.user = jwt.verify(token, 'SECRET')
 
     next()
 
