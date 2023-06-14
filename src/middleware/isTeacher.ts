@@ -6,19 +6,16 @@ export enum enumOfTeacherCategories {
 }
 
 export const isTeacher = (category: number) => {
-  for(const category in enumOfTeacherCategories) {
-    if(enumOfTeacherCategories[category] === category) {
-      return true
-    }
-  }
-  return false
+
+  return !!enumOfTeacherCategories[category];
+
 }
 
 export default (req: Request, res: Response, next: NextFunction) => {
 
   const { user } = req.body
 
-  const condition = isTeacher(user.category)
+  const condition = isTeacher(user.category as number)
 
   if(!condition) {
     return res.status(403).json({
