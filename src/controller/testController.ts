@@ -10,7 +10,7 @@ import { Test } from "../entity/Test";
 import { testClassesController } from "./testClassesController";
 import { classroomController } from "./classroomController";
 import { studentTestsController} from "./studentTestsController";
-import { categoryOfTeachers } from "../middleware/isTeacher";
+import { enumOfTeacherCategories} from "../middleware/isTeacher";
 
 interface MyTestClassInterface {name: string, school: string, classroomId: number, classroom: string, year: number, bimester: string, category: string, teacher: string, discipline: string}
 
@@ -84,7 +84,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       year: { id: year }
     }
 
-    if(Number(req?.body.user.category) === categoryOfTeachers[0]) {
+    if(Number(req?.body.user.category) === enumOfTeacherCategories.teacher) {
 
       const { user: userId } = req?.body.user
 
@@ -109,7 +109,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       const loggedUser = req.body.user
       const teacherPersonUser = test.teacher.person.user
 
-      if (!test || Number(loggedUser.category) === categoryOfTeachers[0] && loggedUser.user !== teacherPersonUser.id ) {
+      if (!test || Number(loggedUser.category) === enumOfTeacherCategories.teacher && loggedUser.user !== teacherPersonUser.id ) {
         throw new Error('Test not found or you do not have permission to access it!')
       }
 
