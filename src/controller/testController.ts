@@ -106,10 +106,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
         where: { id: Number(id) },
       }) as Test
 
-      const loggedUser = req.body.user
-      const teacherPersonUser = test.teacher.person.user
-
-      if (!test || Number(loggedUser.category) === enumOfTeacherCategories.teacher && loggedUser.user !== teacherPersonUser.id ) {
+      if(!this.isOwner(req, test)) {
         throw new Error('Test not found or you do not have permission to access it!')
       }
 
@@ -248,6 +245,13 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
   }
 
+  isOwner(req: Request, test: Test) {
+
+      const loggedUser = req.body.user
+      const teacherPersonUser = test.teacher.person.user
+
+      return !(Number(loggedUser.category) === enumOfTeacherCategories.teacher && loggedUser.user !== teacherPersonUser.id);
+  }
 }
 
 export const testController = new TestController();
