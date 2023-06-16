@@ -13,6 +13,9 @@ export class Person extends BaseEntity {
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  birthDate: Date;
+
   @ManyToOne(type => Category, c => c.persons)
   category: Category;
 
