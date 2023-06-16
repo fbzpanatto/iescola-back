@@ -1,4 +1,4 @@
-import { DeepPartial, EntityTarget, FindOneOptions, ObjectLiteral } from "typeorm";
+import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
 
 import { Request } from "express";
 import { GenericController } from "./genericController";
