@@ -1,3 +1,4 @@
+import { Request } from "express";
 import { Teacher } from "../entity/Teacher";
 import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
 import { PersonClass } from "./personController";
@@ -11,6 +12,7 @@ import { classroomController } from "./classroomController";
 import { disciplineController } from "./disciplineController";
 import { teacherClassesController } from "./teacherClassesController";
 import { teacherDisciplinesController } from "./teacherDisciplinesController";
+import {enumOfTeacherCategories} from "../middleware/isTeacher";
 
 
 class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
@@ -19,8 +21,21 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
     super(Teacher);
   }
 
-  async getAllTeachers() {
-    const teachers = await this.repository.find({ relations: ['person', 'teacherDisciplines', 'teacherClasses.classroom.school'] })
+  async getAllTeachers(req: Request) {
+
+    const { user: userId, category } = req.body.user;
+
+    let where = {};
+
+    if(enumOfTeacherCategories.superTeacher != category as number) {
+
+      where = { person: { user: { id: userId } } }
+    }
+
+    const teachers = await this.repository.find({
+      relations: ['person.user', 'teacherDisciplines', 'teacherClasses.classroom.school'],
+      where: where
+    })
 
     return teachers.map(teacher => {
       return {

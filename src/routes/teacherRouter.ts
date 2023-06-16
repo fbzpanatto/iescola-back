@@ -4,7 +4,7 @@ import { teacherController } from "../controller/teacherController";
 export const TeacherRouter = Router()
 
 TeacherRouter.get('/', (req: Request, res: Response) => {
-  teacherController.getAllTeachers()
+  teacherController.getAllTeachers(req)
     .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
 })
 

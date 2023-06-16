@@ -45,7 +45,7 @@ route.use('/discipline', DisciplineRouter)
 
 route.use('/category', CategoryRouter)
 
-route.use('/teacher', TeacherRouter)
+route.use('/teacher', authorization, TeacherRouter)
 route.use('/teacher-discipline', TeacherDisciplineRouter)
 route.use('/student', StudentRouter)
 
