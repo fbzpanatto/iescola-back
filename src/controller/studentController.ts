@@ -20,6 +20,53 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     super(Student);
   }
 
+  async getAllStudents(req: Request) {
+
+    const students = await this.repository.find({
+      relations: [ 'person', 'classroom.school'],
+      where: {}
+    }) as Student[]
+
+    let result = students.map(student => {
+      return {
+        id: student.id,
+        order: student.no,
+        name: student.person.name,
+        classroom: student.classroom.name,
+        school: student.classroom.school.name
+      }
+    })
+
+    return { status: 200, data: result }
+  }
+
+  async getOneStudent(req: Request) {
+
+    try {
+
+      const student = await this.repository.findOne({
+        relations: [ 'person', 'classroom.school'],
+        where: { id: req.params.id }
+      }) as Student
+
+      let result = {
+        id: student.id,
+        order: student.no,
+        name: student.person.name,
+        classroom: student.classroom.name,
+        school: student.classroom.school.name
+      }
+
+      return { status: 200, data: result }
+
+    } catch (error) {
+
+      return { status: 500, data: error }
+
+    }
+
+  }
+
   async testCreation(){
 
     const runTimeClassExecution = ['5A', '5B', '5C', '9A', '9B', '9C']
