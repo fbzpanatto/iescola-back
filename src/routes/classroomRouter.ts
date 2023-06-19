@@ -14,8 +14,8 @@ ClassroomRouter.get('/:id', (req: Request, res: Response) => {
 })
 
 ClassroomRouter.get('/', (req: Request, res: Response) => {
-  classroomController.getAll()
-    .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+  classroomController.getAllClasses(req)
+    .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
 ClassroomRouter.post('/many', (req: Request, res: Response) => {

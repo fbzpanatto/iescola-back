@@ -53,8 +53,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         id: student.id,
         order: student.no,
         name: student.person.name,
-        classroom: student.classroom.name,
-        school: student.classroom.school.name
+        birthDate: student.person.birthDate,
+        classroom: student.classroom,
       }
 
       return { status: 200, data: result }
@@ -141,9 +141,12 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     const student = new Student();
 
+    body.category = { id: 2 }
+
     student.person = await PersonClass.newPerson(body);
     student.ra = body.ra;
-    student.classroom = body.classroom
+    student.no = body.no;
+    student.classroom = await classroomController.findOneBy(Number(body.classroom.id)) as Classroom
 
     return await student.save()
   }
