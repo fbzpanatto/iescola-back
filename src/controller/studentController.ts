@@ -152,6 +152,33 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     return await student.save()
   }
 
+  async updateOneStudent(id: number, body: DeepPartial<ObjectLiteral>) {
+
+    try {
+
+      const student = await this.repository.findOne({
+        relations: ['person', 'classroom'],
+        where: { id: id }
+      }) as Student
+
+      student.person.name = body.name;
+      student.person.birthDate = body.birthDate;
+      student.ra = body.ra;
+      student.no = body.order;
+      student.classroom = await classroomController.findOneBy(Number(body.classroom.id)) as Classroom
+
+      await student.save()
+
+      return { status: 200, data: student }
+
+    } catch (error) {
+
+      console.log(error)
+
+      return { status: 500, data: error }
+
+    }
+  }
 }
 
 export const studentController = new StudentController();

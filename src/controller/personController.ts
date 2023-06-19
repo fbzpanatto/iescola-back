@@ -15,12 +15,4 @@ export class PersonClass {
 
     return person;
   }
-
-  static async updatePerson(body: DeepPartial<ObjectLiteral>) {
-
-    const person = Person.findOne({
-      relations: ['category'],
-      where: { id: body.id }
-    })
-  }
 }

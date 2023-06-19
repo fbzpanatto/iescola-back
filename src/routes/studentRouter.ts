@@ -24,6 +24,6 @@ StudentRouter.post('/', (req: Request, res: Response) => {
 })
 
 StudentRouter.put('/:id', (req: Request, res: Response) => {
-  studentController.updateOneBy(req.params.id, req.body)
-    .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+  studentController.updateOneStudent(req.params.id, req.body)
+    .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
