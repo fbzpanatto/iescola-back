@@ -158,7 +158,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       const student = await this.repository.findOne({
         relations: ['person', 'classroom'],
-        where: { id: id }
+        where: { id: Number(id) }
       }) as Student
 
       student.person.name = body.name;
