@@ -152,7 +152,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     return await student.save()
   }
 
-  async updateOneStudent(id: number, body: DeepPartial<ObjectLiteral>) {
+  async updateOneStudent(id: number | string, body: DeepPartial<ObjectLiteral>) {
 
     try {
 
