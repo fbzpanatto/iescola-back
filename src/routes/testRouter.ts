@@ -6,7 +6,7 @@ export const TestRouter = Router()
 
 TestRouter.get('/', (req: Request, res: Response) => {
   testController.getAllWithTerm(req)
-    .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+    .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
 TestRouter.get('/:id', (req: Request, res: Response) => {

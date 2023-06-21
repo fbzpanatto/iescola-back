@@ -1,4 +1,4 @@
-import { DeepPartial, EntityTarget, ObjectLiteral, ILike, FindOptionsWhere } from "typeorm";
+import { DeepPartial, EntityTarget, ObjectLiteral, ILike, FindOptionsWhere, In } from "typeorm";
 import { GenericController } from "./genericController";
 import { Request} from "express";
 
@@ -6,11 +6,15 @@ import { Classroom } from "../entity/Classroom";
 import { TestClasses } from "../entity/TestClasses";
 import { StudentTests } from "../entity/StudentTests";
 import { Test } from "../entity/Test";
+import { Teacher } from "../entity/Teacher";
 
 import { testClassesController } from "./testClassesController";
 import { classroomController } from "./classroomController";
 import { studentTestsController} from "./studentTestsController";
+import { teacherController } from "./teacherController";
+
 import { enumOfTeacherCategories} from "../middleware/isTeacher";
+
 
 interface MyTestClassInterface {name: string, school: string, classroomId: number, classroom: string, year: number, bimester: string, category: string, teacher: string, discipline: string}
 
@@ -22,38 +26,53 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async getAllWithTerm(req?: Request) {
 
-    let response: { testId: number, classes: MyTestClassInterface[] }[] = []
+    try {
 
-    const tests = await this.repository.find({
-      relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person.user', 'testClasses.classroom.school'],
-      select: ['id', 'name'],
-      where: this.whereSearch(req)
-    }) as Test[]
+      let response: { testId: number, classes: MyTestClassInterface[] }[] = []
 
-    for (let test of tests) {
+      const { user: UserId } = req?.body.user
 
-      let testClasses: MyTestClassInterface[] = []
+      const teacher = await teacherController.findOne({
+        relations: ['person.user', 'teacherClasses.classroom', 'teacherDisciplines.discipline'],
+        where: { person: { user: { id: UserId } } }
+      }) as Teacher
 
-      for(let testClass of test.testClasses) {
-        let data = {
-          name: test.name,
-          school: testClass.classroom.school.name,
-          classroomId: testClass.classroom.id,
-          classroom: testClass.classroom.name,
-          year: test.year.name,
-          bimester: test.bimester.name,
-          category: test.category.name,
-          teacher: test.teacher.person.name,
-          discipline: test.discipline.name,
+      let tests = await this.repository.find({
+        relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person.user', 'teacher.teacherClasses', 'testClasses.classroom.school'],
+        select: ['id', 'name'],
+        where: this.whereSearch(teacher, req)
+      }) as Test[]
+
+      for (let test of tests) {
+
+        let testClasses: MyTestClassInterface[] = []
+
+        for(let testClass of test.testClasses) {
+          let data = {
+            name: test.name,
+            school: testClass.classroom.school.name,
+            classroomId: testClass.classroom.id,
+            classroom: testClass.classroom.name,
+            year: test.year.name,
+            bimester: test.bimester.name,
+            category: test.category.name,
+            teacher: test.teacher.person.name,
+            discipline: test.discipline.name,
+          }
+          testClasses.push(data)
         }
-        testClasses.push(data)
+        response.push({ testId: test.id, classes: testClasses })
       }
-      response.push({ testId: test.id, classes: testClasses })
+
+      return { status: 200, data: response}
+
+    } catch (error) {
+      return  { status: 500, data: error }
     }
-    return response
+
   }
 
-  whereSearch(req?: Request):  FindOptionsWhere<ObjectLiteral> | FindOptionsWhere<ObjectLiteral>[] | undefined {
+  whereSearch(teacher: Teacher, req?: Request):  FindOptionsWhere<ObjectLiteral> | FindOptionsWhere<ObjectLiteral>[] | undefined {
 
     let search: string = ''
     let bimester: number = 1
@@ -73,6 +92,9 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       }
     }
 
+    let classesIds = teacher.teacherClasses.map((teacherClass) => teacherClass.classroom.id)
+    let disciplinesIds = teacher.teacherDisciplines.map((teacherDiscipline) => teacherDiscipline.discipline.id)
+
     let fullSearch: FindOptionsWhere<ObjectLiteral> = {
       bimester: { id: bimester },
       year: { id: year }
@@ -84,12 +106,32 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       year: { id: year }
     }
 
-    if(Number(req?.body.user.category) === enumOfTeacherCategories.teacher) {
+    if(Number(req?.body.user.category) === enumOfTeacherCategories.teacher){
+      fullSearch = {
+        testClasses: {
+          classroom: {
+            id: In(classesIds),
+            school: { name: ILike(`%${search}%`) }
+          },
+        },
+        bimester: { id: bimester },
+        year: { id: year },
+        teacher: { id: In([teacher.id, 1]) },
+        discipline: { id: In(disciplinesIds) }
+      }
 
-      const { user: userId } = req?.body.user
-
-      fullSearch.teacher = { person: { user: { id: userId } } }
-      whereFilters.teacher = { person: { user: { id: userId } } }
+      whereFilters = {
+        testClasses: {
+          classroom: {
+            id: In(classesIds),
+            school: { name: ILike(`%${search}%`) }
+          },
+        },
+        bimester: { id: bimester },
+        year: { id: year },
+        teacher: { id: In([teacher.id, 1]) },
+        discipline: { id: In(disciplinesIds) }
+      }
     }
 
     return search.length > 0 ? whereFilters : fullSearch
@@ -97,7 +139,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async getOne(req: Request) {
 
-    const { id } = req.params
+    const id = req.params.id
 
     try {
 
@@ -138,7 +180,8 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       return { status: 200, data: responseData }
 
     } catch (error: any) {
-      return { status: 404, data: { error: true, message: error.message } }
+
+      return { status: 403, error: error.message }
     }
   }
 
@@ -247,10 +290,10 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   isOwner(req: Request, test: Test) {
 
-      const loggedUser = req.body.user
-      const teacherPersonUser = test.teacher.person.user
+    const loggedUser = req.body.user
+    const teacherPersonUser = test.teacher.person.user
 
-      return !(Number(loggedUser.category) === enumOfTeacherCategories.teacher && loggedUser.user !== teacherPersonUser.id);
+    return !(Number(loggedUser.category) === enumOfTeacherCategories.teacher && loggedUser.user !== teacherPersonUser.id);
   }
 }
 

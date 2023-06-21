@@ -19,6 +19,7 @@ import { CategoryRouter } from "./routes/categoryRoutes";
 import { TestCategoryRouter } from "./routes/testCategoryRouter";
 import { TestClassesRouter } from "./routes/testClassesRouter";
 import { TeacherDisciplineRouter} from "./routes/teacherDisciplineRouter";
+import { TeacherClassRouter } from "./routes/teacherClassRouter";
 import { UserRouter } from "./routes/userRouter";
 import { LoginRouter } from "./routes/loginRouter";
 
@@ -47,6 +48,7 @@ route.use('/category', CategoryRouter)
 
 route.use('/teacher', authorization, TeacherRouter)
 route.use('/teacher-discipline', TeacherDisciplineRouter)
+route.use('/teacher-classrooms', TeacherClassRouter)
 route.use('/student', StudentRouter)
 
 route.use('/test-category', TestCategoryRouter)
