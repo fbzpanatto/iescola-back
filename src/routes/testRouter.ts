@@ -16,12 +16,12 @@ TestRouter.get('/:id', (req: Request, res: Response) => {
 
 TestRouter.post('/', isTeacher,  (req: Request, res: Response) => {
   testController.saveData(req.body)
-    .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+    .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
 TestRouter.put('/:id', isTeacher,  (req: Request, res: Response) => {
   testController.updateOneBy(req.params.id, req.body)
-    .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+    .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
 TestRouter.delete('/:id', isTeacher,  (req: Request, res: Response) => {

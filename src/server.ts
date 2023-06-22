@@ -54,7 +54,7 @@ route.use('/student', StudentRouter)
 route.use('/test-category', TestCategoryRouter)
 route.use('/test', authorization, TestRouter)
 route.use('/test-classes', TestClassesRouter)
-route.use('/student-tests', StudentTestsRouter)
+route.use('/student-tests', authorization, StudentTestsRouter)
 
 route.use('/user', UserRouter)
 route.use('/login', LoginRouter)

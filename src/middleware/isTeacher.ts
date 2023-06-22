@@ -20,7 +20,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
   if(!condition) {
     return res.status(403).json({
       status: 'fail',
-      message: 'Forbidden!'
+      data: 'Forbidden!'
     })
   }
   next()

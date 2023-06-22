@@ -181,94 +181,115 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     } catch (error: any) {
 
-      return { status: 403, error: error.message }
+      return { status: 403, data: error.message }
     }
   }
 
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
-    const test = new Test()
+    try {
 
-    test.name = body.name;
-    test.questions = body.questions;
-    test.active = body.active;
-    test.year = body.year
-    test.bimester = body.bimester
-    test.teacher = body.teacher
-    test.discipline = body.discipline
-    test.category = body.category
+      const test = new Test()
 
-    await this.repository.save(test)
+      test.name = body.name;
+      test.questions = body.questions;
+      test.active = body.active;
+      test.year = body.year
+      test.bimester = body.bimester
+      test.teacher = body.teacher
+      test.discipline = body.discipline
+      test.category = body.category
 
-    if(body.testClasses) {
+      await this.repository.save(test)
 
-      for (let classId of body.testClasses) {
-        const classroom = await classroomController.findOneBy(classId) as Classroom;
-        const testClasses = new TestClasses()
+      if(body.testClasses) {
 
-        testClasses.classroom = classroom
-        testClasses.test = test
+        for (let classId of body.testClasses) {
+          const classroom = await classroomController.findOneBy(classId) as Classroom;
+          const testClasses = new TestClasses()
 
-        await testClassesController.saveData(testClasses)
+          testClasses.classroom = classroom
+          testClasses.test = test
+
+          await testClassesController.saveData(testClasses)
+        }
       }
+
+      let response = await this.repository.save(test)
+
+      return { status: 200, data: response }
+
+    } catch (error: any) {
+
+      return { status: 500, data: error.message }
+
     }
 
-    return await this.repository.save(test)
   }
 
   override async updateOneBy (id: string, body: DeepPartial<ObjectLiteral>) {
 
-    const test = await this.findOneBy(id) as Test;
+    try {
 
-    if(body.removeQuestion) {
+      const test = await this.findOneBy(id) as Test;
 
-      const index = test.questions.findIndex((question: { id: number, answer: string }) => Number(question.id) === Number(body.removeQuestion))
-      test.questions.splice(index, 1)
+      if(body.removeQuestion) {
 
-      for(let question of test.questions) {
-        if(question.id > body.removeQuestion) {
-          question.id -= 1
+        const index = test.questions.findIndex((question: { id: number, answer: string }) => Number(question.id) === Number(body.removeQuestion))
+        test.questions.splice(index, 1)
+
+        for(let question of test.questions) {
+          if(question.id > body.removeQuestion) {
+            question.id -= 1
+          }
+        }
+
+        const studentsTests = await studentTestsController.getAll({
+          relations: ['student'],
+          where: { test: { id: test.id }}
+        }) as StudentTests[]
+
+        for(let studentTest of studentsTests) {
+          let answers = studentTest.studentAnswers
+          answers.splice(index, 1)
+          for(let answer of answers) {
+            if(answer.id > body.removeQuestion) {
+              answer.id -= 1
+            }
+          }
+          studentTest.studentAnswers = answers
+          await studentTestsController.saveData(studentTest)
         }
       }
 
-      // adjust student tests
-      const studentsTests = await studentTestsController.getAll({
-        relations: ['student'],
-        where: { test: { id: test.id }}
-      }) as StudentTests[]
+      if(body.questions) {
 
-      for(let studentTest of studentsTests) {
-        let answers = studentTest.studentAnswers
-        answers.splice(index, 1)
-        for(let answer of answers) {
-          if(answer.id > body.removeQuestion) {
-            answer.id -= 1
-          }
+        const condition = test.questions.length === body.questions.length
+
+        if(!condition && (body.questions.length > test.questions.length)) {
+
+          let newQuestions = body.questions.filter((question: { id: number, answer: string }) => {
+            const index = test.questions.findIndex(q => Number(q.id) === Number(question.id))
+            const element = !!test.questions[index]
+            if(!element) {
+              return question
+            }
+          }) as { id: number, answer: string }[]
+          this.addNewQuestions(test, newQuestions)
         }
-        studentTest.studentAnswers = answers
-        await studentTestsController.saveData(studentTest)
+        test.questions = body.questions
       }
+
+      let response = await this.repository.save(test)
+
+      return { status: 200, data: response }
+
+    } catch (error: any) {
+
+      return { status: 500, data: error.message }
+
     }
 
-    if(body.questions) {
-
-      const condition = test.questions.length === body.questions.length
-
-      if(!condition && (body.questions.length > test.questions.length)) {
-
-        let newQuestions = body.questions.filter((question: { id: number, answer: string }) => {
-          const index = test.questions.findIndex(q => Number(q.id) === Number(question.id))
-          const element = !!test.questions[index]
-          if(!element) {
-            return question
-          }
-        }) as { id: number, answer: string }[]
-        this.addNewQuestions(test, newQuestions)
-      }
-      test.questions = body.questions
-    }
-
-    return await this.repository.save(test);
   }
 
   async addNewQuestions(test: Test, questions: { id: number, answer: string }[]) {

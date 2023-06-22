@@ -74,7 +74,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       for(let question of totaByClassroom[classroom].acertos) {
         const index = totaByClassroom[classroom].question.findIndex(obj => obj.id === question.id)
         if(!totaByClassroom[classroom].question[index]) {
-          totaByClassroom[classroom].question.push({ id: question.id, rate: Math.floor((question.totalAcerto / totaByClassroom[classroom].testDone) * 100) })
+          totaByClassroom[classroom].question.push({ id: question.id, rate: Math.round((question.totalAcerto / totaByClassroom[classroom].testDone) * 100) })
         }
       }
     }
@@ -102,7 +102,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
           total += totaByClassroom[classroom].acertos.find(qt => qt.id === question.id)?.totalAcerto ?? 0
         }
 
-        municipio['cityHall'].question.push({ id: question.id, rate: Math.floor((total / municipio['cityHall'].testDone) * 100) })
+        municipio['cityHall'].question.push({ id: question.id, rate: Math.round((total / municipio['cityHall'].testDone) * 100) })
 
       }
     }
@@ -239,7 +239,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
     const rateByQuestion = totalByQuestion.map(q => {
       return {
         id: q.id,
-        rate: `${Math.floor((q.total / studentsTestsCompleted.length) * 100)}`
+        rate: `${Math.round((q.total / studentsTestsCompleted.length) * 100)}`
       }
     })
 
