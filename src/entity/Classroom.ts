@@ -6,6 +6,7 @@ import { TestClasses } from "./TestClasses";
 import { StudentClassesHistory } from "./StudentClassesHistory";
 import {ClassCategory} from "./ClassCategory";
 import {Student} from "./Student";
+import {StudentTests} from "./StudentTests";
 
 @Entity()
 export class Classroom {
@@ -23,6 +24,9 @@ export class Classroom {
 
   @OneToMany(type => Student, s => s.classroom)
   students: Student[]
+
+  @OneToMany( type => StudentTests, sc => sc.registeredInClass)
+  registeredInClass: StudentTests[]
 
   @OneToMany( type => StudentClassesHistory, sc => sc.classroom)
   studentClasses: StudentClassesHistory[]

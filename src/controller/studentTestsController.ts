@@ -1,19 +1,19 @@
-import { GenericController } from "./genericController";
-import { DeepPartial, EntityTarget, FindOneOptions, ObjectLiteral} from "typeorm";
-import { Request } from "express";
+import {GenericController} from "./genericController";
+import {DeepPartial, EntityTarget, FindOneOptions, ObjectLiteral} from "typeorm";
+import {Request} from "express";
 
-import { Classroom } from "../entity/Classroom";
-import { Student } from "../entity/Student";
-import { StudentTests } from "../entity/StudentTests";
-import { Test } from "../entity/Test";
-import { TestClasses } from "../entity/TestClasses";
+import {Classroom} from "../entity/Classroom";
+import {Student} from "../entity/Student";
+import {StudentTests} from "../entity/StudentTests";
+import {Test} from "../entity/Test";
+import {TestClasses} from "../entity/TestClasses";
 
 
-import { testController } from "./testController";
-import { studentController } from "./studentController";
-import { classroomController } from "./classroomController";
-import { testClassesController } from "./testClassesController";
-import { School } from "../entity/School";
+import {testController} from "./testController";
+import {studentController} from "./studentController";
+import {classroomController} from "./classroomController";
+import {testClassesController} from "./testClassesController";
+import {School} from "../entity/School";
 import {studentClassesHistoryController} from "./studentClassesHistoryController";
 import {StudentClassesHistory} from "../entity/StudentClassesHistory";
 
@@ -183,7 +183,11 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
   override async updateOneBy(id: string, body: DeepPartial<ObjectLiteral>) {
 
-    const dataToUpdate = await this.findOneBy(id);
+    const studentTest = await this.findOne({
+      relations: ['student.classroom.school', 'test', 'registeredInClass'],
+      where: { id: id }
+    }) as StudentTests;
+
     const test = await testController.findOneBy(body.test.id) as Test;
 
     const student = await studentController.findOne({
@@ -191,19 +195,17 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
       where: { id: body.student.id }
     }) as Student;
 
-    if (!dataToUpdate) throw new Error('Data not found');
+    if (!studentTest) throw new Error('Data not found');
 
-    for (const key in body) {
-      dataToUpdate[key] = body[key];
-
-      if(key === 'studentAnswers') {
-        for(let question of body[key]) {
-          question.answer.toUpperCase().trim()
-        }
-      }
+    studentTest.completed = body.completed;
+    studentTest.studentAnswers = body.studentAnswers.map((question: any) => {
+      return { id: question.id, answer: question.answer.toUpperCase().trim() }
+    });
+    if(studentTest.registeredInClass === null) {
+      studentTest.registeredInClass = await classroomController.findOneBy(Number(body.registeredInClass.id)) as Classroom;
     }
 
-    await this.repository.save(dataToUpdate)
+    await this.repository.save(studentTest)
 
     return this.dataToFront(test, student.classroom)
   }

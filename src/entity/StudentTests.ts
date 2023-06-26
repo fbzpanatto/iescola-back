@@ -2,6 +2,7 @@ import { Entity, Column, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import { Student } from "./Student";
 import { Test } from "./Test";
 import {type} from "os";
+import {Classroom} from "./Classroom";
 
 @Entity()
 export class StudentTests {
@@ -23,6 +24,9 @@ export class StudentTests {
 
   @Column({ nullable: true})
   score: number;
+
+  @ManyToOne(() => Classroom, (c) => c.registeredInClass, { nullable: true })
+  registeredInClass: Classroom
 
   @ManyToOne(() => Student, (s) => s.studentTests)
   student: Student
