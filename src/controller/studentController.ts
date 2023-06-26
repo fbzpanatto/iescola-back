@@ -45,7 +45,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     try {
 
       const student = await this.repository.findOne({
-        relations: [ 'person', 'classroom.school'],
+        relations: [ 'person', 'classroom.school', 'classroom.category', 'classroom.year'],
         where: { id: req.params.id }
       }) as Student
 
@@ -54,7 +54,13 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         order: student.no,
         name: student.person.name,
         birthDate: student.person.birthDate,
-        classroom: student.classroom,
+        classroom: {
+          id: student.classroom.id,
+          name: student.classroom.name,
+          school: student.classroom.school.name,
+          year: student.classroom.year.name,
+          category: student.classroom.category.name,
+        },
         ra: student.ra,
       }
 
@@ -66,6 +72,100 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     }
 
+  }
+
+  override async saveData(body: DeepPartial<ObjectLiteral>) {
+
+    try {
+
+      const student = new Student();
+      const classroom = await classroomController.findOneBy(Number(body.classroom.id)) as Classroom
+
+      body.category = { id: 2 }
+
+      student.person = await PersonClass.newPerson(body);
+      student.ra = body.ra;
+      student.no = body.order;
+      student.classroom = classroom
+      await student.save()
+
+      const studentClassroom = new StudentClassesHistory()
+      studentClassroom.student = student
+      studentClassroom.classroom = classroom
+      studentClassroom.startedAt = body.startedAt ? body.startedAt : this.newDate()
+      studentClassroom.active = true
+      await studentClassesHistoryController.saveData(studentClassroom)
+
+      return { status: 200, data: student }
+
+    } catch (error: any) {
+
+      return { status: 500, data: error }
+
+    }
+
+  }
+
+  async updateOneStudent(id: number | string, body: DeepPartial<ObjectLiteral>) {
+
+    try {
+
+      const student = await this.repository.findOne({
+        relations: ['classroom'],
+        where: { id: Number(id) }
+      }) as Student
+
+      student.person.name = body.name;
+      student.person.birthDate = body.birthDate;
+      student.ra = body.ra;
+      student.no = body.order;
+      await student.save()
+
+      if(body.classroom) {
+
+        const newClassroom = await classroomController.findOneBy(Number(body.classroom.id)) as Classroom
+
+        const register = await studentClassesHistoryController.findOne({
+          relations: ['student', 'classroom'],
+          where: { student: { id: student.id }, classroom: { id: student.classroom.id }, active: true, endedAt: null }
+        }) as StudentClassesHistory
+
+        await studentClassesHistoryController.updateOneBy(register.id, { endedAt: this.newDate(), active: false })
+
+        student.classroom = newClassroom
+        await student.save()
+
+        const studentClassroom = new StudentClassesHistory()
+        studentClassroom.student = student
+        studentClassroom.classroom = newClassroom
+        studentClassroom.startedAt = body.startedAt ? body.startedAt : this.newDate()
+        studentClassroom.active = true
+        await studentClassesHistoryController.saveData(studentClassroom)
+      }
+
+      return { status: 200, data: student }
+
+    } catch (error) {
+
+      return { status: 500, data: error }
+
+    }
+  }
+  newDate() {
+    // Obtém a data e hora atual
+    const dataAtual = new Date();
+
+    // Obtém o offset do fuso horário atual em relação ao UTC
+    const offsetAtual = dataAtual.getTimezoneOffset();
+
+    // Define o offset do fuso horário para o UTC Brasil (considerando -3 horas)
+    const offsetUTCBrasil = -3 * 60; // Offset em minutos
+
+    // Calcula o novo valor do timestamp levando em conta o offset
+    const novoTimestamp = dataAtual.getTime() + (offsetAtual - offsetUTCBrasil) * 60 * 1000;
+
+    // Cria uma nova data com base no novo timestamp
+    return new Date(novoTimestamp)
   }
 
   async testCreation(){
@@ -138,104 +238,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     return 'ok'
   }
 
-  override async saveData(body: DeepPartial<ObjectLiteral>) {
-
-    try {
-
-      const student = new Student();
-      const classroom = await classroomController.findOneBy(Number(body.classroom.id)) as Classroom
-
-      body.category = { id: 2 }
-
-      student.person = await PersonClass.newPerson(body);
-      student.ra = body.ra;
-      student.no = body.order;
-      student.classroom = classroom
-      await student.save()
-
-      const studentClassroom = new StudentClassesHistory()
-      studentClassroom.student = student
-      studentClassroom.classroom = classroom
-      studentClassroom.startedAt = body.startedAt ? body.startedAt : this.newDate()
-      studentClassroom.active = true
-      await studentClassesHistoryController.saveData(studentClassroom)
-
-      return { status: 200, data: student }
-
-    } catch (error: any) {
-
-      return { status: 500, data: error }
-
-    }
-
-  }
-
-  newDate() {
-    // Obtém a data e hora atual
-    const dataAtual = new Date();
-
-    // Obtém o offset do fuso horário atual em relação ao UTC
-    const offsetAtual = dataAtual.getTimezoneOffset();
-
-    // Define o offset do fuso horário para o UTC Brasil (considerando -3 horas)
-    const offsetUTCBrasil = -3 * 60; // Offset em minutos
-
-    // Calcula o novo valor do timestamp levando em conta o offset
-    const novoTimestamp = dataAtual.getTime() + (offsetAtual - offsetUTCBrasil) * 60 * 1000;
-
-    // Cria uma nova data com base no novo timestamp
-    return new Date(novoTimestamp)
-  }
-
-  async updateOneStudent(id: number | string, body: DeepPartial<ObjectLiteral>) {
-
-    try {
-
-      const student = await this.repository.findOne({
-        relations: ['classroom'],
-        where: { id: Number(id) }
-      }) as Student
-
-      student.person.name = body.name;
-      student.person.birthDate = body.birthDate;
-      student.ra = body.ra;
-      student.no = body.order;
-      await student.save()
-
-      if(body.classroom.id) {
-
-        const newClassroom = await classroomController.findOneBy(Number(body.classroom.id)) as Classroom
-
-        const register = await studentClassesHistoryController.findOne({
-          relations: ['student', 'classroom'],
-          where: { student: { id: student.id }, classroom: { id: student.classroom.id }, active: true, endedAt: null }
-        }) as StudentClassesHistory
-
-        await studentClassesHistoryController.updateOneBy(register.id, { endedAt: this.newDate(), active: false })
-
-        student.classroom = newClassroom
-        await student.save()
-
-        console.log(student)
-
-        const studentClassroom = new StudentClassesHistory()
-        studentClassroom.student = student
-        studentClassroom.classroom = newClassroom
-        studentClassroom.startedAt = body.startedAt ? body.startedAt : this.newDate()
-        studentClassroom.active = true
-        await studentClassesHistoryController.saveData(studentClassroom)
-      }
-
-      return { status: 200, data: student }
-
-    } catch (error) {
-
-      console.log(error)
-
-      return { status: 500, data: error }
-
-    }
-  }
 }
 
 export const studentController = new StudentController();

@@ -8,11 +8,6 @@ StudentRouter.get('/', (req: Request, res: Response) => {
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-StudentRouter.get('/test-creation', (req: Request, res: Response) => {
-  studentController.testCreation()
-      .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
-})
-
 StudentRouter.get('/:id', (req: Request, res: Response) => {
   studentController.getOneStudent(req)
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
