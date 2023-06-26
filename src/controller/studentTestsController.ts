@@ -14,6 +14,8 @@ import { studentController } from "./studentController";
 import { classroomController } from "./classroomController";
 import { testClassesController } from "./testClassesController";
 import { School } from "../entity/School";
+import {studentClassesHistoryController} from "./studentClassesHistoryController";
+import {StudentClassesHistory} from "../entity/StudentClassesHistory";
 
 class StudentTestsController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -133,7 +135,12 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
     const classroom =  await classroomController.findOne(classroomQuery) as Classroom
 
-    const students = classroom.students
+    const studentClassesHistory = await studentClassesHistoryController.getAll({
+      relations: ['student'],
+      where: { classroom: classroom }
+    }) as StudentClassesHistory[]
+
+    const students = studentClassesHistory.map(register => register.student)
 
     await this.updateRelation(students, test)
 

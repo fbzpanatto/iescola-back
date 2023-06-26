@@ -25,7 +25,7 @@ export class GenericController<T> {
       return await this.repository.findOne(options);
   }
 
-  async updateOneBy(id: string, body: DeepPartial<ObjectLiteral>) {
+  async updateOneBy(id: string | number, body: DeepPartial<ObjectLiteral>) {
 
     const dataToUpdate = await this.findOneBy(id);
 

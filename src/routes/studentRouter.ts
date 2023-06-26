@@ -20,7 +20,7 @@ StudentRouter.get('/:id', (req: Request, res: Response) => {
 
 StudentRouter.post('/', (req: Request, res: Response) => {
   studentController.saveData(req.body)
-    .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+    .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
 StudentRouter.put('/:id', (req: Request, res: Response) => {
