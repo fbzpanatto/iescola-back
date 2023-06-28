@@ -31,7 +31,7 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
     const { school } = classroom
 
     const testClasses = await testClassesController.getAll({
-      relations: ['classroom.school', 'classroom.students.studentTests'],
+      relations: ['classroom.school'],
       where: { test: { id: test.id } }
     }) as TestClasses[]
 
@@ -50,23 +50,25 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
         }
       }
 
-      for(let student of classroom.students) {
-        let completedTests = student.studentTests.filter(studentTest => (studentTest.testId === test.id) && (studentTest.completed))
-        totaByClassroom[classroom.id].testDone += completedTests.length
-        for(let studentTest of completedTests) {
-          for(let studentQuestion of studentTest.studentAnswers) {
-            const questionIndex = test.questions.findIndex(testQuestion => testQuestion.id === studentQuestion.id)
-            if(!totaByClassroom[classroom.id].acertos[questionIndex]) {
-              totaByClassroom[classroom.id].acertos.push({ id: studentQuestion.id, totalAcerto: 0 })
-            }
+      const studentTests = await studentTestsController.getAll({
+        where: { test: { id: test.id }, registeredInClass: { id: classroom.id }, completed: true },
+      }) as StudentTests[]
 
-            const notEmpty = studentQuestion?.answer != ''
+      totaByClassroom[classroom.id].testDone = studentTests.length
 
-            const condition = test.questions[questionIndex].answer.includes(studentQuestion.answer)
+      for(let studentTest of studentTests) {
+        for(let studentQuestion of studentTest.studentAnswers) {
+          const questionIndex = test.questions.findIndex(testQuestion => testQuestion.id === studentQuestion.id)
+          if(!totaByClassroom[classroom.id].acertos[questionIndex]) {
+            totaByClassroom[classroom.id].acertos.push({ id: studentQuestion.id, totalAcerto: 0 })
+          }
 
-            if(totaByClassroom[classroom.id].acertos[questionIndex] && (condition && notEmpty)) {
-              totaByClassroom[classroom.id].acertos[questionIndex].totalAcerto += 1
-            }
+          const notEmpty = studentQuestion?.answer != ''
+
+          const condition = test.questions[questionIndex].answer.includes(studentQuestion.answer)
+
+          if(totaByClassroom[classroom.id].acertos[questionIndex] && (condition && notEmpty)) {
+            totaByClassroom[classroom.id].acertos[questionIndex].totalAcerto += 1
           }
         }
       }
@@ -123,28 +125,37 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
   async registerAnswers(req: Request) {
 
-    const { test: testId, classroom: classroomId } = req.query
+    try {
 
-    const test = await testController.findOneBy(testId as string) as Test;
+      const { test: testId, classroom: classroomId } = req.query
 
-    const classroomQuery:  FindOneOptions<ObjectLiteral> = {
-      select: ['id', 'name', 'students'],
-      relations: ['students', 'students.person', 'school'],
-      where: { id: classroomId }
+      const test = await testController.findOneBy(testId as string) as Test;
+
+      const classroomQuery:  FindOneOptions<ObjectLiteral> = {
+        select: ['id', 'name', 'students'],
+        relations: ['students', 'students.person', 'school'],
+        where: { id: classroomId }
+      }
+
+      const classroom =  await classroomController.findOne(classroomQuery) as Classroom
+
+      const studentsTests = await this.getAll({
+        relations: ['student', 'test'],
+        where: { test: { id: test.id }, registeredInClass: { id: classroom.id} }
+      }) as StudentTests[]
+
+      const students = studentsTests.map(register => register.student)
+
+      await this.updateRelation(students, test)
+
+      return await this.dataToFront(test, classroom)
+
+    } catch (error: any) {
+
+      console.log(error)
+
     }
 
-    const classroom =  await classroomController.findOne(classroomQuery) as Classroom
-
-    const studentClassesHistory = await studentClassesHistoryController.getAll({
-      relations: ['student'],
-      where: { classroom: classroom }
-    }) as StudentClassesHistory[]
-
-    const students = studentClassesHistory.map(register => register.student)
-
-    await this.updateRelation(students, test)
-
-    return await this.dataToFront(test, classroom)
   }
 
   private async updateRelation( students: Student[], test: Test ) {
@@ -183,31 +194,27 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
   override async updateOneBy(id: string, body: DeepPartial<ObjectLiteral>) {
 
-    const studentTest = await this.findOne({
-      relations: ['student.classroom.school', 'test', 'registeredInClass'],
-      where: { id: id }
+    const { test, studentTest, registeredInClass, studentAnswers, completed,  } = body
+
+    const testId = test.id
+    const studentTestId = studentTest.id
+    const registeredInClassId = registeredInClass.id
+
+    const studentTestInDB = await this.findOne({
+      relations: ['student', 'test', 'registeredInClass.school'],
+      where: { id: studentTestId, test: { id: testId }, registeredInClass: { id: registeredInClassId } }
     }) as StudentTests;
 
-    const test = await testController.findOneBy(body.test.id) as Test;
+    const testInDB = await testController.findOneBy(Number(testId)) as Test;
 
-    const student = await studentController.findOne({
-      relations: ['classroom', 'classroom.school'],
-      where: { id: body.student.id }
-    }) as Student;
-
-    if (!studentTest) throw new Error('Data not found');
-
-    studentTest.completed = body.completed;
-    studentTest.studentAnswers = body.studentAnswers.map((question: any) => {
+    studentTestInDB.completed = completed
+    studentTestInDB.studentAnswers = studentAnswers.map((question: any) => {
       return { id: question.id, answer: question.answer.toUpperCase().trim() }
     });
-    if(studentTest.registeredInClass === null) {
-      studentTest.registeredInClass = await classroomController.findOneBy(Number(body.registeredInClass.id)) as Classroom;
-    }
 
-    await this.repository.save(studentTest)
+    await this.repository.save(studentTestInDB)
 
-    return this.dataToFront(test, student.classroom)
+    return this.dataToFront(testInDB, studentTestInDB.registeredInClass)
   }
 
   async dataToFront(test: Test, classroom: Classroom) {
@@ -223,8 +230,8 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
     }
 
     const studentsTests = await this.repository.find({
-      relations: ['student', 'student.classroom'],
-      where: { test: {id: test.id}, student: {classroom: {id: classroom.id}} }
+      relations: ['student.person', 'registeredInClass.school'],
+      where: { test: {id: test.id}, registeredInClass: { id: classroom.id} }
     }) as StudentTests[]
 
     const studentsTestsCompleted = studentsTests.filter(st => st.completed)
@@ -264,13 +271,13 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
   }
 
   private formatStudentTest = (st: StudentTests, test: Test) => {
+
     return {
       id: st.id,
       student: {
         id: st.student.id,
         no: st.student.no,
         person: st.student.person,
-        classroom: st.student.classroom.id,
         test: {
           answers: st.studentAnswers,
           completed: st.completed,

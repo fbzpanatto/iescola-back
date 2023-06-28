@@ -205,7 +205,29 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       if(body.testClasses) {
 
         for (let classId of body.testClasses) {
-          const classroom = await classroomController.findOneBy(classId) as Classroom;
+
+          const classroom = await classroomController.findOne({
+            relations: ['students'],
+            where: { id: Number(classId) },
+          }) as Classroom;
+
+          if(classroom.students.length > 0) {
+
+            for(let student of classroom.students) {
+
+              const newStudentTest = new StudentTests()
+
+              newStudentTest.student = student
+              newStudentTest.test = test
+              newStudentTest.completed = false
+              newStudentTest.registeredInClass = classroom
+              newStudentTest.studentAnswers = test.questions.map(q => { return { id: q.id, answer: '' } })
+
+              await studentTestsController.saveData(newStudentTest)
+            }
+
+          }
+
           const testClasses = new TestClasses()
 
           testClasses.classroom = classroom
