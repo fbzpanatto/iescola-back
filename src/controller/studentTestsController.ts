@@ -10,12 +10,9 @@ import {TestClasses} from "../entity/TestClasses";
 
 
 import {testController} from "./testController";
-import {studentController} from "./studentController";
 import {classroomController} from "./classroomController";
 import {testClassesController} from "./testClassesController";
 import {School} from "../entity/School";
-import {studentClassesHistoryController} from "./studentClassesHistoryController";
-import {StudentClassesHistory} from "../entity/StudentClassesHistory";
 
 class StudentTestsController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
