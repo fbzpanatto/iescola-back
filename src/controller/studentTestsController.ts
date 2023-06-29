@@ -21,103 +21,113 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
   async analyzes(req: Request | any) {
 
-    const { test: testId, classroom: classId } = req.query
+    try {
+      const { test: testId, classroom: classId } = req.query
 
-    const test = await testController.findOneBy(testId as string) as Test;
-    const classroom = await classroomController.findOne({ relations: ['school'], where: { id: classId }}) as Classroom
-    const { school } = classroom
+      const test = await testController.findOneBy(testId as string) as Test;
+      const classroom = await classroomController.findOne({ relations: ['school'], where: { id: classId }}) as Classroom
+      const { school } = classroom
 
-    const testClasses = await testClassesController.getAll({
-      relations: ['classroom.school'],
-      where: { test: { id: test.id } }
-    }) as TestClasses[]
+      const testClasses = await testClassesController.getAll({
+        relations: ['classroom.school'],
+        where: { test: { id: test.id } }
+      }) as TestClasses[]
 
-    const arrayOfClasses = testClasses.map(result => result.classroom)
+      const arrayOfClasses = testClasses.map(result => result.classroom)
 
-    let totaByClassroom: { [key: string]: { testDone: number, acertos: { id: number, totalAcerto: number }[], question: { id: number, rate: number }[], school: School, classroom: string }} = {}
+      let totaByClassroom: { [key: string]: { testDone: number, acertos: { id: number, totalAcerto: number }[], question: { id: number, rate: number }[], school: School, classroom: string }} = {}
 
-    for(let classroom of arrayOfClasses) {
-      if(!totaByClassroom[classroom.id]) {
-        totaByClassroom[classroom.id] = {
-          school: classroom.school,
-          classroom: classroom.name,
-          testDone: 0,
-          acertos: [],
+      for(let classroom of arrayOfClasses) {
+        if(!totaByClassroom[classroom.id]) {
+          totaByClassroom[classroom.id] = {
+            school: classroom.school,
+            classroom: classroom.name,
+            testDone: 0,
+            acertos: [],
+            question: []
+          }
+        }
+
+        const studentTests = await studentTestsController.getAll({
+          where: { test: { id: test.id }, registeredInClass: { id: classroom.id }, completed: true },
+        }) as StudentTests[]
+
+        totaByClassroom[classroom.id].testDone = studentTests.length
+
+        for(let studentTest of studentTests) {
+          for(let studentQuestion of studentTest.studentAnswers) {
+            const questionIndex = test.questions.findIndex(testQuestion => testQuestion.id === studentQuestion.id)
+            if(!totaByClassroom[classroom.id].acertos[questionIndex]) {
+              totaByClassroom[classroom.id].acertos.push({ id: studentQuestion.id, totalAcerto: 0 })
+            }
+
+            const notEmpty = studentQuestion?.answer != ''
+
+            const condition = test.questions[questionIndex].answer.includes(studentQuestion.answer)
+
+            if(totaByClassroom[classroom.id].acertos[questionIndex] && (condition && notEmpty)) {
+              totaByClassroom[classroom.id].acertos[questionIndex].totalAcerto += 1
+            }
+          }
+        }
+      }
+
+      for(let classroom in totaByClassroom) {
+        for(let question of totaByClassroom[classroom].acertos) {
+          const index = totaByClassroom[classroom].question.findIndex(obj => obj.id === question.id)
+          if(!totaByClassroom[classroom].question[index]) {
+            totaByClassroom[classroom].question.push({ id: question.id, rate: Math.round((question.totalAcerto / totaByClassroom[classroom].testDone) * 100) })
+          }
+        }
+      }
+
+      const totalDoneMunicipio = Object.keys(totaByClassroom).reduce((acc: number, prev: string) => {
+        let localvalue = totaByClassroom[prev].testDone
+        return acc += localvalue
+      }, 0)
+
+      let municipio: { [key: string]: { classroom: string, testDone: number, question: { id: number, rate: number }[] } } = {
+        'cityHall': {
+          classroom: 'Municipio',
+          testDone: totalDoneMunicipio,
           question: []
         }
       }
 
-      const studentTests = await studentTestsController.getAll({
-        where: { test: { id: test.id }, registeredInClass: { id: classroom.id }, completed: true },
-      }) as StudentTests[]
+      for(let question of test.questions) {
+        const index = municipio['cityHall'].question.findIndex(qt => qt.id === question.id)
+        if(!municipio['cityHall'].question[index]) {
 
-      totaByClassroom[classroom.id].testDone = studentTests.length
+          let total:number = 0
 
-      for(let studentTest of studentTests) {
-        for(let studentQuestion of studentTest.studentAnswers) {
-          const questionIndex = test.questions.findIndex(testQuestion => testQuestion.id === studentQuestion.id)
-          if(!totaByClassroom[classroom.id].acertos[questionIndex]) {
-            totaByClassroom[classroom.id].acertos.push({ id: studentQuestion.id, totalAcerto: 0 })
+          for(let classroom in totaByClassroom) {
+            total += totaByClassroom[classroom].acertos.find(qt => qt.id === question.id)?.totalAcerto ?? 0
           }
 
-          const notEmpty = studentQuestion?.answer != ''
+          municipio['cityHall'].question.push({ id: question.id, rate: Math.round((total / municipio['cityHall'].testDone) * 100) })
 
-          const condition = test.questions[questionIndex].answer.includes(studentQuestion.answer)
-
-          if(totaByClassroom[classroom.id].acertos[questionIndex] && (condition && notEmpty)) {
-            totaByClassroom[classroom.id].acertos[questionIndex].totalAcerto += 1
-          }
         }
       }
-    }
 
-    for(let classroom in totaByClassroom) {
-      for(let question of totaByClassroom[classroom].acertos) {
-        const index = totaByClassroom[classroom].question.findIndex(obj => obj.id === question.id)
-        if(!totaByClassroom[classroom].question[index]) {
-          totaByClassroom[classroom].question.push({ id: question.id, rate: Math.round((question.totalAcerto / totaByClassroom[classroom].testDone) * 100) })
+      for(let register in totaByClassroom) {
+        if(totaByClassroom[register].school.id != school.id) {
+          delete totaByClassroom[register]
         }
       }
-    }
 
-    const totalDoneMunicipio = Object.keys(totaByClassroom).reduce((acc: number, prev: string) => {
-      let localvalue = totaByClassroom[prev].testDone
-      return acc += localvalue
-    }, 0)
-
-    let municipio: { [key: string]: { classroom: string, testDone: number, question: { id: number, rate: number }[] } } = {
-      'cityHall': {
-        classroom: 'Municipio',
-        testDone: totalDoneMunicipio,
-        question: []
+      let result = {
+        ...municipio,
+        ...totaByClassroom
       }
+
+      return { status: 200, data: result }
+
+    } catch(error: any) {
+
+      return { status: 500, data: error.message }
+
     }
 
-    for(let question of test.questions) {
-      const index = municipio['cityHall'].question.findIndex(qt => qt.id === question.id)
-      if(!municipio['cityHall'].question[index]) {
-
-        let total:number = 0
-
-        for(let classroom in totaByClassroom) {
-          total += totaByClassroom[classroom].acertos.find(qt => qt.id === question.id)?.totalAcerto ?? 0
-        }
-
-        municipio['cityHall'].question.push({ id: question.id, rate: Math.round((total / municipio['cityHall'].testDone) * 100) })
-
-      }
-    }
-
-    for(let register in totaByClassroom) {
-      if(totaByClassroom[register].school.id != school.id) {
-        delete totaByClassroom[register]
-      }
-    }
-
-    return {
-      ...municipio,
-      ...totaByClassroom
-    }
   }
 
   async registerAnswers(req: Request) {
@@ -145,11 +155,13 @@ class StudentTestsController extends GenericController<EntityTarget<ObjectLitera
 
       await this.updateRelation(students, test)
 
-      return await this.dataToFront(test, classroom)
+      let result = await this.dataToFront(test, classroom)
+
+      return { status: 200, data: result }
 
     } catch (error: any) {
 
-      console.log(error)
+      return { status: 500, data: error.message }
 
     }
 

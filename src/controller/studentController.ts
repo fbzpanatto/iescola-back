@@ -83,6 +83,14 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       body.category = { id: 2 }
 
+      const studentInDB = await this.repository.findOne({
+        where: { ra: body.ra }
+      }) as Student
+
+      if(studentInDB) {
+        return { status: 409, data: 'O RA informado já está em uso.' }
+      }
+
       student.person = await PersonClass.newPerson(body);
       student.ra = body.ra;
       student.no = body.order;
@@ -92,7 +100,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       const studentClassroom = new StudentClassesHistory()
       studentClassroom.student = student
       studentClassroom.classroom = classroom
-      studentClassroom.startedAt = body.startedAt ? body.startedAt : this.newDate()
+      studentClassroom.startedAt = body.startedAt ? body.startedAt : new Date()
       studentClassroom.active = true
       await studentClassesHistoryController.saveData(studentClassroom)
 
@@ -130,7 +138,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
           where: { student: { id: student.id }, classroom: { id: student.classroom.id }, active: true, endedAt: null }
         }) as StudentClassesHistory
 
-        await studentClassesHistoryController.updateOneBy(register.id, { endedAt: this.newDate(), active: false })
+        await studentClassesHistoryController.updateOneBy(register.id, { endedAt: new Date(), active: false })
 
         student.classroom = newClassroom
         await student.save()
@@ -138,7 +146,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         const studentClassroom = new StudentClassesHistory()
         studentClassroom.student = student
         studentClassroom.classroom = newClassroom
-        studentClassroom.startedAt = body.startedAt ? body.startedAt : this.newDate()
+        studentClassroom.startedAt = body.startedAt ? body.startedAt : new Date()
         studentClassroom.active = true
         await studentClassesHistoryController.saveData(studentClassroom)
       }
@@ -150,22 +158,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       return { status: 500, data: error }
 
     }
-  }
-  newDate() {
-    // Obtém a data e hora atual
-    const dataAtual = new Date();
-
-    // Obtém o offset do fuso horário atual em relação ao UTC
-    const offsetAtual = dataAtual.getTimezoneOffset();
-
-    // Define o offset do fuso horário para o UTC Brasil (considerando -3 horas)
-    const offsetUTCBrasil = -3 * 60; // Offset em minutos
-
-    // Calcula o novo valor do timestamp levando em conta o offset
-    const novoTimestamp = dataAtual.getTime() + (offsetAtual - offsetUTCBrasil) * 60 * 1000;
-
-    // Cria uma nova data com base no novo timestamp
-    return new Date(novoTimestamp)
   }
 
   async testCreation(){

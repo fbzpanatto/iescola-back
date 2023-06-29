@@ -5,12 +5,12 @@ export const StudentTestsRouter = Router()
 
 StudentTestsRouter.get('/register-answers', (req: Request, res: Response) => {
   studentTestsController.registerAnswers(req)
-    .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+    .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
 StudentTestsRouter.get('/analyzes', (req: Request, res: Response) => {
   studentTestsController.analyzes(req)
-      .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+      .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
 StudentTestsRouter.get('/', (req: Request, res: Response) => {
