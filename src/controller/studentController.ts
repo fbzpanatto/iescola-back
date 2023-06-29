@@ -1,4 +1,4 @@
-import {DeepPartial, EntityTarget, IsNull, ObjectLiteral} from "typeorm";
+import {DeepPartial, EntityTarget, FindOptionsWhere, ILike, In, IsNull, ObjectLiteral} from "typeorm";
 
 import {Request} from "express";
 import {GenericController} from "./genericController";
@@ -14,6 +14,8 @@ import {classroomController} from "./classroomController";
 import {studentTestsController} from "./studentTestsController";
 import {testController} from "./testController";
 import {studentClassesHistoryController} from "./studentClassesHistoryController";
+import {teacherController} from "./teacherController";
+import {Teacher} from "../entity/Teacher";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -22,22 +24,68 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async getAllStudents(req: Request) {
 
-    const students = await this.repository.find({
-      relations: [ 'person', 'classroom.school'],
-      where: {}
-    }) as Student[]
+    try {
 
-    let result = students.map(student => {
-      return {
-        id: student.id,
-        order: student.no,
-        name: student.person.name,
-        classroom: student.classroom.name,
-        school: student.classroom.school.name
+      const { user: UserId } = req?.body.user
+
+      const teacher = await teacherController.findOne({
+        relations: ['person.user', 'teacherClasses.classroom.year'],
+        where: { person: { user: { id: UserId } } }
+      }) as Teacher
+
+      const students = await this.repository.find({
+        relations: [ 'person', 'classroom.school', 'classroom.year'],
+        where: this.whereSearch(teacher, req)
+      }) as Student[]
+
+      let result = students.map(student => {
+        return {
+          id: student.id,
+          order: student.no,
+          name: student.person.name,
+          classroom: student.classroom.name,
+          school: student.classroom.school.name
+        }
+      })
+
+      return { status: 200, data: result }
+
+    } catch (error: any) {
+
+      return  { status: 500, data: error }
+
+    }
+
+  }
+
+  private whereSearch(teacher: Teacher, req?: Request):  FindOptionsWhere<ObjectLiteral> | FindOptionsWhere<ObjectLiteral>[] | undefined {
+
+    let search: string = ''
+    let year: number = 1
+
+    if(req) {
+      for(let value in req.query) {
+        if(!!req.query[value]?.length && value === 'search') {
+          search = req.query[value] as string
+        }
+        if(req.query.year) {
+          year = Number(req?.query.year)
+        }
       }
-    })
+    }
 
-    return { status: 200, data: result }
+    let classesIds = teacher.teacherClasses.map((teacherClass) => teacherClass.classroom.id)
+
+    let fullSearch: FindOptionsWhere<ObjectLiteral> = {
+      classroom: { id: In(classesIds), year: { id: year } },
+    }
+
+    let whereFilters: FindOptionsWhere<ObjectLiteral> = {
+      person: { name: ILike(`%${search}%`) },
+      classroom: { id: In(classesIds), year: { id: year } },
+    }
+
+    return search.length > 0 ? whereFilters : fullSearch
   }
 
   async getOneStudent(req: Request) {

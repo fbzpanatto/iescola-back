@@ -49,7 +49,7 @@ route.use('/category', CategoryRouter)
 route.use('/teacher', authorization, TeacherRouter)
 route.use('/teacher-discipline', TeacherDisciplineRouter)
 route.use('/teacher-classrooms', TeacherClassRouter)
-route.use('/student', StudentRouter)
+route.use('/student', authorization, StudentRouter)
 
 route.use('/test-category', TestCategoryRouter)
 route.use('/test', authorization, TestRouter)
