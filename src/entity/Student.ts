@@ -16,6 +16,12 @@ export class Student extends BaseEntity {
   @Column({ unique: true, nullable: true })
   ra: string;
 
+  @Column({ nullable: true })
+  dv: string;
+
+  @Column({ nullable: true })
+  state: string;
+
   @OneToOne(() => Person, {eager: true, cascade: true})
   @JoinColumn()
   person: Person;

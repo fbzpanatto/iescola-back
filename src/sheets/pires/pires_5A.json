@@ -1,0 +1,242 @@
+[
+  {
+    "no": 1,
+    "name": "ALICE FAGUNDES BARRETO",
+    "ra": "000115206186",
+    "dv": "0",
+    "state": "SP",
+    "birthDate": "24/08/2012"
+  },
+  {
+    "no": 2,
+    "name": "ANNA KLARA DUARTE",
+    "ra": "000114932308",
+    "dv": "5",
+    "state": "SP",
+    "birthDate": "16/08/2012"
+  },
+  {
+    "no": 3,
+    "name": "ARTHUR WENDLING",
+    "ra": "000115205840",
+    "dv": "X",
+    "state": "SP",
+    "birthDate": "15/08/2012"
+  },
+  {
+    "no": 4,
+    "name": "CAMILI VITORIA MACEDO DA SILVA",
+    "ra": "000114030474",
+    "dv": "4",
+    "state": "SP",
+    "birthDate": "06/03/2012"
+  },
+  {
+    "no": 5,
+    "name": "CAROLINE HIPOLITO DE SOUZA",
+    "ra": "000115205844",
+    "dv": "7",
+    "state": "SP",
+    "birthDate": "11/09/2012"
+  },
+  {
+    "no": 6,
+    "name": "GABRIEL ANGELO ROMÃO",
+    "ra": "000113555223",
+    "dv": "X",
+    "state": "SP",
+    "birthDate": "07/05/2013"
+  },
+  {
+    "no": 7,
+    "name": "GABRIEL DA SILVA FERREIRA",
+    "ra": "000122625286",
+    "dv": "2",
+    "state": "SP",
+    "birthDate": "26/04/2011"
+  },
+  {
+    "no": 8,
+    "name": "GLEYCIELEN DE GOIS ALMEIDA",
+    "ra": "000115205864",
+    "dv": "2",
+    "state": "SP",
+    "birthDate": "27/12/2012"
+  },
+  {
+    "no": 9,
+    "name": "GRAZIELLY DIAS CANDIO",
+    "ra": "000116356955",
+    "dv": "0",
+    "state": "SP",
+    "birthDate": "22/04/2013"
+  },
+  {
+    "no": 10,
+    "name": "IGOR RODRIGUES VICENTE",
+    "ra": "000120077666",
+    "dv": "5",
+    "state": "SP",
+    "birthDate": "10/05/2013"
+  },
+  {
+    "no": 11,
+    "name": "JOSÉ ÁLISSON DUTRA FERREIRA",
+    "ra": "000122593454",
+    "dv": "0",
+    "state": "SP",
+    "birthDate": "18/04/2011"
+  },
+  {
+    "no": 12,
+    "name": "KEMILY VITORIA DE OLIVEIRA",
+    "ra": "000114452989",
+    "dv": "X",
+    "state": "SP",
+    "birthDate": "25/11/2011"
+  },
+  {
+    "no": 13,
+    "name": "LARISSA VITORIA PETROLLI",
+    "ra": "000114308382",
+    "dv": "9",
+    "state": "SP",
+    "birthDate": "11/04/2013"
+  },
+  {
+    "no": 14,
+    "name": "LINNA BEATRIZ RODRIGUES SANTOS",
+    "ra": "000114179092",
+    "dv": "0",
+    "state": "SP",
+    "birthDate": "27/01/2013"
+  },
+  {
+    "no": 15,
+    "name": "LUIZA EMIDIO DE OLIVEIRA",
+    "ra": "000116096243",
+    "dv": "1",
+    "state": "SP",
+    "birthDate": "28/05/2013"
+  },
+  {
+    "no": 16,
+    "name": "MARINA RODRIGUES DE SOUZA",
+    "ra": "000116099736",
+    "dv": "6",
+    "state": "SP",
+    "birthDate": "12/03/2013"
+  },
+  {
+    "no": 17,
+    "name": "MATHEUS BERNARDO DA SILVA",
+    "ra": "000114307718",
+    "dv": "0",
+    "state": "SP",
+    "birthDate": "08/03/2013"
+  },
+  {
+    "no": 18,
+    "name": "MICAELA FERREIRA POLESSI",
+    "ra": "000116238479",
+    "dv": "7",
+    "state": "SP",
+    "birthDate": "09/02/2013"
+  },
+  {
+    "no": 19,
+    "name": "PEDRO THIAGO ALVES DE OLVEIRA",
+    "ra": "000116099846",
+    "dv": "2",
+    "state": "SP",
+    "birthDate": "21/01/2013"
+  },
+  {
+    "no": 20,
+    "name": "RAFAEL MARCONDES DOS SANTOS",
+    "ra": "000116359521",
+    "dv": "4",
+    "state": "SP",
+    "birthDate": "09/07/2011"
+  },
+  {
+    "no": 21,
+    "name": "SANDRO LUCIO PINHEIRO GARCIA",
+    "ra": "000114308479",
+    "dv": "2",
+    "state": "SP",
+    "birthDate": "10/01/2013"
+  },
+  {
+    "no": 22,
+    "name": "SANTE CASSINO",
+    "ra": "000115221530",
+    "dv": "9",
+    "state": "SP",
+    "birthDate": "17/01/2013"
+  },
+  {
+    "no": 23,
+    "name": "SOPHYE ASHLEY DE LIMA GOMES",
+    "ra": "000120737208",
+    "dv": "0",
+    "state": "SP",
+    "birthDate": "27/03/2013"
+  },
+  {
+    "no": 24,
+    "name": "TIALLYSSON MATTHEUS FERREIRA DA\r\nSILVA",
+    "ra": "000116745623",
+    "dv": "3",
+    "state": "SP",
+    "birthDate": "22/08/2012"
+  },
+  {
+    "no": 25,
+    "name": "YURI VIEIRA DOS SANTOS",
+    "ra": "000115206402",
+    "dv": "2",
+    "state": "SP",
+    "birthDate": "03/07/2012"
+  },
+  {
+    "no": 26,
+    "name": "MARCOS VINICIUS BARBOSA ADANSKI",
+    "ra": "000113587535",
+    "dv": "2",
+    "state": "SP",
+    "birthDate": "01/09/2012"
+  },
+  {
+    "no": 51,
+    "name": "HAIRAM HENICKA",
+    "ra": "000115205877",
+    "dv": "0",
+    "state": "SP",
+    "birthDate": "04/08/2012"
+  },
+  {
+    "no": 52,
+    "name": "ISABELLI VICTORIA DE SOUZA",
+    "ra": "000113639621",
+    "dv": "4",
+    "state": "SP",
+    "birthDate": "12/03/2013"
+  },
+  {
+    "no": 53,
+    "name": "KAUÃ DE LIMA LAVELLI",
+    "ra": "000114713316",
+    "dv": "5",
+    "state": "SP",
+    "birthDate": "01/08/2012"
+  },
+  {
+    "no": 54,
+    "name": "YASMYM DE SOUSA VIEIRA",
+    "ra": "000122911192",
+    "dv": "X",
+    "state": "SP",
+    "birthDate": "19/04/2013"
+  }
+]

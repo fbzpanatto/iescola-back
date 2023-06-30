@@ -9,8 +9,8 @@ TeacherRouter.get('/', (req: Request, res: Response) => {
 })
 
 TeacherRouter.get('/:id', (req: Request, res: Response) => {
-  teacherController.findOneBy(req.params.id)
-    .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
+  teacherController.getOneTeacher(req)
+    .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
 TeacherRouter.post('/', (req: Request, res: Response) => {
