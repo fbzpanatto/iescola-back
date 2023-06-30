@@ -257,7 +257,14 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       if(body.removeQuestion) {
 
+        console.log(body.removeQuestion)
+
         const index = test.questions.findIndex((question: { id: number, answer: string }) => Number(question.id) === Number(body.removeQuestion))
+
+        if(index === -1) {
+          return { status: 404, data: 'Descartando alterações' }
+        }
+
         test.questions.splice(index, 1)
 
         for(let question of test.questions) {

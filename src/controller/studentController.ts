@@ -34,7 +34,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       }) as Teacher
 
       const students = await this.repository.find({
-        relations: [ 'person', 'classroom.school', 'classroom.year'],
+        relations: [ 'person', 'classroom.school' ],
         where: this.whereSearch(teacher, req)
       }) as Student[]
 
@@ -61,28 +61,28 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   private whereSearch(teacher: Teacher, req?: Request):  FindOptionsWhere<ObjectLiteral> | FindOptionsWhere<ObjectLiteral>[] | undefined {
 
     let search: string = ''
-    let year: number = 1
 
     if(req) {
       for(let value in req.query) {
         if(!!req.query[value]?.length && value === 'search') {
           search = req.query[value] as string
         }
-        if(req.query.year) {
-          year = Number(req?.query.year)
-        }
       }
     }
 
-    let classesIds = teacher.teacherClasses.map((teacherClass) => teacherClass.classroom.id)
+    // todos os alunos possuim classe, é necessário olhar em studentsClassesHistory se está ativo. pois se não estiver
+    // significa que o aluno não está mais naquela classe., ele passou de ano por exemplo ou foi transferido.
+
+    let classesIds = teacher.teacherClasses
+        .map((teacherClass) => teacherClass.classroom.id)
 
     let fullSearch: FindOptionsWhere<ObjectLiteral> = {
-      classroom: { id: In(classesIds), year: { id: year } },
+      classroom: { id: In(classesIds) }
     }
 
     let whereFilters: FindOptionsWhere<ObjectLiteral> = {
       person: { name: ILike(`%${search}%`) },
-      classroom: { id: In(classesIds), year: { id: year } },
+      classroom: { id: In(classesIds) }
     }
 
     return search.length > 0 ? whereFilters : fullSearch

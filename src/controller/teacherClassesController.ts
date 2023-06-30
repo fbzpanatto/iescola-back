@@ -36,6 +36,13 @@ class TeacherClassesController extends GenericController<EntityTarget<ObjectLite
     }
   }
 
+  async temporarySave(data: any) {
+
+    await this.repository.save(data)
+
+    return { status: 200, data: 'ok' }
+  }
+
 }
 
 export const teacherClassesController = new TeacherClassesController();

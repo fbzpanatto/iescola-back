@@ -65,7 +65,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
       teacherClass.classroom = classroom;
       teacherClass.teacher = teacher;
 
-      await teacherClassesController.saveData(teacherClass);
+      await teacherClassesController.temporarySave(teacherClass)
     }
 
     for (let discipline of disciplines) {
@@ -99,7 +99,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
         teacherClass.statedAt = element.statedAt;
         teacherClass.endedAt = element.endedAt;
 
-        await teacherClassesController.saveData(teacherClass);
+        await teacherClassesController.temporarySave(teacherClass)
       }
 
     }
