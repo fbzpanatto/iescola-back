@@ -26,15 +26,15 @@ export class Student extends BaseEntity {
   @JoinColumn()
   person: Person;
 
-  @Column({ default: true, select: false })
-  active: boolean;
-
   @ManyToOne( type => Classroom, c => c.students)
   classroom: Classroom;
+
+  @Column({ default: true, select: false })
+  active: boolean;
 
   @OneToMany( type => StudentClassesHistory, sc => sc.student)
   studentClasses: StudentClassesHistory[];
 
   @OneToMany(type => StudentTests, st => st.student)
-  studentTests: StudentTests[];
+  studentTests: StudentTests[]
 }

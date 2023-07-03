@@ -1,0 +1,170 @@
+[
+  {
+    "no": 1,
+    "name": "ADRIANO SANTOS DA SILVA",
+    "ra": "000114203756",
+    "dv": 3,
+    "state": "SP",
+    "birthDate": "28/11/2008"
+  },
+  {
+    "no": 2,
+    "name": "ALICE PIMENTEL DE SOUSA",
+    "ra": "000111857865",
+    "dv": "X",
+    "state": "SP",
+    "birthDate": "17/12/2008"
+  },
+  {
+    "no": 3,
+    "name": "ANA JULIA BARROS",
+    "ra": "000110973334",
+    "dv": 3,
+    "state": "SP",
+    "birthDate": "23/12/2008"
+  },
+  {
+    "no": 4,
+    "name": "BRUNO CABRAL BRANCO",
+    "ra": "000109584342",
+    "dv": 4,
+    "state": "SP",
+    "birthDate": "11/05/2008"
+  },
+  {
+    "no": 5,
+    "name": "CARLOS EDUARDO CRUZ CARVALHO",
+    "ra": "000110597659",
+    "dv": 2,
+    "state": "SP",
+    "birthDate": "15/01/2009"
+  },
+  {
+    "no": 6,
+    "name": "FABRICIUS CALIXTO ALVES DE SOUZA",
+    "ra": "000112532733",
+    "dv": 9,
+    "state": "SP",
+    "birthDate": "11/01/2009"
+  },
+  {
+    "no": 7,
+    "name": "GABRIEL MICHALSKI SZAYKOWSKI",
+    "ra": "000113266187",
+    "dv": 0,
+    "state": "SP",
+    "birthDate": "22/10/2008"
+  },
+  {
+    "no": 8,
+    "name": "GUILHERME FRANCO MACARI",
+    "ra": "000113127501",
+    "dv": 9,
+    "state": "SP",
+    "birthDate": "10/11/2008"
+  },
+  {
+    "no": 9,
+    "name": "HENRY STEVAN CANDIDO DA COSTA",
+    "ra": "000110014461",
+    "dv": 4,
+    "state": "SP",
+    "birthDate": "25/06/2009"
+  },
+  {
+    "no": 10,
+    "name": "HIAGO STEFANISZEN",
+    "ra": "000121545548",
+    "dv": 3,
+    "state": "SP",
+    "birthDate": "12/08/2008"
+  },
+  {
+    "no": 11,
+    "name": "IZADORA FREITAS DO NASCIMENTO",
+    "ra": "000110373960",
+    "dv": 8,
+    "state": "SP",
+    "birthDate": "07/03/2009"
+  },
+  {
+    "no": 12,
+    "name": "LUCAS GABRIEL DANZO VIEIRA",
+    "ra": "000110076365",
+    "dv": "X",
+    "state": "SP",
+    "birthDate": "02/03/2009"
+  },
+  {
+    "no": 13,
+    "name": "LUÍS HENRIQUE FERREIRA DE OLIVEIRA",
+    "ra": "000110788658",
+    "dv": 2,
+    "state": "SP",
+    "birthDate": "12/05/2009"
+  },
+  {
+    "no": 14,
+    "name": "LUIZ OTÁVIO CARMIGNOTTO SILVA",
+    "ra": "000110389582",
+    "dv": 5,
+    "state": "SP",
+    "birthDate": "23/02/2007"
+  },
+  {
+    "no": 15,
+    "name": "MARCELLO SILVA DE ANDRADE",
+    "ra": "000109898219",
+    "dv": 8,
+    "state": "SP",
+    "birthDate": "25/03/2009"
+  },
+  {
+    "no": 16,
+    "name": "MARIA CLARA DOS SANTOS ROCHA",
+    "ra": "000112076708",
+    "dv": 8,
+    "state": "SP",
+    "birthDate": "27/01/2009"
+  },
+  {
+    "no": 17,
+    "name": "MARIA EDUARDA MAZZETTO EUFRASIO",
+    "ra": "000112661124",
+    "dv": 4,
+    "state": "SP",
+    "birthDate": "15/01/2009"
+  },
+  {
+    "no": 18,
+    "name": "NATHALYA SILVA DE OLIVEIRA",
+    "ra": "000109935302",
+    "dv": 6,
+    "state": "SP",
+    "birthDate": "29/11/2008"
+  },
+  {
+    "no": 19,
+    "name": "THAINÁ LIMA MOREIRA",
+    "ra": "000114672409",
+    "dv": 3,
+    "state": "SP",
+    "birthDate": "23/12/2008"
+  },
+  {
+    "no": 20,
+    "name": "JULIA PEREIRA BORGES DA SILVA",
+    "ra": "000111605640",
+    "dv": 9,
+    "state": "SP",
+    "birthDate": "29/06/2008"
+  },
+  {
+    "no": 51,
+    "name": "STEPHANIE PAOLA DA SILVA ROSA",
+    "ra": "000111504115",
+    "dv": 0,
+    "state": "SP",
+    "birthDate": "20/06/2009"
+  }
+]

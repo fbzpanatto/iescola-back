@@ -35,6 +35,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
       let response = {
         id: teacher.id,
         name: teacher.person.name,
+        birthDate: teacher.person.birthDate,
         teacherClasses: teacher.teacherClasses
           .map((teacherClass: any) => { return { id: teacherClass.classroom.id, name: teacherClass.classroom.name, school: teacherClass.classroom.school.name }})
           .sort((a: { id: number, name: string }, b: { id: number, name: string }) => a.id - b.id),
@@ -96,6 +97,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
       const teacherClass = new TeacherClasses() ;
       teacherClass.classroom = classroom;
       teacherClass.teacher = teacher;
+      teacherClass.statedAt = new Date();
 
       await teacherClassesController.temporarySave(teacherClass)
     }
@@ -104,6 +106,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
       const teacherDiscipline = new TeacherDisciplines();
       teacherDiscipline.discipline = discipline;
       teacherDiscipline.teacher = teacher;
+      teacherDiscipline.statedAt = new Date();
 
       await teacherDisciplinesController.saveData(teacherDiscipline);
     }
@@ -112,6 +115,8 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
   }
 
   override async saveData(body: DeepPartial<ObjectLiteral>) {
+
+    body.category = { id: 1 }
 
     const teacher = new Teacher();
     teacher.person = await PersonClass.newPerson(body);

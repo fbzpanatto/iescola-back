@@ -22,3 +22,8 @@ StudentRouter.put('/:id', (req: Request, res: Response) => {
   studentController.updateOneStudent(req.params.id, req.body)
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
+
+StudentRouter.get('/creation', (req: Request, res: Response) => {
+  studentController.testCreation()
+    .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
+})

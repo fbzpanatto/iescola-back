@@ -1,0 +1,226 @@
+[
+  {
+    "no": 1,
+    "name": "AGATHA FERNANDA DA SILVA ROQUE",
+    "ra": "000114314551",
+    "dv": 3,
+    "state": "SP",
+    "birthDate": "22/05/2013"
+  },
+  {
+    "no": 2,
+    "name": "ALEX FERNANDO SOUSA DOS REIS",
+    "ra": "000116141614",
+    "dv": 6,
+    "state": "SP",
+    "birthDate": "01/04/2013"
+  },
+  {
+    "no": 3,
+    "name": "ANA BEATRIZ CAETANO TORRES DE SÁ SOUZA",
+    "ra": "000116099662",
+    "dv": 3,
+    "state": "SP",
+    "birthDate": "03/04/2013"
+  },
+  {
+    "no": 5,
+    "name": "EDUARDO MITTMANN MOREIRA",
+    "ra": "000113536093",
+    "dv": 5,
+    "state": "SP",
+    "birthDate": "18/09/2012"
+  },
+  {
+    "no": 6,
+    "name": "EMILY LIMA ARAUJO",
+    "ra": "000116315456",
+    "dv": 8,
+    "state": "SP",
+    "birthDate": "27/06/2013"
+  },
+  {
+    "no": 7,
+    "name": "ÉRIK VINÍCIUS DIAS DE JESUS",
+    "ra": "000114309935",
+    "dv": 7,
+    "state": "SP",
+    "birthDate": "16/07/2011"
+  },
+  {
+    "no": 8,
+    "name": "FERNANDO GABRIEL PEREIRA NASCIMENTO",
+    "ra": "000114308255",
+    "dv": 2,
+    "state": "SP",
+    "birthDate": "23/05/2013"
+  },
+  {
+    "no": 9,
+    "name": "GUSTAVO LOPES FERNANDES",
+    "ra": "000114304043",
+    "dv": 0,
+    "state": "SP",
+    "birthDate": "18/01/2011"
+  },
+  {
+    "no": 10,
+    "name": "HAIRAM HENICKA",
+    "ra": "000115205877",
+    "dv": 0,
+    "state": "SP",
+    "birthDate": "04/08/2012"
+  },
+  {
+    "no": 11,
+    "name": "HELENA DE LAZARI PEDROSO",
+    "ra": "000114308288",
+    "dv": 6,
+    "state": "SP",
+    "birthDate": "10/03/2013"
+  },
+  {
+    "no": 12,
+    "name": "ISABELA ROSA",
+    "ra": "000115328921",
+    "dv": 0,
+    "state": "SP",
+    "birthDate": "17/04/2012"
+  },
+  {
+    "no": 13,
+    "name": "ISABELLI VICTORIA DE SOUZA",
+    "ra": "000113639621",
+    "dv": 4,
+    "state": "SP",
+    "birthDate": "12/03/2013"
+  },
+  {
+    "no": 14,
+    "name": "JOÃO VITOR SANTOS DA SILVA",
+    "ra": "000114308308",
+    "dv": 8,
+    "state": "SP",
+    "birthDate": "19/11/2012"
+  },
+  {
+    "no": 15,
+    "name": "JÚLIA GONÇALVES DE SOUZA",
+    "ra": "000116315561",
+    "dv": 5,
+    "state": "SP",
+    "birthDate": "19/02/2013"
+  },
+  {
+    "no": 16,
+    "name": "KAUÃ DE LIMA LAVELLI",
+    "ra": "000114713316",
+    "dv": 5,
+    "state": "SP",
+    "birthDate": "01/08/2012"
+  },
+  {
+    "no": 17,
+    "name": "KAUAN DA SILVA MOREIRA",
+    "ra": "000116284519",
+    "dv": 3,
+    "state": "SP",
+    "birthDate": "12/06/2013"
+  },
+  {
+    "no": 18,
+    "name": "KEILLOR DAVI PAIVA NASCIMENTO",
+    "ra": "000114314537",
+    "dv": 9,
+    "state": "SP",
+    "birthDate": "24/05/2013"
+  },
+  {
+    "no": 19,
+    "name": "LARISSA POLATO DA SILVA",
+    "ra": "000116344520",
+    "dv": 4,
+    "state": "SP",
+    "birthDate": "15/05/2013"
+  },
+  {
+    "no": 20,
+    "name": "LAURA SOUZA DE LIMA",
+    "ra": "000113435315",
+    "dv": 7,
+    "state": "SP",
+    "birthDate": "26/02/2013"
+  },
+  {
+    "no": 21,
+    "name": "LORENA CARRARO",
+    "ra": "000114904074",
+    "dv": 9,
+    "state": "SP",
+    "birthDate": "10/04/2013"
+  },
+  {
+    "no": 22,
+    "name": "LYGIA CRUZ CARVALHO",
+    "ra": "000113030753",
+    "dv": 0,
+    "state": "SP",
+    "birthDate": "24/09/2012"
+  },
+  {
+    "no": 23,
+    "name": "MARIA LUIZA ANDRADE POZZA",
+    "ra": "000115234845",
+    "dv": 0,
+    "state": "SP",
+    "birthDate": "24/01/2013"
+  },
+  {
+    "no": 24,
+    "name": "MATHEUS GRUBER FACHIN",
+    "ra": "000114410466",
+    "dv": "X",
+    "state": "SP",
+    "birthDate": "07/03/2013"
+  },
+  {
+    "no": 25,
+    "name": "NICOLAS BRANDINO DIONISIO",
+    "ra": "000113817518",
+    "dv": 3,
+    "state": "SP",
+    "birthDate": "12/07/2012"
+  },
+  {
+    "no": 26,
+    "name": "PEDRO JOAQUIM FEITOZA DE ALMEIDA",
+    "ra": "000114308659",
+    "dv": 4,
+    "state": "SP",
+    "birthDate": "28/12/2012"
+  },
+  {
+    "no": 27,
+    "name": "RAFAEL WILFRIDO RIBEIRO LEGAL",
+    "ra": "000113880662",
+    "dv": 6,
+    "state": "SP",
+    "birthDate": "07/06/2013"
+  },
+  {
+    "no": 28,
+    "name": "RAFAELA DA SILVA FERREIRA",
+    "ra": "000115736397",
+    "dv": 0,
+    "state": "SP",
+    "birthDate": "28/09/2012"
+  },
+  {
+    "no": 29,
+    "name": "STELLA SIMONETTE POZZA",
+    "ra": "000113942549",
+    "dv": 3,
+    "state": "SP",
+    "birthDate": "04/04/2013"
+  }
+]

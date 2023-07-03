@@ -2,9 +2,9 @@ const fs = require('fs');
 const XLSX = require('xlsx');
 
 const runTimeSchool = 'pires'
-const runTimeSubject = 'matematica'
+const runTimeSubject = '9C'
 
-const workbook = XLSX.readFile(`pires_5B.xlsx`);
+const workbook = XLSX.readFile(`${runTimeSchool}_${runTimeSubject}.xlsx`);
 
 let worksheet = {};
 

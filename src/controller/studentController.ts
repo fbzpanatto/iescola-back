@@ -52,6 +52,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     } catch (error: any) {
 
+      console.log(error)
+
       return  { status: 500, data: error }
 
     }
@@ -139,9 +141,11 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         return { status: 409, data: 'O RA informado já está em uso.' }
       }
 
-      student.person = await PersonClass.newPerson(body);
-      student.ra = body.ra;
+      student.person = await PersonClass.newPerson(body, true);
       student.no = body.order;
+      student.ra = body.ra;
+      student.dv = body.dv;
+      student.state = body.state;
       student.classroom = classroom
       await student.save()
 
@@ -210,74 +214,33 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async testCreation(){
 
-    const runTimeClassExecution = ['5A', '5B', '5C', '9A', '9B', '9C']
-    const runTimeSchool = 'agenor'
-    const runTimeSubject = 'matematica'
+    // 1.
+    const runTimeClassExecution = ['9C']
+    // 2.
+    const classroomId = 99
+    // 3.
+    const runTimeSchool = 'pires'
 
     for(let classroom of runTimeClassExecution) {
 
-      const localDataToSave = require(`../sheets/${runTimeSchool}/${runTimeSchool}_${classroom}_${runTimeSubject}.json`)
-
-      const myArrayToSave: { [key: number | string]: any }[] = []
+      const localDataToSave = require(`../sheets/${runTimeSchool}/${runTimeSchool}_${classroom}.json`)
 
       for(let register of localDataToSave) {
 
-        const questions = Object.keys(register).filter(key => !isNaN(Number(key)))
-          .map(questionId => {
-
-            let object: { [key: number | string]: any } = {}
-            object.id = questionId
-
-            if(object.answer === 'undefined' || object.answer === '-') {
-              object.answer = ''
-            } else {
-              object.answer = register[questionId].toUpperCase()
-            }
-
-            return object
-          })
-
-        let completed: boolean = Number(register.completed) === 1
-
-        myArrayToSave.push({
-          questions: questions,
+        await this.saveData({
+          order: register.no,
           name: register.name,
-          classroom: register['class'],
-          test: register.test,
-          category: register.category,
-          no: register.no,
-          completed: completed
+          ra: register.ra,
+          dv: register.dv,
+          state: register.state,
+          birthDate: register.birthDate,
+          classroom: { id: classroomId },
         })
-
       }
-
-      for(let newElement of myArrayToSave) {
-
-        const student = new Student();
-        student.person = await PersonClass.newPerson({ name: newElement.name, category: { id: newElement.category } });
-        student.no = newElement.no
-        student.classroom = await classroomController.findOneBy(newElement.classroom) as Classroom
-
-        await student.save()
-
-        const studentClassroom = new StudentClassesHistory()
-        studentClassroom.student = student
-        studentClassroom.classroom = await classroomController.findOneBy(newElement.classroom) as Classroom
-        await studentClassesHistoryController.saveData(studentClassroom)
-
-        const studentTest = new StudentTests()
-        studentTest.student = student
-        studentTest.test = await testController.findOneBy(newElement.test) as Test
-        studentTest.completed = newElement.completed
-        studentTest.studentAnswers = newElement.questions
-        await studentTestsController.saveData(studentTest)
-      }
-
     }
 
-    return 'ok'
+    return { status: 200, data: 'ok'}
   }
-
 }
 
 export const studentController = new StudentController();
