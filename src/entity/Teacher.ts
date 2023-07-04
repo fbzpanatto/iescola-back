@@ -17,7 +17,7 @@ export class Teacher extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Person, p => p.teacher)
+  @OneToOne(() => Person, p => p.teacher, { cascade: ['update'] })
   @JoinColumn()
   person: Person;
 
