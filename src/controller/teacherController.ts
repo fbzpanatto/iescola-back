@@ -153,6 +153,8 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
       }) as Teacher
 
       if(body.teacherClasses) {
+
+        //create a new relation
         for(let classID of body.teacherClasses as number[]) {
 
           const classroom = await classroomController.findOneBy(classID) as Classroom;
@@ -171,9 +173,29 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
 
             await teacherClassesController.temporarySave(teacherClass)
           }
+        }
 
+        // update the relation
+        const teacherClasses = await teacherClassesController.getAll({
+          relations: ['classroom', 'teacher'],
+          where: { teacher: teacher, active: true }
+        }) as TeacherClasses[];
+
+        for(let relation of teacherClasses) {
+
+          if(!body.teacherClasses?.includes(relation.classroom.id)) {
+            await teacherClassesController.updateOneBy(relation.id, {
+              active: false,
+              endedAt: new Date()
+            })
+          }
         }
       }
+
+      teacher.person.name = body.name;
+      teacher.person.birthDate = body.birthDate;
+
+      await teacher.person.save();
 
       return { status: 200, data: teacher }
 
@@ -222,6 +244,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
       name: teacher.person.name,
       birthDate: teacher.person.birthDate,
       teacherClasses: teacher.teacherClasses
+        .filter((teacherClass: any) => teacherClass.active == true)
         .map((teacherClass: any) => { return { id: teacherClass.classroom.id, name: teacherClass.classroom.name, school: teacherClass.classroom.school.name }})
         .sort((a: { id: number, name: string }, b: { id: number, name: string }) => a.id - b.id),
       teacherDisciplines: teacher.teacherDisciplines
