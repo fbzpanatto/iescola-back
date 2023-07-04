@@ -93,7 +93,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     try {
 
-      body.category = { id: 1 }
+      body.category = { id: enumOfTeacherCategories.teacher }
 
       const teacher = new Teacher();
       teacher.person = await PersonClass.newPerson(body);
@@ -141,40 +141,45 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
     }
   }
 
-  async updateData(req: Request) {
+  async updateOneData(req: Request) {
+
+    const { body, params } = req;
 
     try {
 
-      const { id } = req.params;
-      const { user: userId, category } = req.body.user;
+      const teacher = await this.repository.findOne({
+        relations: ['person'],
+        where: { id: Number(params.id) }
+      }) as Teacher
 
-      if(enumOfTeacherCategories.teacher === category as number) {
+      if(body.teacherClasses) {
+        for(let classID of body.teacherClasses as number[]) {
 
-        const teacher = await this.repository.findOne({
-          relations: ['person.user'],
-          where: { person: { user: { id: userId } } }
-        }) as Teacher
+          const classroom = await classroomController.findOneBy(classID) as Classroom;
 
-        if(teacher.id != Number(id)) {
-          return { status: 403, data: 'Forbidden!' }
+          const relation = await teacherClassesController.findOne({
+            relations: ['classroom', 'teacher'],
+            where: { teacher: teacher, classroom: classroom, active: true }
+          }) as TeacherClasses;
+
+          if(!relation) {
+            const teacherClass = new TeacherClasses();
+
+            teacherClass.classroom = classroom;
+            teacherClass.teacher = teacher;
+            teacherClass.statedAt = new Date();
+
+            await teacherClassesController.temporarySave(teacherClass)
+          }
+
         }
       }
 
-      const teacher = await this.repository.findOne({
-        relations: ['person.user', 'teacherDisciplines', 'teacherClasses.classroom.school'],
-        where: { id: id }
-      }) as Teacher
-
-      teacher.person.birthDate = req.body.birthDate;
-      teacher.person.name = req.body.name;
-
-      let result = await teacher.save();
-
-      return { status: 200, data: result }
+      return { status: 200, data: teacher }
 
     } catch (error: any) {
 
-      return { status: 500, data: error.message }
+      return { status: 500, data: error.message}
 
     }
 

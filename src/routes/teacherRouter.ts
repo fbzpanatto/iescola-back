@@ -19,7 +19,7 @@ TeacherRouter.post('/', (req: Request, res: Response) => {
 })
 
 TeacherRouter.put('/:id', (req: Request, res: Response) => {
-  teacherController.updateData(req)
+  teacherController.updateOneData(req)
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
