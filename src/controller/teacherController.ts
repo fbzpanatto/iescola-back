@@ -44,7 +44,7 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       const teacher = await this.repository.findOne({
         relations: ['person.user', 'teacherDisciplines', 'teacherClasses.classroom.school'],
-        where: { id: id }
+        where: { id: id, teacherDisciplines: { active: true }, teacherClasses: { active: true } }
       }) as Teacher
 
       let response = this.formatedTeacher(teacher)
@@ -192,6 +192,46 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
         }
       }
 
+      if(body.teacherDisciplines) {
+
+        //create a new relation
+        for(let disciplineID of body.teacherDisciplines as number[]) {
+
+        const discipline = await disciplineController.findOneBy(disciplineID) as Discipline;
+
+        const relation = await teacherDisciplinesController.findOne({
+            relations: ['discipline', 'teacher'],
+            where: { teacher: teacher, discipline: discipline, active: true }
+        }) as TeacherDisciplines;
+
+          if(!relation) {
+              const teacherDiscipline = new TeacherDisciplines();
+
+              teacherDiscipline.discipline = discipline;
+              teacherDiscipline.teacher = teacher;
+              teacherDiscipline.statedAt = new Date();
+
+              await teacherDisciplinesController.saveData(teacherDiscipline);
+          }
+        }
+
+        // update the relation
+        const teacherDisciplines = await teacherDisciplinesController.getAll({
+        relations: ['discipline', 'teacher'],
+        where: { teacher: teacher, active: true }
+        }) as TeacherDisciplines[];
+
+        for(let relation of teacherDisciplines) {
+
+          if(!body.teacherDisciplines?.includes(relation.discipline.id)) {
+              await teacherDisciplinesController.updateOneBy(relation.id, {
+              active: false,
+              endedAt: new Date()
+              })
+          }
+        }
+      }
+
       teacher.person.name = body.name;
       teacher.person.birthDate = body.birthDate;
 
@@ -244,7 +284,6 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
       name: teacher.person.name,
       birthDate: teacher.person.birthDate,
       teacherClasses: teacher.teacherClasses
-        .filter((teacherClass: any) => teacherClass.active == true)
         .map((teacherClass: any) => { return { id: teacherClass.classroom.id, name: teacherClass.classroom.name, school: teacherClass.classroom.school.name }})
         .sort((a: { id: number, name: string }, b: { id: number, name: string }) => a.id - b.id),
       teacherDisciplines: teacher.teacherDisciplines
