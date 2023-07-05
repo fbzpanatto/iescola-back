@@ -10,11 +10,11 @@ export class PersonClass {
     person.name = body.name;
     person.category = body.category;
 
-    console.log(body.birthDate)
-
-    dateConversion ? person.birthDate = this.criarData(body.birthDate) : person.birthDate = body.birthDate;
-
-    console.log(person)
+    if(dateConversion) {
+      person.birthDate = this.criarData(body.birthDate);
+    } else {
+      person.birthDate = body.birthDate;
+    }
 
     await person.save()
 

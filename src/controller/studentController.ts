@@ -124,7 +124,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   }
 
-  override async saveData(body: DeepPartial<ObjectLiteral>) {
+  override async saveData(body: DeepPartial<ObjectLiteral>, dateConversion: boolean = false) {
 
     try {
 
@@ -141,7 +141,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         return { status: 409, data: 'O RA informado já está em uso.' }
       }
 
-      student.person = await PersonClass.newPerson(body, true);
+      student.person = await PersonClass.newPerson(body, dateConversion);
       student.no = body.order;
       student.ra = body.ra;
       student.dv = body.dv;
@@ -235,7 +235,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
           state: register.state,
           birthDate: register.birthDate,
           classroom: { id: classroomId },
-        })
+        }, true)
       }
     }
 

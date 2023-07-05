@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { Teacher } from "../entity/Teacher";
-import { DeepPartial, EntityTarget, ObjectLiteral } from "typeorm";
+import {DeepPartial, EntityTarget, FindOptionsWhere, ILike, ObjectLiteral} from "typeorm";
 import { PersonClass } from "./personController";
 import { GenericController } from "./genericController";
 import { Classroom } from "../entity/Classroom";
@@ -65,17 +65,10 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       const { user: userId, category } = req.body.user;
 
-      let where = {};
-
-      if(enumOfTeacherCategories.superTeacher != category as number) {
-
-        where = { person: { user: { id: userId } } }
-      }
-
       const teachers = await this.repository.find({
         relations: RELATIONS,
-        where: where
-      })
+        where: this.whereSearch(req)
+      }) as Teacher[]
 
       let result = teachers.map(teacher => this.formatedTeacher(teacher as Teacher))
 
@@ -87,6 +80,33 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     }
 
+  }
+
+  whereSearch(req: Request) {
+
+    const { user: userId, category } = req.body.user;
+
+    let search: string = '';
+
+    if(req) {
+      for(let value in req.query) {
+        if(!!req.query[value]?.length && value === 'search') {
+          search = req.query[value] as string
+        }
+      }
+    }
+
+    let fullSearch: FindOptionsWhere<ObjectLiteral> = {}
+    let whereFilters: FindOptionsWhere<ObjectLiteral> = {
+      person: { name: ILike(`%${search}%`) },
+    }
+
+    if(enumOfTeacherCategories.superTeacher != Number(category)) {
+      fullSearch = { person: { user: { id: userId } } }
+      whereFilters = { person: { user: { id: userId }, name: ILike(`%${search}%`) } }
+    }
+
+    return search.length > 0 ? whereFilters : fullSearch
   }
 
   override async saveData(body: DeepPartial<ObjectLiteral>) {

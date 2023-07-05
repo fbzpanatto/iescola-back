@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { testController } from "../controller/testController";
-import isTeacher from "../middleware/isTeacher";
+import userHasPermission from "../middleware/havePermission";
 
 export const TestRouter = Router()
 
@@ -14,17 +14,17 @@ TestRouter.get('/:id', (req: Request, res: Response) => {
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-TestRouter.post('/', isTeacher,  (req: Request, res: Response) => {
+TestRouter.post('/', userHasPermission,  (req: Request, res: Response) => {
   testController.saveData(req.body)
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-TestRouter.put('/:id', isTeacher,  (req: Request, res: Response) => {
+TestRouter.put('/:id', userHasPermission,  (req: Request, res: Response) => {
   testController.updateOneBy(req.params.id, req.body)
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-TestRouter.delete('/:id', isTeacher,  (req: Request, res: Response) => {
+TestRouter.delete('/:id', userHasPermission,  (req: Request, res: Response) => {
   testController.deleteOneBy(req.params.id)
     .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
 })
