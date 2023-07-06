@@ -6,13 +6,9 @@ import {GenericController} from "./genericController";
 import {Student} from "../entity/Student";
 import {PersonClass} from "./personController";
 import {Classroom} from "../entity/Classroom";
-import {StudentTests} from "../entity/StudentTests";
-import {Test} from "../entity/Test";
 import {StudentClassesHistory} from "../entity/StudentClassesHistory";
 
 import {classroomController} from "./classroomController";
-import {studentTestsController} from "./studentTestsController";
-import {testController} from "./testController";
 import {studentClassesHistoryController} from "./studentClassesHistoryController";
 import {teacherController} from "./teacherController";
 import {Teacher} from "../entity/Teacher";
@@ -104,6 +100,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         order: student.no,
         name: student.person.name,
         birthDate: student.person.birthDate,
+        dv: student.dv,
+        state: student.state,
         classroom: {
           id: student.classroom.id,
           name: student.classroom.name,
@@ -179,6 +177,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       student.person.birthDate = body.birthDate;
       student.ra = body.ra;
       student.no = body.order;
+      student.dv = body.dv;
+      student.state = body.state;
       await student.save()
 
       if(body.classroom) {
