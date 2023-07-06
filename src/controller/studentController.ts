@@ -12,6 +12,8 @@ import {classroomController} from "./classroomController";
 import {studentClassesHistoryController} from "./studentClassesHistoryController";
 import {teacherController} from "./teacherController";
 import {Teacher} from "../entity/Teacher";
+import {yearController} from "./yearController";
+import {Year} from "../entity/Year";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -23,24 +25,28 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     try {
 
       const { user: UserId } = req?.body.user
+      const { year: queryYear, search } = req.query
 
       const teacher = await teacherController.findOne({
-        relations: ['person.user', 'teacherClasses.classroom.year'],
+        relations: ['person.user', 'teacherClasses.classroom'],
         where: { person: { user: { id: UserId } } }
       }) as Teacher
 
-      const students = await this.repository.find({
-        relations: [ 'person', 'classroom.school' ],
-        where: this.whereSearch(teacher, req)
-      }) as Student[]
+      const studentClassesHistory = await studentClassesHistoryController.getAll({
+        relations: [ 'student.person', 'classroom.school', 'classroom.year' ],
+        where: {
+          student: { person: { name: ILike(`%${search}%`) } },
+          classroom: { id: In(teacher.teacherClasses.map((element: any) => element.classroom.id)), year: { id: Number(queryYear) } }
+        }
+      }) as StudentClassesHistory[]
 
-      let result = students.map(student => {
+      let result = studentClassesHistory.map((studentClassHistory: StudentClassesHistory) => {
         return {
-          id: student.id,
-          order: student.no,
-          name: student.person.name,
-          classroom: student.classroom.name,
-          school: student.classroom.school.name
+          id: studentClassHistory.student.id,
+          order: studentClassHistory.student.no,
+          name: studentClassHistory.student.person.name,
+          classroom: studentClassHistory.classroom.name,
+          school: studentClassHistory.classroom.school.name
         }
       })
 
@@ -48,42 +54,10 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     } catch (error: any) {
 
-      console.log(error)
-
       return  { status: 500, data: error }
 
     }
 
-  }
-
-  private whereSearch(teacher: Teacher, req?: Request):  FindOptionsWhere<ObjectLiteral> | FindOptionsWhere<ObjectLiteral>[] | undefined {
-
-    let search: string = ''
-
-    if(req) {
-      for(let value in req.query) {
-        if(!!req.query[value]?.length && value === 'search') {
-          search = req.query[value] as string
-        }
-      }
-    }
-
-    // todos os alunos possuim classe, é necessário olhar em studentsClassesHistory se está ativo. pois se não estiver
-    // significa que o aluno não está mais naquela classe., ele passou de ano por exemplo ou foi transferido.
-
-    let classesIds = teacher.teacherClasses
-        .map((teacherClass) => teacherClass.classroom.id)
-
-    let fullSearch: FindOptionsWhere<ObjectLiteral> = {
-      classroom: { id: In(classesIds) }
-    }
-
-    let whereFilters: FindOptionsWhere<ObjectLiteral> = {
-      person: { name: ILike(`%${search}%`) },
-      classroom: { id: In(classesIds) }
-    }
-
-    return search.length > 0 ? whereFilters : fullSearch
   }
 
   async getOneStudent(req: Request) {
