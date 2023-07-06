@@ -12,8 +12,6 @@ import {classroomController} from "./classroomController";
 import {studentClassesHistoryController} from "./studentClassesHistoryController";
 import {teacherController} from "./teacherController";
 import {Teacher} from "../entity/Teacher";
-import {yearController} from "./yearController";
-import {Year} from "../entity/Year";
 import {TeacherClasses} from "../entity/TeacherClasses";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
