@@ -14,6 +14,7 @@ import {teacherController} from "./teacherController";
 import {Teacher} from "../entity/Teacher";
 import {yearController} from "./yearController";
 import {Year} from "../entity/Year";
+import {TeacherClasses} from "../entity/TeacherClasses";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -35,8 +36,13 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       const studentClassesHistory = await studentClassesHistoryController.getAll({
         relations: [ 'student.person', 'classroom.school', 'classroom.year' ],
         where: {
-          student: { person: { name: ILike(`%${search}%`) } },
-          classroom: { id: In(teacher.teacherClasses.map((element: any) => element.classroom.id)), year: { id: Number(queryYear) } }
+          student: {
+            person: { name: ILike(`%${search}%`) }
+          },
+          classroom: {
+            id: In(teacher.teacherClasses.map((register: TeacherClasses) => register.classroom.id)),
+            year: { id: Number(queryYear) }
+          }
         }
       }) as StudentClassesHistory[]
 
@@ -57,7 +63,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       return  { status: 500, data: error }
 
     }
-
   }
 
   async getOneStudent(req: Request) {
