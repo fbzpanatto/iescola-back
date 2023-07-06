@@ -12,7 +12,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
   const condition = havePermission(user.category, entity, method)
 
-  if(!condition) return res.status(403).json({ message: 'Você não tem permissão para acessar este recurso.' })
+  if(!condition) return res.status(403).json({ method: req.method, resource: req.baseUrl, payload: { message: 'Você não tem permissão para acessar ou modificar este recurso!' } })
 
   next()
 }

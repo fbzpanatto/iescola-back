@@ -149,7 +149,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       }) as Test
 
       if(!this.isOwner(req, test)) {
-        throw new Error('Test not found or you do not have permission to access it!')
+        return { status: 403, data: { message: 'Você não tem permissão para acessar este teste!' } }
       }
 
       let testClasses = test.testClasses
@@ -181,7 +181,7 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     } catch (error: any) {
 
-      return { status: 403, data: error.message }
+      return { status: 500, data: error.message }
     }
   }
 
