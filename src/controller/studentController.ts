@@ -25,7 +25,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     try {
 
-      // TODO: criar um flag active e colocar no where (esse flag deve deve vir do front)
+      const currentYear = await yearController.findOne({ where: { active: true } }) as Year
 
       const { user: UserId } = req?.body.user
       const { year: queryYear, search } = req.query
@@ -38,6 +38,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       const studentClassesHistory = await studentClassesHistoryController.getAll({
         relations: [ 'student.person', 'classroom.school' ],
         where: {
+          active: currentYear.id === Number(queryYear),
           year: { id: Number(queryYear) },
           student: {
             person: { name: ILike(`%${search}%`) }
@@ -109,20 +110,13 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       const student = new Student();
       const classroom = await classroomController.findOneBy(Number(body.classroom.id)) as Classroom
-      const year = await yearController.findOne({
-        where: { active: true }
-      }) as Year
+      const currentYear = await yearController.findOne({ where: { active: true } }) as Year
 
       // TODO: Remover essa gambiarra
       body.category = { id: 2 }
 
-      const studentInDB = await this.repository.findOne({
-        where: { ra: body.ra }
-      }) as Student
-
-      if(studentInDB) {
-        return { status: 409, data: 'O RA informado já está em uso.' }
-      }
+      const studentInDB = await this.repository.findOne({ where: { ra: body.ra, dv: body.dv } }) as Student
+      if( studentInDB ) { return { status: 409, data: 'O RA informado já está em uso.' } }
 
       student.person = await PersonClass.newPerson(body, dateConversion);
       student.no = body.order;
@@ -137,7 +131,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       studentClassroom.classroom = classroom
       studentClassroom.startedAt = body.startedAt ? body.startedAt : new Date()
       studentClassroom.active = true
-      studentClassroom.year = year
+      studentClassroom.year = currentYear
       await studentClassesHistoryController.saveData(studentClassroom)
 
       return { status: 200, data: student }
