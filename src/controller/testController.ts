@@ -31,16 +31,36 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       let response: { testId: number, classes: MyTestClassInterface[] }[] = []
 
       const { user: UserId } = req?.body.user
+      const search = req?.query.search
+      const year = req?.query.year
+      const bimester = req?.query.bimester
 
       const teacher = await teacherController.findOne({
-        relations: ['person.user', 'teacherClasses.classroom', 'teacherDisciplines.discipline'],
-        where: { person: { user: { id: UserId } } }
+        relations: ['person.user', 'teacherClasses.classroom'],
+        where: {
+          teacherClasses: { active: true },
+          person: { user: { id: UserId } }
+        }
       }) as Teacher
 
-      let tests = await this.repository.find({
-        relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person.user', 'teacher.teacherClasses', 'testClasses.classroom.school'],
-        select: ['id', 'name'],
-        where: this.whereSearch(teacher, req)
+      const classesIds = teacher.teacherClasses.map(register => register.classroom.id)
+
+      const tests = await this.repository.find({
+        relations: ['discipline', 'category', 'bimester', 'year', 'teacher.person', 'testClasses.classroom.school'],
+        where: {
+          testClasses: {
+            classroom: {
+              id: In(classesIds),
+              school: { name: ILike(`%${search}%`) }
+            }
+          },
+          bimester: {
+            id: !isNaN(Number(bimester)) ? Number(bimester) : 1
+          },
+          year: {
+            id: !isNaN(Number(year)) ? Number(year) : 1
+          }
+        }
       }) as Test[]
 
       for (let test of tests) {
@@ -92,8 +112,14 @@ class TestController extends GenericController<EntityTarget<ObjectLiteral>> {
       }
     }
 
-    let classesIds = teacher.teacherClasses.map((teacherClass) => teacherClass.classroom.id)
-    let disciplinesIds = teacher.teacherDisciplines.map((teacherDiscipline) => teacherDiscipline.discipline.id)
+    let classesIds = teacher.teacherClasses
+      .filter((teacherClass) => teacherClass.active)
+      .map((teacherClass) => teacherClass.classroom.id)
+    let disciplinesIds = teacher.teacherDisciplines
+      .filter((teacherDiscipline) => teacherDiscipline.active)
+      .map((teacherDiscipline) => teacherDiscipline.discipline.id)
+
+    console.log(classesIds)
 
     let fullSearch: FindOptionsWhere<ObjectLiteral> = {
       bimester: { id: bimester },

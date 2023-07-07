@@ -63,8 +63,6 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     try {
 
-      const { user: userId, category } = req.body.user;
-
       const teachers = await this.repository.find({
         relations: RELATIONS,
         where: this.whereSearch(req)
@@ -75,6 +73,8 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
       return { status: 200, data: result }
 
     } catch (error: any) {
+
+      console.log(error)
 
       return { status: 500, data: error.message }
 
@@ -304,9 +304,11 @@ class TeacherController extends GenericController<EntityTarget<ObjectLiteral>> {
       name: teacher.person.name,
       birthDate: teacher.person.birthDate,
       teacherClasses: teacher.teacherClasses
+        .filter((teacherClass: any) => teacherClass.active === true)
         .map((teacherClass: any) => { return { id: teacherClass.classroom.id, name: teacherClass.classroom.name, school: teacherClass.classroom.school.name }})
         .sort((a: { id: number, name: string }, b: { id: number, name: string }) => a.id - b.id),
       teacherDisciplines: teacher.teacherDisciplines
+        .filter((teacherDiscipline: any) => teacherDiscipline.active === true)
         .map((teacherDiscipline: any) => { return { id: teacherDiscipline.discipline.id, name: teacherDiscipline.discipline.name }})
         .sort((a: { id: number, name: string }, b: { id: number, name: string }) => a.id - b.id)
     }

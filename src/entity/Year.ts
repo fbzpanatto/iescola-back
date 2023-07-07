@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm"
 import { IsInt, Length } from "class-validator";
 import { Classroom } from "./Classroom";
 import { Test } from "./Test";
+import {StudentClassesHistory} from "./StudentClassesHistory";
 
 @Entity()
 export class Year {
@@ -14,11 +15,11 @@ export class Year {
   @Column({ unique: true})
   name: number
 
-  @Column({select: false})
+  @Column({ default: true })
   active: boolean
 
-  @OneToMany(type => Classroom, c => c.year)
-  classrooms: Classroom[]
+  @OneToMany(type => StudentClassesHistory, s => s.year)
+  studentClasses: StudentClassesHistory[]
 
   @OneToMany( type => Test, t => t.year)
   tests: Test[]

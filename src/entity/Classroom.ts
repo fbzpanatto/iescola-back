@@ -40,9 +40,6 @@ export class Classroom {
   @ManyToOne(type => School, s => s.classrooms)
   school: School
 
-  @ManyToOne(type => Year, y => y.classrooms)
-  year: Year
-
   @ManyToOne( type => ClassCategory, c => c.classrooms)
   category: ClassCategory
 }

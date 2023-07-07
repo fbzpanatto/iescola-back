@@ -22,9 +22,6 @@ export class StudentTests {
   @Column( { nullable: true })
   completed: boolean;
 
-  @Column({ nullable: true})
-  score: number;
-
   @ManyToOne(() => Classroom, (c) => c.registeredInClass, { nullable: true })
   registeredInClass: Classroom
 

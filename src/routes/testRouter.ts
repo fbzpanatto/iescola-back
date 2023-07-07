@@ -14,17 +14,17 @@ TestRouter.get('/:id', (req: Request, res: Response) => {
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-TestRouter.post('/', userHasPermission,  (req: Request, res: Response) => {
+TestRouter.post('/', (req: Request, res: Response) => {
   testController.saveData(req.body)
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-TestRouter.put('/:id', userHasPermission,  (req: Request, res: Response) => {
+TestRouter.put('/:id', (req: Request, res: Response) => {
   testController.updateOneBy(req.params.id, req.body)
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-TestRouter.delete('/:id', userHasPermission,  (req: Request, res: Response) => {
+TestRouter.delete('/:id', (req: Request, res: Response) => {
   testController.deleteOneBy(req.params.id)
     .then(r => res.json({ method: req.method, resource: req.baseUrl, payload: r }))
 })

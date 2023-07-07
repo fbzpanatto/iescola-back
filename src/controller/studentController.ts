@@ -13,6 +13,8 @@ import {studentClassesHistoryController} from "./studentClassesHistoryController
 import {teacherController} from "./teacherController";
 import {Teacher} from "../entity/Teacher";
 import {TeacherClasses} from "../entity/TeacherClasses";
+import {yearController} from "./yearController";
+import {Year} from "../entity/Year";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
@@ -23,6 +25,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     try {
 
+      // TODO: criar um flag active e colocar no where (esse flag deve deve vir do front)
+
       const { user: UserId } = req?.body.user
       const { year: queryYear, search } = req.query
 
@@ -32,14 +36,14 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       }) as Teacher
 
       const studentClassesHistory = await studentClassesHistoryController.getAll({
-        relations: [ 'student.person', 'classroom.school', 'classroom.year' ],
+        relations: [ 'student.person', 'classroom.school' ],
         where: {
+          year: { id: Number(queryYear) },
           student: {
             person: { name: ILike(`%${search}%`) }
           },
           classroom: {
-            id: In(teacher.teacherClasses.map((register: TeacherClasses) => register.classroom.id)),
-            year: { id: Number(queryYear) }
+            id: In(teacher.teacherClasses.map((register: TeacherClasses) => register.classroom.id))
           }
         }
       }) as StudentClassesHistory[]
@@ -58,6 +62,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     } catch (error: any) {
 
+      console.log(error)
+
       return  { status: 500, data: error }
 
     }
@@ -68,7 +74,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
     try {
 
       const student = await this.repository.findOne({
-        relations: [ 'person', 'classroom.school', 'classroom.category', 'classroom.year'],
+        relations: [ 'person', 'classroom.school'],
         where: { id: req.params.id }
       }) as Student
 
@@ -82,9 +88,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         classroom: {
           id: student.classroom.id,
           name: student.classroom.name,
-          school: student.classroom.school.name,
-          year: student.classroom.year.name,
-          category: student.classroom.category.name,
+          school: student.classroom.school.name
         },
         ra: student.ra,
       }
@@ -105,7 +109,11 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       const student = new Student();
       const classroom = await classroomController.findOneBy(Number(body.classroom.id)) as Classroom
+      const year = await yearController.findOne({
+        where: { active: true }
+      }) as Year
 
+      // TODO: Remover essa gambiarra
       body.category = { id: 2 }
 
       const studentInDB = await this.repository.findOne({
@@ -129,6 +137,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       studentClassroom.classroom = classroom
       studentClassroom.startedAt = body.startedAt ? body.startedAt : new Date()
       studentClassroom.active = true
+      studentClassroom.year = year
       await studentClassesHistoryController.saveData(studentClassroom)
 
       return { status: 200, data: student }
@@ -177,6 +186,7 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
         studentClassroom.classroom = newClassroom
         studentClassroom.startedAt = body.startedAt ? body.startedAt : new Date()
         studentClassroom.active = true
+        studentClassroom.year = await yearController.findOne({ where: { active: true } }) as Year
         await studentClassesHistoryController.saveData(studentClassroom)
       }
 
@@ -191,32 +201,44 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async testCreation(){
 
-    // 1.
-    const runTimeClassExecution = ['9C']
-    // 2.
-    const classroomId = 99
-    // 3.
-    const runTimeSchool = 'pires'
+    try {
 
-    for(let classroom of runTimeClassExecution) {
+      // 1.
+      const runTimeClassExecution = ['5A']
+      // 2.
+      const classroomId = 23
+      // 3.
+      const runTimeSchool = 'benno'
 
-      const localDataToSave = require(`../sheets/${runTimeSchool}/${runTimeSchool}_${classroom}.json`)
+      console.log('Iniciando a criação dos alunos...')
 
-      for(let register of localDataToSave) {
+      for(let classroom of runTimeClassExecution) {
 
-        await this.saveData({
-          order: register.no,
-          name: register.name,
-          ra: register.ra,
-          dv: register.dv,
-          state: register.state,
-          birthDate: register.birthDate,
-          classroom: { id: classroomId },
-        }, true)
+        const localDataToSave = require(`../sheets/${runTimeSchool}/${runTimeSchool}_${classroom}.json`)
+
+        for(let register of localDataToSave) {
+
+          await this.saveData({
+            order: register.no,
+            name: register.name,
+            ra: register.ra,
+            dv: register.dv,
+            state: register.state,
+            birthDate: register.birthDate,
+            classroom: { id: classroomId },
+          }, true)
+        }
       }
+
+      return { status: 200, data: 'ok'}
+
+    } catch (error: any) {
+
+      console.log(error)
+
+      return { status: 500, data: error}
     }
 
-    return { status: 200, data: 'ok'}
   }
 }
 

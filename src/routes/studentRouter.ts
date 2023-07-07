@@ -9,22 +9,22 @@ StudentRouter.get('/', (req: Request, res: Response) => {
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-StudentRouter.get('/:id', userHasPermission, (req: Request, res: Response) => {
+StudentRouter.get('/:id', (req: Request, res: Response) => {
   studentController.getOneStudent(req)
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-StudentRouter.post('/', userHasPermission, (req: Request, res: Response) => {
+StudentRouter.post('/', (req: Request, res: Response) => {
   studentController.saveData(req.body)
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-StudentRouter.put('/:id', userHasPermission, (req: Request, res: Response) => {
+StudentRouter.put('/:id',(req: Request, res: Response) => {
   studentController.updateOneStudent(req.params.id, req.body)
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })
 
-StudentRouter.get('/creation', userHasPermission, (req: Request, res: Response) => {
+StudentRouter.get('/creation', (req: Request, res: Response) => {
   studentController.testCreation()
     .then(r => res.status(r.status).json({ method: req.method, resource: req.baseUrl, payload: r.data }))
 })

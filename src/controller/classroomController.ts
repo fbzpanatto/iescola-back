@@ -16,7 +16,7 @@ class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>>
     try {
 
       const classes = await this.repository.find({
-        relations: [ 'school', 'year', 'category'],
+        relations: [ 'school', 'category'],
         where: {}
       }) as Classroom[]
 
@@ -25,7 +25,6 @@ class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>>
           id: classroom.id,
           name: classroom.name,
           school: classroom.school.name,
-          year: classroom.year.name,
           category: classroom.category.name
         }
       })
