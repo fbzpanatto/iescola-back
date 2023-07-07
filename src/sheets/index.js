@@ -1,8 +1,8 @@
 const fs = require('fs');
 const XLSX = require('xlsx');
 
-const runTimeSchool = 'pires'
-const runTimeSubject = '9C'
+const runTimeSchool = 'benno'
+const runTimeSubject = '9A'
 
 const workbook = XLSX.readFile(`${runTimeSchool}_${runTimeSubject}.xlsx`);
 
