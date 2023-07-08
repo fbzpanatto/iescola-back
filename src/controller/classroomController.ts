@@ -64,13 +64,10 @@ class ClassroomController extends GenericController<EntityTarget<ObjectLiteral>>
   override async saveData(body: DeepPartial<ObjectLiteral>) {
 
     const school = await schoolController.findOneBy(body.school.id);
-    const year = await yearController.findOneBy(body.year.id);
 
     if (!school) throw new Error('School not found');
-    if (!year) throw new Error('Year not found');
 
     body.school = school;
-    body.year = year;
 
     return await this.repository.save(body);
   }

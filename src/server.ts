@@ -45,20 +45,18 @@ route.use('/classroom', ClassroomRouter)
 route.use('/discipline', DisciplineRouter)
 
 route.use('/category', CategoryRouter)
-
-route.use('/teacher', authorization, TeacherRouter)
 route.use('/teacher-discipline', TeacherDisciplineRouter)
 route.use('/teacher-classrooms', TeacherClassRouter)
-route.use('/student', authorization, StudentRouter)
-
 route.use('/test-category', TestCategoryRouter)
 route.use('/test-classes', TestClassesRouter)
-
-route.use('/test', authorization, TestRouter)
-route.use('/student-tests', authorization, StudentTestsRouter)
-
 route.use('/user', UserRouter)
 route.use('/login', LoginRouter)
+
+// The routes below require authorization
+route.use('/test', authorization, TestRouter)
+route.use('/teacher', authorization, TeacherRouter)
+route.use('/student', authorization, StudentRouter)
+route.use('/student-tests', authorization, StudentTestsRouter)
 
 app.use(route)
 

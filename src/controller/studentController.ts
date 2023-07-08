@@ -25,20 +25,23 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     try {
 
-      const currentYear = await yearController.findOne({ where: { active: true } }) as Year
-
       const { user: UserId } = req?.body.user
       const { year: queryYear, search } = req.query
 
+      // TODO: se o usuário for categoria professor, retornar apenas os alunos da turma do professor
+      // TODO: se o usuário for categoria gestor, retornar apenas os alunos da escola do gestor
+
       const teacher = await teacherController.findOne({
         relations: ['person.user', 'teacherClasses.classroom'],
-        where: { person: { user: { id: UserId } } }
+        where: {
+          person: { user: { id: UserId } },
+          teacherClasses: { active: true }
+        }
       }) as Teacher
 
       const studentClassesHistory = await studentClassesHistoryController.getAll({
         relations: [ 'student.person', 'classroom.school' ],
         where: {
-          active: currentYear.id === Number(queryYear),
           year: { id: Number(queryYear) },
           student: {
             person: { name: ILike(`%${search}%`) }
@@ -55,7 +58,9 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
           order: studentClassHistory.student.no,
           name: studentClassHistory.student.person.name,
           classroom: studentClassHistory.classroom.name,
-          school: studentClassHistory.classroom.school.name
+          school: studentClassHistory.classroom.school.name,
+          startedAt: studentClassHistory.startedAt,
+          endedAt: studentClassHistory.endedAt !== null ? 'Encerrado: ' + studentClassHistory.endedAt : 'Matriculado',
         }
       })
 
