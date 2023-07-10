@@ -58,6 +58,21 @@ route.use('/teacher', authorization, TeacherRouter)
 route.use('/student', authorization, StudentRouter)
 route.use('/student-tests', authorization, StudentTestsRouter)
 
+// check if token is valid
+route.get('/check-token', authorization, (req, res) => {
+    if(req.body.user) {
+      res.status(200).json({
+        status: 'success',
+        message: 'Token is valid!'
+      })
+    } else {
+        res.status(401).json({
+            status: 'fail',
+            message: 'Unauthorized!'
+        })
+    }
+})
+
 app.use(route)
 
 AppDataSource.initialize()
