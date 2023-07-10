@@ -4,6 +4,8 @@ import havePermission from '../utils/permissions'
 
 export default (req: Request, res: Response, next: NextFunction) => {
 
+  console.log('havePermission', 'middleware')
+
   const { user } = req.body
 
   const entity = req.baseUrl.split('/')[1]

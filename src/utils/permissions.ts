@@ -1,5 +1,9 @@
 interface Permission { GET: boolean, POST: boolean, PUT: boolean, DELETE: boolean }
 
+const getCategoriesIds = (categoryId: number) => {
+    const categoriesIds = Object.keys(userCategoryPermissions) as unknown as number[]
+}
+
 const userCategoryPermissions: { [key: number]: { [key: string]: Permission } } = {
     1: {
         student: {

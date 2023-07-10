@@ -1,24 +1,32 @@
-import {DeepPartial, EntityTarget, ILike, In, ObjectLiteral} from "typeorm";
+import { DeepPartial, EntityTarget, ILike, In, ObjectLiteral } from "typeorm";
 
-import {Request} from "express";
-import {GenericController} from "./genericController";
+import { Request } from "express";
+import { GenericController } from "./genericController";
 
-import {Student} from "../entity/Student";
-import {PersonClass} from "./personController";
-import {Classroom} from "../entity/Classroom";
-import {StudentClassesHistory} from "../entity/StudentClassesHistory";
+import { Student } from "../entity/Student";
+import { PersonClass } from "./personController";
+import { Classroom } from "../entity/Classroom";
+import { StudentClassesHistory } from "../entity/StudentClassesHistory";
+import { Teacher } from "../entity/Teacher";
+import { Year } from "../entity/Year";
+import { TeacherClasses } from "../entity/TeacherClasses";
 
-import {classroomController} from "./classroomController";
-import {studentClassesHistoryController} from "./studentClassesHistoryController";
-import {teacherController} from "./teacherController";
-import {Teacher} from "../entity/Teacher";
-import {TeacherClasses} from "../entity/TeacherClasses";
-import {yearController} from "./yearController";
-import {Year} from "../entity/Year";
+import { yearController } from "./yearController";
+import { classroomController } from "./classroomController";
+import { studentClassesHistoryController } from "./studentClassesHistoryController";
+import { teacherController } from "./teacherController";
 
 class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
   constructor() {
     super(Student);
+  }
+
+  formatDateToBrazil(data: Date) {
+    const dia = String(data.getDate()).padStart(2, '0');
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const ano = data.getFullYear();
+
+    return dia + '/' + mes + '/' + ano;
   }
 
   async getAllStudents(req: Request) {
@@ -27,9 +35,6 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
       const { user: UserId } = req?.body.user
       const { year: queryYear, search } = req.query
-
-      // TODO: se o usuário for categoria professor, retornar apenas os alunos da turma do professor
-      // TODO: se o usuário for categoria gestor, retornar apenas os alunos da escola do gestor
 
       const teacher = await teacherController.findOne({
         relations: ['person.user', 'teacherClasses.classroom'],
@@ -59,16 +64,14 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
           name: studentClassHistory.student.person.name,
           classroom: studentClassHistory.classroom.name,
           school: studentClassHistory.classroom.school.name,
-          startedAt: studentClassHistory.startedAt,
-          endedAt: studentClassHistory.endedAt !== null ? 'Encerrado: ' + studentClassHistory.endedAt : 'Matriculado',
+          startedAt: this.formatDateToBrazil(studentClassHistory.startedAt),
+          endedAt: studentClassHistory.endedAt !== null ? 'Encerrado: ' + this.formatDateToBrazil(studentClassHistory.endedAt) : 'Matriculado',
         }
       })
 
       return { status: 200, data: result }
 
     } catch (error: any) {
-
-      console.log(error)
 
       return  { status: 500, data: error }
 
@@ -143,6 +146,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
     } catch (error: any) {
 
+      console.log('studentController: ', error)
+
       return { status: 500, data: error }
 
     }
@@ -200,12 +205,14 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
 
   async testCreation(){
 
+    console.log('Iniciando a criação dos alunos...')
+
     try {
 
       // 1.
-      const runTimeClassExecution = ['5A']
+      const runTimeClassExecution = ['9A']
       // 2.
-      const classroomId = 23
+      const classroomId = 25
       // 3.
       const runTimeSchool = 'benno'
 
@@ -214,6 +221,8 @@ class StudentController extends GenericController<EntityTarget<ObjectLiteral>> {
       for(let classroom of runTimeClassExecution) {
 
         const localDataToSave = require(`../sheets/${runTimeSchool}/${runTimeSchool}_${classroom}.json`)
+
+        console.log(localDataToSave)
 
         for(let register of localDataToSave) {
 
